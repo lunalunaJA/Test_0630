@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Configuration</comment>
+	
+	<!-- 
+		[파일] 
+	-->
+	<!-- 업로드 경로 -->
+	<entry key="UPLOAD_PATH">C:\\Archive_Repo\\</entry>
+	<!-- 임시 경로 -->
+	<entry key="TEMP_PATH">C:\\Archive_Temp\\</entry>	
+	<!-- 다운로드 경로 -->
+	<entry key="DOWNLOAD_PATH">C:\\Archive_Repo\\</entry>
+	<!-- Cabinet Setting-->
+	<entry key="ROOT_PATH">C:\\Archive_Repo\\</entry>
+	<entry key="MAX_CAPACITY">1048576000</entry>
+	<!-- 임시 파일 삭제 여부 -->
+	<entry key="DEL_TEMP_FILE_YN">Y</entry>	
+		
+	<entry key="UPLOAD_TEMP_PATH">C:/ECM4.0/temp/</entry>
+	<entry key="DOWN_TEMP_PATH">C:/ECM4.0/temp/</entry>	
+		
+	<!-- 
+		[Unique 파일 키에 Task 포함 여부] task별 ufile 관리
+	 -->
+	<entry key="UFILE_KEY_INC_TASK">Y</entry>
+	
+	<!-- 
+		[Master 파일 키에 시간 포함 여부]
+	 -->
+	<entry key="MFILE_KEY_INC_TIME">Y</entry>	
+		
+	<!-- 
+		[캐비닛] 
+	-->
+	<!-- 케비닛에 저장되는 최대 용량율 1 ~ 100(%)-->
+	<entry key="CABINET_MAX_CAPACITY">80</entry>
+	<!-- 최소 캐비닛 저장 용량 (지정하지 않는 경우 체크 안함)-->
+	<entry key="CABINET_MIN_CAPACITY">99999</entry>
+	
+	<!-- 
+		[Elasticsearch] 
+	-->
+	<!-- Usable -->
+	<entry key="ES_USABLE">Y</entry>
+	<!-- Scheme -->
+	<entry key="ES_SCHEMES">http</entry>
+	<!-- Host -->
+	<entry key="ES_HOSTS">127.0.0.1</entry>
+	<!-- Port -->
+	<entry key="ES_PORTS">9200</entry>
+	<!-- Index -->
+	<entry key="ES_ARCHVIE_LOG_INDEXES">AUDIT</entry>
+	<!-- Type -->
+	<entry key="ES_ARCHVIE_LOG_TYPES"></entry>
+	<!-- Index -->
+	<entry key="ES_FTR_INDEXES">ftr</entry>
+	<!-- Type -->
+	<entry key="ES_FTR_TYPES"></entry>
+	
+	<!-- 
+		[]
+	 -->
+	 <!-- Mobile -->
+	<entry key="MOBILE">Y</entry>
+	
+	<!-- PrivateSecure -->
+	<entry key="pageUnit">15</entry>
+	<entry key="pageSize">10</entry>
+	
+	<!-- APM -->
+	<entry key="APM_DB_SCHEME">public</entry>
+	<entry key="APM_DISK_PATH">zarch</entry>
+	<entry key="APM_CRON">0 0 23 * * *</entry>
+	<!-- DYNAMIC -->
+	<entry key="DYNAMIC_DB_SCHEME">zarch</entry>
+	<!-- 문서폐기 -->
+	<entry key="BATCH_DISCARDDOC">0 0 23 * * *</entry>
+
+	<entry key="LIC_PATH">c:/ZenithST/lic/</entry>
+	
+	<!-- [FTR] -->
+	 <entry key="FTR_STORE_PATH">C:/Archive_Repo/ftr/store</entry>
+	 <entry key="FTR_PARSE_PATH">C:/Archive_Repo/ftr/parse</entry>
+	 <entry key="FTR_IDX_FILETYPE"></entry>
+
+</properties>
