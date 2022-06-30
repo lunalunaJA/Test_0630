@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.common.mapper.ZappCommonMapper" >
+
+  <!-- Exist Ddl  -->
+  <select id="existDdl" resultType="java.lang.String"  parameterType="map">
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1  		
+			  		<choose>
+			  			<when test="objType eq 'TABLE'.toString()">
+			  				from information_schema.tables
+						   where table_schema = #{objSchema, jdbcType=VARCHAR}
+						     and table_name = #{objTblname, jdbcType=VARCHAR}
+			  			</when>
+			  			<when test="objType eq 'INDEX'.toString()">
+			  				from information_schema.statistics 
+						   where table_schema = #{objSchema, jdbcType=VARCHAR}
+						     and table_name = #{objTblname, jdbcType=VARCHAR}
+						     and index_name = #{objIdxname, jdbcType=VARCHAR}
+			  			</when>
+			  			<otherwise>
+			  			</otherwise>
+			  		</choose>
+  				 )
+  </select> 
+
+  <!-- Create Table --> 
+  <update id="createDdl" parameterType="map">
+  		create table ${objTablename}
+  		(
+  			`APPID` CHAR(64) NOT NULL COMMENT '문서 아이디', 
+  			`REGISTERID` VARCHAR(64) NOT NULL COMMENT '등록자 아이디',
+  			`CREATETIME` VARCHAR(20) NOT NULL COMMENT '생성일시 (YYYY-MM-DD 24HH:mm:ss)',
+  			`DELYN` CHAR(1) NOT NULL DEFAULT 'N' COMMENT '삭제여부(Y/N)',
+  			`STATE` VARCHAR(2) NOT NULL DEFAULT '1' COMMENT '상태',
+  			<foreach collection="objTags" item="col" separator=" " >
+  				`IDX${col.seqno}` VARCHAR(${col.datalength})
+  				<if test="col.isallowednull eq 'N'.toString()"> NOT NULL </if>
+  				<if test="@com.zenithst.core.common.utility.ZappComparator@isNotEmpty(col.defaultvalue)"> DEFAULT '${col.defaultvalue}' </if>
+  				COMMENT '${col.objComments}' ,
+  			</foreach>
+  			 PRIMARY KEY (`APPID`) 
+  		)
+  </update>  
+  
+  <!-- Alter Table  -->
+  <update id="alterDdl" parameterType="map">
+  		alter table ${objTblname} modify IDX${seqno} varchar2(${datalength})
+  		<choose>
+  			<when test="isallowednull eq 'N'.toString()">
+  				not null
+  			</when>
+  			<when test="isallowednull eq 'Y'.toString()">
+  				null
+  			</when>
+  			<otherwise></otherwise>
+  		</choose> 
+  		<if test="@com.zenithst.core.common.utility.ZappComparator@isNotEmpty(defaultvalue)">
+  			default '${defaultvalue}' 
+  		</if>
+  		comment '${objComments}'
+  </update>
+
+  <!-- Create Index  -->  
+  <update id="createIndex" parameterType="map">
+  		create 
+  		<if test="objIsunique eq 'Y'.toString()">
+  			unique 
+  		</if>
+  		index ${objIdxname} on ${objTblname} (${objFieldname})
+  </update>
+  
+  <!-- Drop table -->
+  <update id="dropDdl" parameterType="map">
+  		drop table ${objTblname}
+  </update> 
+
+
+  <!-- Dynamic Where (Default) -->
+  <sql id="Dynamic_Where_Clause" >
+    <where >
+      <foreach collection="dynamic.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Dynamic_NoWhere_Clause" >
+      <foreach collection="dynamic.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql> 
+  <sql id="Update_By_Dynamic_Where_Clause" >
+    <where >
+      <foreach collection="dynamic.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Dynamic_NoWhere_Clause" >
+      <foreach collection="dynamic.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>  
+  
+  <!-- Dynamic Where (Extra) -->
+  
+  <sql id="Dynamic_Where_Clause_ApplyAcl" >
+    <where >
+      <foreach collection="applyAcl.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  
+  <sql id="Dynamic_Where_Clause_Bundle" >
+    <where >
+      <foreach collection="bundle.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Dynamic_NoWhere_Clause_Bundle" >
+      <foreach collection="bundle.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>
+  
+  <sql id="Dynamic_Where_Clause_AdditoryBundle" >
+    <where >
+      <foreach collection="additorybundle.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Dynamic_NoWhere_Clause_AdditoryBundle" >
+      <foreach collection="additorybundle.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>  
+  <sql id="Dynamic_Where_Clause_File" >
+    <where >
+      <foreach collection="file.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>  
+  <sql id="Dynamic_NoWhere_Clause_File" >
+      <foreach collection="file.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql> 
+  <sql id="Dynamic_Where_Clause_MFile" >
+    <where >
+      <foreach collection="mfile.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>  
+  <sql id="Dynamic_NoWhere_Clause_MFile" >
+      <foreach collection="mfile.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql> 
+  <sql id="Dynamic_Where_Clause_Class" >
+    <where >
+      <foreach collection="class.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>  
+  <sql id="Dynamic_NoWhere_Clause_Class" >
+      <foreach collection="class.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>  
+  <sql id="Dynamic_Where_Clause_AdditoryClass" >
+    <where >
+      <foreach collection="additoryclass.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>  
+  <sql id="Dynamic_NoWhere_Clause_AdditoryClass" >
+      <foreach collection="additoryclass.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>  
+   
+  <sql id="Dynamic_Where_Clause_Link" >
+    <where >
+      <foreach collection="link.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>    
+   <sql id="Dynamic_NoWhere_Clause_Link" >
+      <foreach collection="link.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql> 
+   
+  <sql id="Dynamic_Where_Clause_Share" >
+    <where >
+      <foreach collection="share.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Dynamic_NoWhere_Clause_Share" >
+      <foreach collection="share.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>
+  
+  <sql id="Dynamic_Where_Clause_Lock" >
+    <where >
+      <foreach collection="lock.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Dynamic_NoWhere_Clause_Lock" >
+      <foreach collection="lock.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>
+
+  <sql id="Dynamic_Where_Clause_GroupUser" >
+    <where >
+      <foreach collection="groupUser.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_GroupUser" >
+      <foreach collection="groupUser.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+   
+  <sql id="Dynamic_Where_Clause_ClassAcl" >
+    <where >
+      <foreach collection="classacl.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>  
+  <sql id="Dynamic_NoWhere_Clause_ClassAcl" >
+      <foreach collection="classacl.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql> 
+ 
+  <sql id="Dynamic_Where_Clause_Keyword" >
+    <where >
+      <foreach collection="keyword.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Keyword" >
+      <foreach collection="keyword.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+ 
+  <sql id="Dynamic_Where_Clause_Deptuser" >
+    <where >
+      <foreach collection="deptuser.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Deptuser" >
+      <foreach collection="deptuser.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+
+  <sql id="Dynamic_Where_Clause_Dept" >
+    <where >
+      <foreach collection="dept.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Dept" >
+      <foreach collection="dept.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>
+
+  <sql id="Dynamic_Where_Clause_User" >
+    <where >
+      <foreach collection="user.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_User" >
+      <foreach collection="user.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>
+   
+  <sql id="Dynamic_Where_Clause_Wfobj" >
+    <where >
+      <foreach collection="wfobj.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Wfobj" >
+      <foreach collection="wfobj.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+ 
+  <sql id="Dynamic_Where_Clause_Wf" >
+    <where >
+      <foreach collection="wf.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Wf" >
+      <foreach collection="wf.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+ 
+  <sql id="Dynamic_Where_Clause_Wfer" >
+    <where >
+      <foreach collection="wfer.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+ 
+  <sql id="Dynamic_NoWhere_Clause_Wfer" >
+      <foreach collection="wfer.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+  </sql>   
+        
+  <!-- Order -->
+  <sql id="limit_order">
+	 	<if test="qryopt.objmaporder != null">
+	 		<if test="qryopt.objmaporder.size > 0">
+	 			<foreach  collection="qryopt.objmaporder"  index="key" item="value"  open="order by "  separator=" , "  close="">
+			        ${key} ${value}
+			    </foreach>
+	 		</if>
+	 	</if>
+  </sql>
+  
+  <!-- Paging -->
+  <sql id="limit_pg_rownum">
+  	 , ROWNUM AS RNO
+  </sql>            
+  <sql id="limit_pg">
+		<if test="@com.zenithst.core.common.utility.ZappComparator@isNotEmpty(qryopt.objsnum)">
+ 				<if test="@com.zenithst.core.common.utility.ZappComparator@isNotEmpty(qryopt.objenum)">
+  				<if test="qryopt.objpgnum > 0">
+  					<if test="qryopt.objnumperpg > 0">
+  					) OLIST
+			   		WHERE OLIST.RNO BETWEEN get_pg(${qryopt.objpgnum}, ${qryopt.objnumperpg}, 'S') AND get_pg(${qryopt.objnumperpg}, ${qryopt.objpgnum}, 'E')   
+			   		</if>
+		   		</if>
+	   		</if>
+	   	</if>
+  </sql>   
+  
+   <resultMap id="CheckResultMap" type="com.zenithst.core.common.vo.ZappCommon" >
+    <id column="chkstr" property="chkstr" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="usingOtherTable" resultMap="CheckResultMap"  parameterType="map">
+	<choose>
+		<when test="objType eq 'COMPANY'.toString()">		<!-- 기관 -->
+			select '컨텐츠(캐비닛)' as chkstr
+			  from dual
+			 where exists (select 1
+  							 from zarch_ufile ufile
+     							, zarch_taskcabinet tc
+	 							, zapp_organtask ot
+ 							where ot.taskid = tc.taskid
+   							  and tc.cabinetid = ufile.cabinetid
+   							  and ot.companyid = '${objid}')
+   			union all
+			select '컨텐츠 (소유자) - 번들' as chkstr
+			  from dual
+			 where exists (select 1
+  							 from zapp_bundle bundle
+     							, zapp_deptuser du
+	 							, zapp_user users
+ 							where bundle.holderid = du.deptuserid
+   							  and du.userid = users.userid
+   							  and users.companyid = '${objid}')
+   			union all
+			select '컨텐츠 (소유자) - 파일' as chkstr
+			  from dual
+			 where exists (select 1
+  							 from zapp_mfile mfile
+     							, zapp_deptuser du
+	 							, zapp_user users
+ 							where mfile.holderid = du.deptuserid
+   							  and du.userid = users.userid
+   							  and users.companyid = '${objid}')
+/*   							  		
+			select '분류' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_class where companyid = '${objid}')
+			union all
+			select '코드' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_code where companyid = '${objid}')
+			union all
+			select '부서' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_dept where companyid ='${objid}')
+			union all
+			select '사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_user where companyid ='${objid}')
+			union all
+			select '환경설정' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_env where companyid = '${objid}' )
+			union all
+			select '그룹' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_group where companyid = '${objid}' ) 
+			union all
+			select '조직업무' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_organtask where companyid = '${objid}' )
+*/
+		</when>
+		<when test="objType eq 'DEPT'.toString()">		<!-- 부서 -->
+			select '분류권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_classacl where aclobjid= '${objid}' and aclobjtype = '02')
+			union all
+			select '컨텐츠권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_contentacl where aclobjid= '${objid}' and aclobjtype = '02')
+			union all
+			select '부서사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_deptuser where deptid ='${objid}')
+			union all
+			select '그룹사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_groupuser where gobjid = '${objid}' and gobjtype = '02')
+		</when>
+		<when test="objType eq 'DEPTUSER'.toString()">		<!-- 부서사용자 -->
+			select '번들 (소유자)' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_bundle where holderid = '${objid}')
+			union all
+			select '파일 (소유자)' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_mfile where holderid = '${objid}')
+			union all
+			select '분류 (소유자)' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_class where holderid = '${objid}')
+			union all
+			select '컨텐츠권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_contentacl where aclobjid= '${objid}' and aclobjtype = '01')
+			union all
+			select '분류권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_classacl where aclobjid= '${objid}' and aclobjtype = '01')
+			union all
+			select '그룹사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_groupuser where gobjid= '${objid}' and gobjtype = '01')
+			union all
+			select '링크' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_linkedobject where linkerid= '${objid}')
+			union all
+			select '잠금' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_lockedobject where lockerid= '${objid}')
+			union all
+			select '잠금' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_lockedobject where lockerid= '${objid}')
+			union all
+			select '공유' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_sharedobject where (sharerid= '${objid}' or readerid = sharerid= '${objid}'))
+			union all
+			select '임시' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_tmpobject where handlerid= '${objid}')		
+		</when>
+		<when test="objType eq 'USER'.toString()">		<!-- 사용자 -->
+			select '부서사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_deptuser where userid = '${objid}')
+		</when>
+		<when test="objType eq 'GROUP'.toString()">		<!-- 그룹 -->
+			select '컨텐츠권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_contentacl where aclobjid= '${objid}' and aclobjtype = '03')
+			union all
+			select '분류권한' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_classacl where aclobjid= '${objid}' and aclobjtype = '03')
+		/*	union all
+		    select '그룹사용자' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_groupuser where groupid= '${objid}') */
+		</when>
+		<when test="objType eq 'CLASS'.toString()">		<!-- 분류 -->
+			select '분류객체' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_classobject where classid = '${objid}')
+			union all
+			select '공유객체' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_sharedobject where sobjid= '${objid}')
+		</when>
+		<when test="objType eq 'CODE'.toString()">		<!-- 코드 -->
+			select '번들-보존기간' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_bundle where retentionid = '${objid}')
+			union all
+			select '파일-보존기간' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_mfile where retentionid = '${objid}')
+			union all
+			select '부서사용자-직위' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_deptuser where positionid = '${objid}')
+			union all
+			select '부서사용자-직무' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_deptuser where dutyid = '${objid}')
+			union all
+			select '부서사용자-보안등급' as chkstr
+			  from dual
+			 where exists (select 1 from zapp_deptuser where seclevelid = '${objid}')
+		</when>
+		<when test="objType eq 'WORKFLOW'.toString()">		<!-- Workflow -->
+			select '승인사용중' as chkstr
+			  from dual
+			 where exists (
+						select 1
+						   from zapp_class CLS
+							  , zapp_classobject CLSOBJ
+							  , zapp_bundle BUNDLE
+							  , zapp_workflowobject WFOBJ
+						  where CLS.classid = CLSOBJ.classid
+							and CLSOBJ.cobjid = BUNDLE.bundleid
+							and CLSOBJ.cobjtype = '01'
+							and WFOBJ.contentid = BUNDLE.bundleid
+							and WFOBJ.contenttype = '01'
+							and CLS.wfid = '${objid}'
+						union all
+						select 1
+						   from zapp_class CLS
+							  , zapp_classobject CLSOBJ
+							  , zarch_mfile MFILE
+							  , zapp_workflowobject WFOBJ
+						  where CLS.classid = CLSOBJ.classid
+							and CLSOBJ.cobjid = MFILE.mfileid
+							and CLSOBJ.cobjtype = '02'
+							and WFOBJ.contentid = MFILE.mfileid
+							and WFOBJ.contenttype = '02'
+							and CLS.wfid = '${objid}'
+						)		
+		</when>
+		<when test="objType eq 'TASK'.toString()">		<!-- 업무 -->
+			select '컨텐츠' as chkstr
+			  from dual
+			 where exists ( 
+							select 1
+							  from zarch_task task
+								 , zarch_taskcabinet tc
+								 , zarch_ufile uf
+							 where task.taskid = tc.taskid
+							   and uf.cabinetid = tc.cabinetid
+							   and task.taskid = '${objid}'		
+						   ) 
+		</when>			
+		<otherwise>
+		</otherwise>
+	</choose>  		
+  </select>
+  
+  <!-- Generating Sequence  -->          
+  <update id="createSequence" parameterType="map">
+  	<if test="objType != null and  objCode != null">
+	  	CREATE SEQUENCE ZAPPSEQ_${objType}_${objCode} INCREMENT BY 1 START WITH 1
+  	</if>
+  </update>      
+  
+  <!-- Alter Sequence  -->          
+  <update id="updateSequence" parameterType="map">
+  	<if test="objType != null and  objCode != null">
+	  	ALTER SEQUENCE ZAPPSEQ_${objType}_${objCode} INCREMENT BY 1
+  	</if>
+  </update>      
+
+  <!-- Get Sequence -->
+  <select id="selectSequence" parameterType="map" resultType="int">
+  	<if test="objType != null and  objCode != null">
+  		  select ZAPPSEQ_${objType}_${objCode}.nextval from dual
+  	</if>
+  </select>
+
+  <!-- Drop Sequence -->
+  <update id="dropSequence" parameterType="map">
+  	<if test="objType != null and  objCode != null">
+  		DROP sequence ZAPPSEQ_${objType}_${objCode}
+  	</if>
+  </update>
+  
+  
+  <!--  SELECT c.relname FROM pg_class c WHERE c.relkind = 'S'  -->
+    
+</mapper>

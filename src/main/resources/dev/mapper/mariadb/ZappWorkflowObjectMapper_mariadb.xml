@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.workflow.mapper.ZappWorkflowObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.workflow.vo.ZappWorkflowObject" >
+    <id column="wfobjid" property="wfobjid" jdbcType="CHAR" />
+    <result column="wferid" property="wferid" jdbcType="CHAR" />
+    <result column="contentid" property="contentid" jdbcType="VARCHAR" />
+    <result column="contenttype" property="contenttype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.workflow.vo.ZappWorkflowObject" >
+    <id column="WFOBJ_wfobjid" property="wfobjid" jdbcType="CHAR" />
+    <result column="WFOBJ_wferid" property="wferid" jdbcType="CHAR" />
+    <result column="WFOBJ_contentid" property="contentid" jdbcType="VARCHAR" />
+    <result column="WFOBJ_contenttype" property="contenttype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.workflow.vo.ZappWorkflowObject" extends="JoinResultMap" >
+  </resultMap> 
+  <sql id="Base_Column_List" >
+      wfobjid
+    , wferid
+    , contentid
+    , contenttype
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     WFOBJ.wfobjid		AS WFOBJ_wfobjid
+   , WFOBJ.wferid			AS WFOBJ_wferid
+   , WFOBJ.contentid			AS WFOBJ_contentid
+   , WFOBJ.contenttype			AS WFOBJ_contenttype
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)	AS WFOBJ_wfobjid
+   , ''						AS WFOBJ_wferid	
+   , ''						AS WFOBJ_contentid
+   , ''						AS WFOBJ_contenttype
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     WFOBJ_wfobjid
+   , WFOBJ_wferid
+   , WFOBJ_contentid
+   , WFOBJ_contenttype
+  </sql>
+  <sql id="All_Value_List" >
+     #{wfobjid,jdbcType=CHAR}
+   , #{wferid,jdbcType=CHAR}
+   , #{contentid,jdbcType=VARCHAR}
+   , #{contenttype,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.wfobjid,jdbcType=CHAR}
+   , #{batch.wferid,jdbcType=CHAR}
+   , #{batch.contentid,jdbcType=VARCHAR}
+   , #{batch.contenttype,jdbcType=VARCHAR}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_workflowobject WFOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMap" parameterType="map" >
+    select
+    <include refid="Join_Column_List_IN" />
+    from zapp_workflowobject WFOBJ
+       , zapp_workflow WF
+       , zapp_workflower WFER
+    where 1 = 1
+      and WFOBJ.wferid = WFER.wferid
+      and WFER.workflowid = WF.workflowid
+    <if test="wfobj != null" >
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Wfobj" />
+    </if>
+    <if test="wf != null" >
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Wf" />
+    </if>
+    <if test="wfer != null" >
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Wfer" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+   	<!-- Paging -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+   	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_workflowobject
+    where wfobjid = #{wfobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_workflowobject
+    where wfobjid = #{wfobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete WFOBJ from zapp_workflowobject WFOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.workflow.vo.ZappWorkflowObject" >
+    insert into zapp_workflowobject (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.workflow.vo.ZappWorkflowObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_workflowobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_workflowobject WFOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_workflowobject
+    <set >
+      <if test="record.wfobjid != null" >
+        wfobjid = #{record.wfobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.wferid != null" >
+        wferid = #{record.wferid,jdbcType=CHAR},
+      </if>
+      <if test="record.contentid != null" >
+        contentid = #{record.contentid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contenttype != null" >
+        contenttype = #{record.contenttype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.workflow.vo.ZappWorkflowObject" >
+    update zapp_workflowobject WFOBJ
+    <set >
+      <if test="wferid != null" >
+        wferid = #{wferid,jdbcType=CHAR},
+      </if>
+      <if test="contentid != null" >
+        contentid = #{contentid,jdbcType=VARCHAR},
+      </if>
+      <if test="contenttype != null" >
+        contenttype = #{contenttype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where wfobjid = #{wfobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_workflowobject WFOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.system.mapper.ZappEnvMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.system.vo.ZappEnv" >
+    <id column="ENVID" property="envid" jdbcType="CHAR" />
+    <result column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="USERID" property="userid" jdbcType="CHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SETVAL" property="setval" jdbcType="VARCHAR" />
+    <result column="ENVTYPE" property="envtype" jdbcType="VARCHAR" />
+    <result column="SETTYPE" property="settype" jdbcType="CHAR" />
+    <result column="SETOPT" property="setopt" jdbcType="VARCHAR" />
+    <result column="EDITABLE" property="editable" jdbcType="CHAR" />
+    <result column="ENVKEY" property="envkey" jdbcType="OTHER" />
+    <result column="ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.system.vo.ZappEnv" >
+    <id column="ENV_ENVID" property="envid" jdbcType="CHAR" />
+    <result column="ENV_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="ENV_USERID" property="userid" jdbcType="CHAR" />
+    <result column="ENV_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ENV_SETVAL" property="setval" jdbcType="VARCHAR" />
+    <result column="ENV_ENVTYPE" property="envtype" jdbcType="VARCHAR" />
+    <result column="ENV_SETTYPE" property="settype" jdbcType="CHAR" />
+    <result column="ENV_SETOPT" property="setopt" jdbcType="VARCHAR" />
+    <result column="ENV_EDITABLE" property="editable" jdbcType="CHAR" />
+    <result column="ENV_ENVKEY" property="envkey" jdbcType="OTHER" />
+    <result column="ENV_ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     ENVID
+   , COMPANYID
+   , USERID
+   , NAME
+   , SETVAL
+   , ENVTYPE
+   , SETTYPE
+   , SETOPT
+   , EDITABLE
+   , ENVKEY
+   , ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     ENV.ENVID			AS ENV_ENVID
+   , ENV.COMPANYID		AS ENV_COMPANYID
+   , ENV.USERID			AS ENV_USERID
+   , ENV.NAME			AS ENV_NAME
+   , ENV.SETVAL			AS ENV_SETVAL
+   , ENV.ENVTYPE		AS ENV_ENVTYPE
+   , ENV.SETTYPE		AS ENV_SETTYPE
+   , ENV.SETOPT			AS ENV_SETOPT
+   , ENV.EDITABLE		AS ENV_EDITABLE
+   , ENV.ENVKEY			AS ENV_ENVKEY
+   , ENV.ISACTIVE		AS ENV_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     ENV_ENVID
+   , ENV_COMPANYID
+   , ENV_USERID
+   , ENV_NAME
+   , ENV_SETVAL
+   , ENV_ENVTYPE
+   , ENV_SETTYPE
+   , ENV_SETOPT
+   , ENV_EDITABLE
+   , ENV_ENVKEY
+   , ENV_ISACTIVE
+  </sql>
+  <sql id="All_Value_List" >
+     #{envid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{userid,jdbcType=CHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{setval,jdbcType=VARCHAR}
+   , #{envtype,jdbcType=VARCHAR}
+   , #{settype,jdbcType=CHAR}
+   , #{setopt,jdbcType=VARCHAR}
+   , #{editable,jdbcType=CHAR}
+   , #{envkey,jdbcType=OTHER}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.envid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.userid,jdbcType=CHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.setval,jdbcType=VARCHAR}
+   , #{batch.envtype,jdbcType=VARCHAR}
+   , #{batch.settype,jdbcType=CHAR}
+   , #{batch.setopt,jdbcType=VARCHAR}
+   , #{batch.editable,jdbcType=CHAR}
+   , #{batch.envkey,jdbcType=OTHER}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_env ENV
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="BaseResultMap" parameterType="map" >
+    select
+       <include refid="Base_Column_List" />
+    from zapp_env ENV
+    
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_env
+    where ENVID = #{envid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_env
+    where ENVID = #{envid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_env ENV
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <delete id="deleteByCompany" parameterType="java.lang.String" >
+    delete from zapp_env
+    where ENVID in (select ENVID
+    				  from zapp_env
+    				 where companyid = #{companyid,jdbcType=CHAR}
+    				union all
+    				select ENVID
+    				  from zapp_env env
+    				     , zapp_user users
+    				 where env.userid = users.userid
+    				   and users.companyid = #{companyid,jdbcType=CHAR}) 
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.system.vo.ZappEnv" >
+    insert into zapp_env  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.system.vo.ZappEnv" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_env (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_env ENV
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_env ENV
+    <set >
+      <if test="record.envid != null" >
+        ENVID = #{record.envid,jdbcType=CHAR},
+      </if>
+      <if test="record.companyid != null" >
+        COMPANYID = #{record.companyid,jdbcType=CHAR},
+      </if>
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=CHAR},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.setval != null" >
+        SETVAL = #{record.setval,jdbcType=VARCHAR},
+      </if>
+      <if test="record.envtype != null" >
+        ENVTYPE = #{record.envtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.settype != null" >
+        SETTYPE = #{record.settype,jdbcType=CHAR},
+      </if>
+      <if test="record.setopt != null" >
+        SETOPT = #{record.setopt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.editable != null" >
+        EDITABLE = #{record.editable,jdbcType=CHAR},
+      </if>
+      <if test="record.envkey != null" >
+        ENVKEY = #{record.envkey,jdbcType=OTHER},
+      </if>
+      <if test="record.isactive != null" >
+        ISACTIVE = #{record.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.system.vo.ZappEnv" >
+    update zapp_env
+    <set >
+      <if test="companyid != null" >
+        COMPANYID = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="userid != null" >
+        USERID = #{userid,jdbcType=CHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="setval != null" >
+        SETVAL = #{setval,jdbcType=VARCHAR},
+      </if>
+      <if test="envtype != null" >
+        ENVTYPE = #{envtype,jdbcType=VARCHAR},
+      </if>
+      <if test="settype != null" >
+        SETTYPE = #{settype,jdbcType=CHAR},
+      </if>
+      <if test="setopt != null" >
+        SETOPT = #{setopt,jdbcType=VARCHAR},
+      </if>
+      <if test="editable != null" >
+        EDITABLE = #{editable,jdbcType=CHAR},
+      </if>
+      <if test="envkey != null" >
+        ENVKEY = #{envkey,jdbcType=OTHER},
+      </if>
+      <if test="isactive != null" >
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where ENVID = #{envid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_env ENV
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+  <insert id="initEnv" parameterType="com.zenithst.core.organ.vo.ZappCompany" >
+    insert into zapp_env (<include refid="Base_Column_List" />) 
+	SELECT get_sha256(#{companyid,jdbcType=CHAR} || envtype || envkey) as envid
+		 , #{companyid,jdbcType=CHAR} as companyid
+		 , #{companyid,jdbcType=CHAR} as userid
+		 , name, setval, envtype, settype, setopt, editable, envkey, isactive
+	 from zapp_env
+	 where companyid = 'DEFAULT'
+  </insert>
+  <insert id="initUserEnv" parameterType="com.zenithst.core.organ.vo.ZappUser" >
+    insert into zapp_env (<include refid="Base_Column_List" />) 
+	SELECT get_sha256(#{companyid,jdbcType=CHAR} || #{userid,jdbcType=CHAR} || envtype || envkey) as envid
+		 , #{companyid,jdbcType=CHAR} as companyid
+		 , #{userid,jdbcType=CHAR} as userid
+		 , name, setval, envtype, settype, setopt, editable, envkey, isactive
+	 from zapp_env
+	 where companyid = #{companyid,jdbcType=CHAR}
+	   and userid = #{companyid,jdbcType=CHAR}
+	   and envkey in ('SYS_LIST_CNT_PER_PAGE')
+  </insert>
+</mapper>

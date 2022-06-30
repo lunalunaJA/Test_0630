@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- postgres -->
+<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+   		<property name="defaultAutoCommit" value="false" />
+	    <property name="driverClassName" value="org.postgresql.Driver" />
+	    <property name="url" value="jdbc:postgresql://112.216.54.251:5432/zenith_kr" />
+	    <property name="username" value="zenith_kr" />
+	    <property name="password" value="zenith_kr" />
+	    <property name="validationQuery" value="select 1 from dual " />
+	    <property name="testOnBorrow" value="false" />
+	    <property name="testWhileIdle" value="true" />
+	    <property name="numTestsPerEvictionRun" value="1" />
+	    <property name="timeBetweenEvictionRunsMillis" value="3000" />
+	    <property name="initialSize" value="5" />
+	    <property name="maxActive" value="10" />
+	    <property name="maxIdle" value="10" />
+	    <property name="minIdle" value="1" />
+ 	</bean>
+	<!-- mariaDB -->
+<!-- 	<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	    <property name="driverClassName" value="org.mariadb.jdbc.Driver" />
+	    <property name="url" value="jdbc:mariadb://112.216.54.251:3306/ECM" />
+	    <property name="username" value="zenith" />
+	    <property name="password" value="zst14580" />
+	    <property name="validationQuery" value="select 1 from dual " />
+	    <property name="testOnBorrow" value="false" />
+	    <property name="testWhileIdle" value="true" />
+	    <property name="numTestsPerEvictionRun" value="1" />
+	    <property name="timeBetweenEvictionRunsMillis" value="3000" />
+	    <property name="initialSize" value="5" />
+	    <property name="maxActive" value="10" />
+	    <property name="maxIdle" value="10" />
+	    <property name="minIdle" value="1" />
+	 </bean> -->
+	 
+	<!-- oracleDB -->
+<!--  	<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+	    <property name="url" value="jdbc:oracle:thin:@112.216.54.251:1521:ZST" />
+	    <property name="username" value="ecm40" />
+	    <property name="password" value="ecm40" />
+	    <property name="validationQuery" value="select 1 from dual " />
+	    <property name="testOnBorrow" value="false" />
+	    <property name="testWhileIdle" value="true" />
+	    <property name="numTestsPerEvictionRun" value="1" />
+	    <property name="timeBetweenEvictionRunsMillis" value="3000" />
+	    <property name="initialSize" value="5" />
+	    <property name="maxActive" value="10" />
+	    <property name="maxIdle" value="10" />
+	    <property name="minIdle" value="1" />
+	 </bean> -->
+  <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+    <constructor-arg ref="dataSourceSpied" />
+    <property name="logFormatter">
+      <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+        <property name="loggingType" value="SINGLE_LINE" />
+        <property name="sqlPrefix" value="SQL         :  " />
+      </bean>
+    </property>
+  </bean>
+
+
+  <!-- 3. Mapper scanner -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="com.zenithst.*.mapper, com.zenithst.core.*.mapper" />
+
+  </bean>
+
+  <!-- 2. sqlSessionFactory -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="mapperLocations" value="classpath*:/mapper/postgresql/*Mapper_postgresql.xml" />
+	<!-- <property name="mapperLocations" value="classpath*:/mapper/mariadb/*Mapper_mariadb.xml" /> -->
+	<!-- <property name="mapperLocations" value="classpath*:/mapper/oracle/*Mapper_oracle.xml" /> -->
+    <!-- <property name="mapperLocations"> <list> <value>classpath*:/com/zenithst/archive/mapper/*Mapper*_mariadb.xml</value> <value>classpath*:/mapper/mariadb/*Mapper.xml</value> 
+      </list> </property> -->
+    <property name="dataSource" ref="dataSource" />
+    <property name="typeAliasesPackage" value="com.zenithst.*.vo, com.zenithst.core.*.vo"></property>
+  </bean>
+
+  <!-- 4. sqlSession -->
+  <!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate"> <constructor-arg index="0" ref="sqlSessionFactory" /> </bean> -->
+
+
+  <!-- 5. Transaction -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
+  <!-- 6. Batch -->
+
+</beans>

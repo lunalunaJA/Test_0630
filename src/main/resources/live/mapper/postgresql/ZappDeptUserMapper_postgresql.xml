@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zenithst.core.organ.mapper.ZappDeptUserMapper">
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappDeptUser">
+    <id column="DEPTUSERID" jdbcType="CHAR" property="deptuserid" />
+    <result column="DEPTID" jdbcType="CHAR" property="deptid" />
+    <result column="USERID" jdbcType="CHAR" property="userid" />
+    <result column="USERTYPE" jdbcType="VARCHAR" property="usertype" />
+    <result column="ORIGINYN" jdbcType="CHAR" property="originyn" />
+    <result column="POSITIONID" jdbcType="CHAR" property="positionid" />
+    <result column="DUTYID" jdbcType="CHAR" property="dutyid" />
+    <result column="SECLEVELID" jdbcType="CHAR" property="seclevelid" />
+    <result column="ISSUPERVISOR" jdbcType="CHAR" property="issupervisor" />
+    <result column="ISACTIVE" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.organ.vo.ZappDeptUserExtend" extends="BaseResultMap" >
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappDeptUser">
+    <id column="DEPTUSER_DEPTUSERID" jdbcType="CHAR" property="deptuserid" />
+    <result column="DEPTUSER_DEPTID" jdbcType="CHAR" property="deptid" />
+    <result column="DEPTUSER_USERID" jdbcType="CHAR" property="userid" />
+    <result column="DEPTUSER_USERTYPE" jdbcType="VARCHAR" property="usertype" />
+    <result column="DEPTUSER_ORIGINYN" jdbcType="CHAR" property="originyn" />
+    <result column="DEPTUSER_POSITIONID" jdbcType="CHAR" property="positionid" />
+    <result column="DEPTUSER_DUTYID" jdbcType="CHAR" property="dutyid" />
+    <result column="DEPTUSER_SECLEVELID" jdbcType="CHAR" property="seclevelid" />
+    <result column="DEPTUSER_ISSUPERVISOR" jdbcType="CHAR" property="issupervisor" />
+    <result column="DEPTUSER_ISACTIVE" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.organ.vo.ZappDeptUserExtend" extends="JoinResultMap" >
+    <!-- [ASSOCIATION:has-one:resultMap] 부서  -->
+	<association property="zappDept" 
+				 column="DEPT_DEPTID" 
+				 javaType="com.zenithst.core.organ.vo.ZappDept" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappDeptMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 사용자  -->
+	<association property="zappUser" 
+				 column="USERS_USERID" 
+				 javaType="com.zenithst.core.organ.vo.ZappUser" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappUserMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 직위  -->
+	<association property="zappPosition" 
+				 column="POS_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapPosition"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 직무  -->
+	<association property="zappDuty" 
+				 column="DUTY_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapDuty"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 보안등급  -->
+	<association property="zappSecurity" 
+				 column="SECURE_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapSecurity"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+     DEPTUSERID
+   , DEPTID
+   , USERID
+   , USERTYPE
+   , ORIGINYN
+   , POSITIONID
+   , DUTYID
+   , SECLEVELID
+   , ISSUPERVISOR
+   , ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     DEPTUSER.DEPTUSERID		AS DEPTUSER_DEPTUSERID
+   , DEPTUSER.DEPTID			AS DEPTUSER_DEPTID
+   , DEPTUSER.USERID			AS DEPTUSER_USERID
+   , DEPTUSER.USERTYPE			AS DEPTUSER_USERTYPE
+   , DEPTUSER.ORIGINYN			AS DEPTUSER_ORIGINYN
+   , DEPTUSER.POSITIONID		AS DEPTUSER_POSITIONID
+   , DEPTUSER.DUTYID			AS DEPTUSER_DUTYID
+   , DEPTUSER.SECLEVELID		AS DEPTUSER_SECLEVELID
+   , DEPTUSER.ISSUPERVISOR		AS DEPTUSER_ISSUPERVISOR
+   , DEPTUSER.ISACTIVE			AS DEPTUSER_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     DEPTUSER_DEPTUSERID
+   , DEPTUSER_DEPTID
+   , DEPTUSER_USERID
+   , DEPTUSER_USERTYPE
+   , DEPTUSER_ORIGINYN
+   , DEPTUSER_POSITIONID
+   , DEPTUSER_DUTYID
+   , DEPTUSER_SECLEVELID
+   , DEPTUSER_ISSUPERVISOR
+   , DEPTUSER_ISACTIVE
+  </sql>
+  <sql id="All_Value_List" >
+     #{deptuserid,jdbcType=CHAR}
+   , #{deptid,jdbcType=CHAR}
+   , #{userid,jdbcType=CHAR}
+   , #{usertype,jdbcType=VARCHAR}
+   , #{originyn,jdbcType=CHAR}
+   , #{positionid,jdbcType=CHAR}
+   , #{dutyid,jdbcType=CHAR}
+   , #{seclevelid,jdbcType=CHAR}
+   , #{issupervisor,jdbcType=CHAR}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.deptuserid,jdbcType=CHAR}
+   , #{batch.deptid,jdbcType=CHAR}
+   , #{batch.userid,jdbcType=CHAR}
+   , #{batch.usertype,jdbcType=VARCHAR}
+   , #{batch.originyn,jdbcType=CHAR}
+   , #{batch.positionid,jdbcType=CHAR}
+   , #{batch.dutyid,jdbcType=CHAR}
+   , #{batch.seclevelid,jdbcType=CHAR}
+   , #{batch.issupervisor,jdbcType=CHAR}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ZAPP_DEPTUSER DEPTUSER
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null">
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="JoinResultMapExtend">
+    select <include refid="Join_Column_List_IN" />
+         , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+     from ZAPP_DEPTUSER DEPTUSER
+      inner join ZAPP_USER USERS on USERS.USERID = DEPTUSER.USERID
+      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+      left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+      left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+      left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+     <!-- order by POS.PRIORITY, USERS.EMPNO  -->
+  </select>
+  <select id="selectAllExtendByDynamic" parameterType="map" resultMap="JoinResultMapExtend">
+    select <include refid="Join_Column_List_IN" />
+         , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+     from ZAPP_DEPTUSER DEPTUSER
+      inner join ZAPP_USER USERS on USERS.USERID = DEPTUSER.USERID
+      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+      left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+      left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+      left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+	where 1 = 1
+	
+    <if test="deptuser != null">
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Deptuser" />
+    </if>
+    <if test="dept != null">
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Dept" />
+    </if>
+    <if test="user != null">
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_User" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+     <!-- order by POS.PRIORITY, USERS.EMPNO  -->
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ZAPP_DEPTUSER 
+    where DEPTUSERID = #{deptuserid,jdbcType=CHAR}
+  </select>
+  <select id="selectExtendByPrimaryKey" parameterType="java.lang.String" resultMap="JoinResultMapExtend">
+    select 
+    	  <include refid="Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+    from ZAPP_DEPTUSER DEPTUSER
+     inner join ZAPP_USER USERS on USERS.USERID = DEPTUSER.USERID
+     inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+     left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+     left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+     left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+    where DEPTUSER.DEPTUSERID = #{deptuserid,jdbcType=CHAR}
+  </select>  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ZAPP_DEPTUSER
+    where DEPTUSERID = #{deptuserid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic">
+    delete from ZAPP_DEPTUSER DEPTUSER
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <delete id="deleteByCompany" parameterType="java.lang.String">
+    delete from ZAPP_DEPTUSER
+    where USERID in (select USERID 
+    				   from zapp_user 
+    				  where companyid = #{companyid,jdbcType=CHAR}) 
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappDeptUser">
+    insert into ZAPP_DEPTUSER  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappDeptUser">
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into ZAPP_DEPTUSER (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer">
+    select count(*) from ZAPP_DEPTUSER DEPTUSER
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map">
+    update ZAPP_DEPTUSER DEPTUSER
+    <set>
+      <if test="vo.deptuserid != null">
+        DEPTUSERID = #{vo.deptuserid,jdbcType=CHAR},
+      </if>
+      <if test="vo.deptid != null">
+        DEPTID = #{vo.deptid,jdbcType=CHAR},
+      </if>
+      <if test="vo.userid != null">
+        USERID = #{vo.userid,jdbcType=CHAR},
+      </if>
+      <if test="vo.usertype != null">
+        USERTYPE = #{vo.usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.originyn != null">
+        ORIGINYN = #{vo.originyn,jdbcType=CHAR},
+      </if>
+      <if test="vo.positionid != null">
+        POSITIONID = #{vo.positionid,jdbcType=CHAR},
+      </if>
+      <if test="vo.dutyid != null">
+        DUTYID = #{vo.dutyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.seclevelid != null">
+        SECLEVELID = #{vo.seclevelid,jdbcType=CHAR},
+      </if>
+       <if test="vo.issupervisor != null">
+        ISSUPERVISOR = #{vo.issupervisor,jdbcType=CHAR},
+      </if>
+      <if test="vo.isactive != null">
+        ISACTIVE = #{vo.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappDeptUser">
+    update ZAPP_DEPTUSER
+    <set>
+      <if test="deptid != null">
+        DEPTID = #{deptid,jdbcType=CHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=CHAR},
+      </if>
+      <if test="usertype != null">
+        USERTYPE = #{usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="originyn != null">
+        ORIGINYN = #{originyn,jdbcType=CHAR},
+      </if>
+      <if test="positionid != null">
+        POSITIONID = #{positionid,jdbcType=CHAR},
+      </if>
+      <if test="dutyid != null">
+        DUTYID = #{dutyid,jdbcType=CHAR},
+      </if>
+      <if test="seclevelid != null">
+        SECLEVELID = #{seclevelid,jdbcType=CHAR},
+      </if>
+       <if test="issupervisor != null">
+        ISSUPERVISOR = #{issupervisor,jdbcType=CHAR},
+      </if>
+      <if test="isactive != null">
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where DEPTUSERID = #{deptuserid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from dual 
+     where exists (select 1
+    		         from ZAPP_DEPTUSER DEPTUSER
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

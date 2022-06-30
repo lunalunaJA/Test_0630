@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappSharedObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappSharedObject" >
+    <id column="shareobjid" property="shareobjid" jdbcType="CHAR" />
+    <result column="sobjid" property="sobjid" jdbcType="VARCHAR" />
+    <result column="sobjtype" property="sobjtype" jdbcType="VARCHAR" />
+    <result column="sharerid" property="sharerid" jdbcType="VARCHAR" />
+    <result column="readerid" property="readerid" jdbcType="VARCHAR" />
+    <result column="readertype" property="readertype" jdbcType="VARCHAR" />
+    <result column="sharetime" property="sharetime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.content.vo.ZappSharedObjectExtend" extends="BaseResultMap" >
+  	<result column="sharername" property="sharername" jdbcType="VARCHAR" />
+    <result column="readername" property="readername" jdbcType="VARCHAR" />
+  </resultMap>  
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappSharedObject" >
+    <id column="SHAREOBJ_shareobjid" property="shareobjid" jdbcType="CHAR" />
+    <result column="SHAREOBJ_sobjid" property="sobjid" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_sobjtype" property="sobjtype" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_sharerid" property="sharerid" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_readerid" property="readerid" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_readertype" property="readertype" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_sharetime" property="sharetime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.content.vo.ZappSharedObjectExtend" extends="JoinResultMap" >
+  
+    <result column="SHAREOBJ_sharername" property="sharername" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_readername" property="readername" jdbcType="VARCHAR" />
+    
+	<association property="zappBundle" 
+				 column="BUNDLE_bundleid" 
+				 javaType="com.zenithst.core.content.vo.ZappBundle" 
+				 resultMap="com.zenithst.core.content.mapper.ZappBundleMapper.JoinResultMap"/>
+				 
+	<association property="zappFile" 
+				 column="ZA_MFILE_mfileid" 
+				 javaType="com.zenithst.core.content.vo.ZappFile" 
+				 resultMap="com.zenithst.core.content.mapper.ZappFileMapper.JoinResultMap_All"/>  
+  </resultMap>
+  <resultMap id="JoinResultMapExtendOnly" type="com.zenithst.core.content.vo.ZappSharedObjectExtend" extends="JoinResultMap" >
+    <result column="SHAREOBJ_sharername" property="sharername" jdbcType="VARCHAR" />
+    <result column="SHAREOBJ_readername" property="readername" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     shareobjid
+   , sobjid
+   , sobjtype
+   , sharerid
+   , readerid
+   , readertype
+   , sharetime
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     SHAREOBJ.shareobjid	AS SHAREOBJ_shareobjid
+   , SHAREOBJ.sobjid			AS SHAREOBJ_sobjid
+   , SHAREOBJ.sobjtype		AS SHAREOBJ_sobjtype
+   , SHAREOBJ.sharerid		AS SHAREOBJ_sharerid
+   , SHAREOBJ.readerid		AS SHAREOBJ_readerid
+   , SHAREOBJ.readertype		AS SHAREOBJ_readertype
+   , SHAREOBJ.sharetime		AS SHAREOBJ_sharetime
+  </sql>
+  <sql id="Join_Column_List_IN_" >
+     SHAREOBJ_shareobjid
+   , SHAREOBJ_sobjid
+   , SHAREOBJ_sobjtype
+   , SHAREOBJ_sharerid
+   , SHAREOBJ_readerid
+   , SHAREOBJ_readertype
+   , SHAREOBJ_sharetime
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     SHAREOBJ_shareobjid
+   , SHAREOBJ_sobjid
+   , SHAREOBJ_sobjtype
+   , SHAREOBJ_sharerid
+   , SHAREOBJ_readerid
+   , SHAREOBJ_readertype
+   , SHAREOBJ_sharetime
+   , get_name_by_deptuserid(SHAREOBJ_sharerid) as SHAREOBJ_sharername
+   , (case SHAREOBJ_readertype
+   		when '01' then get_name_by_deptuserid(SHAREOBJ_readerid) 
+   		when '02' then get_name_by_deptid(SHAREOBJ_readerid)
+   		when '03' then get_name_by_groupid(SHAREOBJ_readerid)
+   		else ''
+   	  end) as SHAREOBJ_readername
+  </sql>
+  <sql id="All_Value_List" >
+     #{shareobjid,jdbcType=CHAR}
+   , #{sobjid,jdbcType=VARCHAR}
+   , #{sobjtype,jdbcType=VARCHAR}
+   , #{sharerid,jdbcType=VARCHAR}
+   , #{readerid,jdbcType=VARCHAR}
+   , #{readertype,jdbcType=VARCHAR}
+   , #{sharetime,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.shareobjid,jdbcType=CHAR}
+   , #{batch.sobjid,jdbcType=VARCHAR}
+   , #{batch.sobjtype,jdbcType=VARCHAR}
+   , #{batch.sharerid,jdbcType=VARCHAR}
+   , #{batch.readerid,jdbcType=VARCHAR}
+   , #{batch.readertype,jdbcType=VARCHAR}
+   , #{batch.sharetime,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Dynamic_Where_Clause_Manual">
+      <if test="share.objHasconds eq 'Y'.toString()" >
+      	and readerid in (
+		      	  	<if test="auth.sessOnlyDeptUsers != null" >
+				  		<foreach collection="auth.sessOnlyDeptUsers" item="dept" open="" separator=" union all " close="">
+				  			select #{dept.deptid} as OBJID
+				  			  from dual
+				  		</foreach>
+				  	</if>
+				  	<if test="auth.sessOnlyGroupUsers != null" >
+				  		<if test="auth.sessOnlyDeptUsers != null" >
+				  			<if test="auth.sessOnlyDeptUsers.size > 0 and auth.sessOnlyGroupUsers.size > 0" >
+				  			union all
+				  			</if>
+				  		</if>
+				  		<foreach collection="auth.sessOnlyGroupUsers" item="group" open="" separator=" union all " close="">
+				  			select #{group.groupid} as OBJID
+				  			  from dual
+				  		</foreach>
+	  				</if>
+				  	<if test="auth.sessOnlyDeptUser != null" >
+				  		<if test="auth.sessOnlyDeptUsers != null or auth.sessOnlyGroupUsers != null" >
+				  			<if test="auth.sessOnlyDeptUsers.size > 0 or auth.sessOnlyGroupUsers.size > 0" >
+				  			union all
+				  			</if>
+				  		</if>
+						select #{auth.sessOnlyDeptUser.deptuserid} as OBJID
+						 from dual
+				  	</if>
+					)
+      </if>
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_sharedobject SHAREOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+	select <include refid="Join_Column_List_OUT" />
+	  from (
+		    select
+		    <include refid="Join_Column_List_IN" />
+		    from zapp_sharedobject SHAREOBJ
+		    <if test="_parameter != null" >
+		      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+		    </if>
+		    <if test="dynamic.orderByClause != null" >
+		      order by ${dynamic.orderByClause}
+		    </if>
+		   ) ILST
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_sharedobject
+    where shareobjid = #{shareobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_sharedobject
+    where shareobjid = #{shareobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_sharedobject SHAREOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappSharedObject" >
+    insert into zapp_sharedobject  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappSharedObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_sharedobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_sharedobject SHAREOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_sharedobject SHAREOBJ
+    <set >
+      <if test="record.shareobjid != null" >
+        shareobjid = #{record.shareobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.sobjid != null" >
+        sobjid = #{record.sobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sobjtype != null" >
+        sobjtype = #{record.sobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sharerid != null" >
+        sharerid = #{record.sharerid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.readerid != null" >
+        readerid = #{record.readerid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.readertype != null" >
+        readertype = #{record.readertype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sharetime != null" >
+        sharetime = #{record.sharetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappSharedObject" >
+    update zapp_sharedobject
+    <set >
+      <if test="sobjid != null" >
+        sobjid = #{sobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="sobjtype != null" >
+        sobjtype = #{sobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="sharerid != null" >
+        sharerid = #{sharerid,jdbcType=VARCHAR},
+      </if>
+      <if test="readerid != null" >
+        readerid = #{readerid,jdbcType=VARCHAR},
+      </if>
+      <if test="readertype != null" >
+        readertype = #{readertype,jdbcType=VARCHAR},
+      </if>
+      <if test="sharetime != null" >
+        sharetime = #{sharetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where shareobjid = #{shareobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_sharedobject SHAREOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

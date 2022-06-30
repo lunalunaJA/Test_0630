@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappMarkedObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappMarkedObject" >
+    <id column="markedobjid" property="markedobjid" jdbcType="CHAR" />
+    <result column="mobjid" property="mobjid" jdbcType="CHAR" />
+    <result column="mobjtype" property="mobjtype" jdbcType="CHAR" />
+    <result column="markerid" property="markerid" jdbcType="CHAR" />
+    <result column="marktime" property="marktime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappMarkedObject" >
+    <id column="MARKOBJ_markedobjid" property="markedobjid" jdbcType="CHAR" />
+    <result column="MARKOBJ_mobjid" property="mobjid" jdbcType="CHAR" />
+    <result column="MARKOBJ_mobjtype" property="mobjtype" jdbcType="CHAR" />
+    <result column="MARKOBJ_markerid" property="markerid" jdbcType="CHAR" />
+    <result column="MARKOBJ_marktime" property="marktime" jdbcType="VARCHAR" />
+  </resultMap> 
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.content.vo.ZappMarkedObjectExtend" extends="JoinResultMap">
+    <result column="MARKOBJ_lockername" property="lockername" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+      markedobjid
+    , mobjid
+    , mobjtype
+    , markerid
+    , marktime
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     MARKOBJ.markedobjid		AS MARKOBJ_markedobjid
+   , MARKOBJ.mobjid			AS MARKOBJ_mobjid
+   , MARKOBJ.mobjtype		AS MARKOBJ_mobjtype
+   , MARKOBJ.markerid		AS MARKOBJ_markerid
+   , MARKOBJ.marktime		AS MARKOBJ_marktime
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     MARKOBJ_markedobjid
+   , MARKOBJ_mobjid
+   , MARKOBJ_mobjtype
+   , MARKOBJ_markerid
+   , MARKOBJ_marktime
+  </sql>  
+  <sql id="All_Value_List" >
+     #{markedobjid,jdbcType=CHAR}
+   , #{mobjid,jdbcType=CHAR}
+   , #{mobjtype,jdbcType=CHAR}
+   , #{markerid,jdbcType=CHAR}
+   , #{marktime,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.markedobjid,jdbcType=CHAR}
+   , #{batch.mobjid,jdbcType=CHAR}
+   , #{batch.mobjtype,jdbcType=CHAR}
+   , #{batch.markerid,jdbcType=CHAR}
+   , #{batch.marktime,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_markedobject MARKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	<include refid="Join_Column_List_OUT" />
+      , get_name_by_deptuserid(MARKOBJ_markerid) AS MARKOBJ_lockername
+     from (
+		    select
+		    	<include refid="Join_Column_List_IN" />
+		     from zapp_markedobject MARKOBJ
+		    <if test="_parameter != null" >
+		      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+		    </if>
+		  ) ILST
+
+      order by MARKOBJ_marktime desc
+  </select>  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_markedobject
+    where markedobjid = #{markedobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_markedobject
+    where markedobjid = #{markedobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_markedobject MARKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappMarkedObject" >
+    insert into zapp_markedobject  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappMarkedObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_markedobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="list" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_markedobject MARKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_markedobject MARKOBJ
+    <set >
+      <if test="record.markedobjid != null" >
+        markedobjid = #{record.markedobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.mobjid != null" >
+        mobjid = #{record.mobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.mobjtype != null" >
+        mobjtype = #{record.mobjtype,jdbcType=CHAR},
+      </if>
+      <if test="record.markerid != null" >
+        markerid = #{record.markerid,jdbcType=CHAR},
+      </if>
+      <if test="record.marktime != null" >
+        marktime = #{record.marktime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappMarkedObject" >
+    update zapp_markedobject
+    <set >
+      <if test="mobjid != null" >
+        mobjid = #{mobjid,jdbcType=CHAR},
+      </if>
+      <if test="mobjtype != null" >
+        mobjtype = #{record.mobjtype,jdbcType=CHAR},
+      </if>  
+      <if test="markerid != null" >
+        markerid = #{markerid,jdbcType=CHAR},
+      </if>
+      <if test="marktime != null" >
+        marktime = #{marktime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where markedobjid = #{markedobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from dual 
+     where exists (select 1
+    		         from zapp_markedobject MARKOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

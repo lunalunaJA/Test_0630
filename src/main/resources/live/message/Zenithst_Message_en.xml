@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>English</comment>
+	
+	<!-- 
+		[Common]
+	 -->
+	
+	<!-- Missing (IN) -->
+	<entry key="ERR_MIS_INVAL">Info. to enter is missing</entry>
+	<entry key="ERR_MIS_REGVAL">Info. to register is missing</entry>
+	<entry key="ERR_MIS_QRYVAL">Info. to view is missing</entry>
+	<entry key="ERR_MIS_EDTVAL">Info. to edit is missing</entry>
+	<entry key="ERR_MIS_DELVAL">Info. to delete is missing</entry>
+	<entry key="ERR_MIS_AUTH">Authentication info. is missing</entry>
+		
+	<entry key="ERR_MIS_ID">ID is missing</entry>
+    <entry key="ERR_MIS_TASKID">Task ID is missing</entry>
+	<entry key="ERR_MIS_NAME">Name is missing</entry>
+	<entry key="ERR_MIS_ABBR">Abbreviation is missing</entry>
+	<entry key="ERR_MIS_UPID">Upper ID is missing</entry>
+	<entry key="ERR_MIS_CODE">Code is missing</entry>
+	<entry key="ERR_MIS_TYPE">Type is missing</entry>
+	<entry key="ERR_MIS_ORDER">Order is missing</entry>
+    <entry key="ERR_MIS_TARID">Target ID is missing</entry>
+    <entry key="ERR_MIS_TARTYPE">Target type is missing</entry>
+    <entry key="ERR_MIS_SDATE">Start date is missing</entry>
+    <entry key="ERR_MIS_EDATE">End date is missing</entry>
+    <entry key="ERR_MIS_VIEWTYPE">View type is missing</entry>
+	<entry key="ERR_MIS_RETURNREASON">Return reason is missing</entry>
+				
+	<!-- Error -->
+	<entry key="ERR_C">An error occurred during registration</entry>
+	<entry key="ERR_R">An error occurred during inquiry</entry>
+	<entry key="ERR_E">An error occurred during edit</entry>
+	<entry key="ERR_D">An error occurred during deletion</entry>
+	<entry key="ERR_DUP">Info. is already exists</entry>
+	<entry key="ERR_DUP_CODE">Code is already exists</entry>
+	<entry key="ERR_DUP_NAME">Name is already exists</entry>
+	<entry key="ERR_DUP_UPID">Upper ID is already exists</entry>
+	<entry key="ERR_DUP_ORDER">Order is already exists</entry>
+	<entry key="ERR_DUP_TASK">Task is already exists</entry>
+	<entry key="ERR_ALREADY_USED">This is already in use</entry>
+	<entry key="ERR_STATE">State does not match</entry>
+	<entry key="ERR_E_ORDER">An error occurred while editing the sort order</entry>
+	<entry key="ERR_R_ORDER">An error occurred while querying the sort order</entry>
+	<entry key="ERR_ACTIVE">No applicable preference for use entered</entry>
+	<entry key="ERR_NIDENT_TYPE">Type does not match</entry>
+	<entry key="ERR_NIDENT_TYPE">Code does not match</entry>
+	<entry key="ERR_NIDENT_DATEFORMAT">Date format does not match</entry>
+	<entry key="ERR_FTR">An error occurred during FTR</entry>
+	
+	<!--
+		[Organization, Authentication]
+	-->
+	<!-- Authentication -->
+	<entry key="ERR_MIS_JWT">JWT is missing</entry>
+	<entry key="ERR_JWT">There is an error in the JWT info.</entry>
+	<entry key="ERR_CONNECT">An error occurred while connecting</entry>
+	<entry key="ERR_DISCONNECT">An error occurred while disconnecting</entry>
+
+	<!-- Company -->
+	<entry key="ERR_MIS_COMPANYID">Company ID is missing</entry>
+	<entry key="ERR_NEXIST_COMPANY">Company info. does not exist</entry>	
+	
+	<!-- Department -->
+	<entry key="ERR_MIS_DEPTID">Dept. ID is missing</entry>
+	<entry key="ERR_C_DEPT">An error occurred during department registration</entry>
+	<entry key="ERR_R_DEPT">An error occurred during department inquiry</entry>
+	<entry key="ERR_E_DEPT">An error occurred during department edits</entry>
+	<entry key="ERR_D_DEPT">An error occurred during department deletion</entry>
+	<entry key="ERR_NEXIST_DEPT">Dept. info. does not exist</entry>	
+
+	<!-- User -->
+	<entry key="ERR_MIS_USERID">User ID is missing</entry>
+	<entry key="ERR_MIS_PWD">Password is missing</entry>
+	<entry key="ERR_MIS_LOGINID">Login ID is missing</entry>
+	<entry key="ERR_MIS_UTYPE">User type is missing</entry>
+	<entry key="ERR_MIS_ORGJOB">Declaration of whether or not you are in a dual position is missing</entry>
+	<entry key="ERR_MIS_POS">Position info. is missing</entry>
+	<entry key="ERR_MIS_DUTY">Duty info. is missing</entry>
+	<entry key="ERR_MIS_SECLVL">Security level info. is missing</entry>
+	<entry key="ERR_NEXIST_USER">User info. does not exist</entry>
+
+	<entry key="ERR_C_USER">An error occurred during user registration</entry>
+	<entry key="ERR_R_USER">An error occurred during user inquiry</entry>
+	<entry key="ERR_E_USER">An error occurred during user edits</entry>
+	<entry key="ERR_D_USER">An error occurred during user deletion</entry>
+	<entry key="ERR_NIDENT_PWD">Password does not match</entry>
+
+	<!-- Dept. User -->
+	<entry key="ERR_NEXIST_DEPTUSER">Dept. user info. does not exist</entry>	
+	<entry key="ERR_EXIST_DEPTUSER">Dept. user info. exist</entry>	
+	<entry key="ERR_C_DEPTUSER">An error occurred during dept. user registration</entry>
+	<entry key="ERR_R_DEPTUSER">An error occurred during dept. user inquiry</entry>
+	<entry key="ERR_E_DEPTUSER">An error occurred during dept. user edits</entry>
+	<entry key="ERR_D_DEPTUSER">An error occurred during dept. user deletion</entry>
+	<entry key="ERR_DUP_ORGJOB">Original job is duplicated</entry>
+	
+	<!-- Group -->
+	<entry key="ERR_MIS_GROUPID">Group ID is missing</entry>
+	<entry key="ERR_C_GROUP">An error occurred during group registration</entry>
+	<entry key="ERR_R_GROUP">An error occurred during group inquiry</entry>
+	<entry key="ERR_E_GROUP">An error occurred during group edits</entry>
+	<entry key="ERR_D_GROUP">An error occurred during group deletion</entry>
+	<entry key="ERR_NEXIST_GROUP">Group info. does not exist</entry>	
+	
+	<!-- Group User -->
+	<entry key="ERR_C_GROUPUSER">An error occurred during group user registration</entry>
+	<entry key="ERR_R_GROUPUSER">An error occurred during group user inquiry</entry>
+	<entry key="ERR_E_GROUPUSER">An error occurred during group user edits</entry>
+	<entry key="ERR_D_GROUPUSER">An error occurred during group user deletion</entry>
+	<entry key="ERR_NEXIST_GROUPUSER">Group user info. does not exist</entry>	
+	
+	<!--
+		[System]
+	-->
+
+	<!-- Preferences -->
+	<entry key="ERR_C_ENV">An error occurred during preference registration</entry>
+	<entry key="ERR_R_ENV">An error occurred during preference inquiry</entry>
+	<entry key="ERR_E_ENV">An error occurred during preference edits</entry>
+	<entry key="ERR_D_ENV">An error occurred during preference deletion</entry>
+	<entry key="ERR_NEXIST_ENV">Preference info. does not exist</entry>
+	
+	<!-- Code -->
+	<entry key="ERR_C_CODE">An error occurred during code registration</entry>
+	<entry key="ERR_R_CODE">An error occurred during code inquiry</entry>
+	<entry key="ERR_E_CODE">An error occurred during code edits</entry>
+	<entry key="ERR_D_CODE">An error occurred during code deletion</entry>
+	<entry key="ERR_NEXIST_CODE">Code info. does not exist</entry>	
+	
+
+	<!--
+		[Log]
+	-->
+	<!-- Log -->
+	<entry key="ERR_C_LOG">An error occurred during log registration</entry>
+	<entry key="ERR_R_LOG">An error occurred during log inquiry</entry>
+	<entry key="ERR_E_LOG">An error occurred during log edits</entry>
+	<entry key="ERR_D_LOG">An error occurred during log deletion</entry>
+	<entry key="ERR_MIS_LOG">Log info. does not exist</entry>
+
+	<!--
+		[Content]
+	-->
+	<entry key="ERR_MIS_CONTENTID">Content ID is missing</entry>
+	<entry key="ERR_MIS_CONTENTTYPE">Content type is missing</entry>
+	<entry key="ERR_MIS_CONTENTTITLE">Content title is missing</entry>
+	<entry key="ERR_MIS_CONTENTNO">Content no. is missing</entry>
+	<entry key="ERR_C_CONTENT">An error occurred during content registration</entry>
+	<entry key="ERR_R_CONTENT">An error occurred during content inquiry</entry>
+	<entry key="ERR_E_CONTENT">An error occurred during content edits</entry>
+	<entry key="ERR_D_CONTENT">An error occurred during content deletion</entry>
+	<entry key="ERR_RL_CONTENT">An error occurred during content moving</entry>
+	<entry key="ERR_RP_CONTENT">An error occurred during content copying</entry>
+	<entry key="ERR_LOCK_CONTENT">An error occurred during content locking</entry>
+	<!-- Bundle -->
+	<entry key="ERR_MIS_BUNDLEID">Bundle ID is missing</entry>
+	<entry key="ERR_C_BUNDLE">An error occurred during bundle registration</entry>
+	<entry key="ERR_R_BUNDLE">An error occurred during bundle inquiry</entry>
+	<entry key="ERR_E_BUNDLE">An error occurred during bundle edits</entry>
+	<entry key="ERR_D_BUNDLE">An error occurred during bundle deletion</entry>
+	<entry key="ERR_BUNDLE_STATE">This state does not meet the requirement for this process</entry>
+	<entry key="ERR_NEXIST_BUNDLE">Bundle info. does not exist</entry>	
+	<entry key="ERR_C_BUNDLEEXT">An error occurred during sub-bundle registration</entry>
+	<entry key="ERR_R_BUNDLEEXT">An error occurred during sub-bundle inquiry</entry>
+	<entry key="ERR_E_BUNDLEEXT">An error occurred during sub-bundle edits</entry>
+	<entry key="ERR_D_BUNDLEEXT">An error occurred during sub-bundle deletion</entry>
+	<entry key="ERR_NEXIST_BUNDLEEXT">Sub-bundle info. does not exist</entry>	
+	
+	<!-- File -->
+	<entry key="ERR_MIS_FILEID">File ID is missing</entry>	
+	<entry key="ERR_MIS_WFILENAME">Entire pathway for file and name is missing</entry>	
+	<entry key="ERR_MIS_FILENAME">File name is missing</entry>	
+	<entry key="ERR_C_FILE">An error occurred during file registration</entry>
+	<entry key="ERR_R_FILE">An error occurred during file inquiry</entry>
+	<entry key="ERR_E_FILE">An error occurred during file edits</entry>
+	<entry key="ERR_D_FILE">An error occurred during file deletion</entry>
+	<entry key="ERR_NEXIST_FILE">File info. does not exist</entry>	
+	<entry key="ERR_D_RFILE">An error occurred while deleting the actual file</entry>	
+	<entry key="ERR_MIS_FILEEXTN">File extension is missing</entry>	
+	<entry key="ERR_C_FILEEXTN">An error occurred during file extension registration</entry>
+
+	<entry key="ERR_MIS_FILEEXT">Sub-file is missing</entry>	
+	<entry key="ERR_C_FILEEXT">An error occurred during sub-file registration</entry>
+	<entry key="ERR_R_FILEEXT">An error occurred during sub-file inquiry</entry>
+	<entry key="ERR_E_FILEEXT">An error occurred during sub-file edits</entry>
+	<entry key="ERR_D_FILEEXT">An error occurred during sub-file deletion</entry>
+	<entry key="ERR_NEXIST_FILEEXT">Sub-file info. does not exist</entry>	
+	<entry key="ERR_R_FILEPATH">An error occurred during the file path lookup</entry>
+
+	<!-- Version -->
+	<entry key="ERR_MIS_VERSIONID">Version ID is missing</entry>	
+	<entry key="ERR_C_VERSION">An error occurred during version registration</entry>
+	<entry key="ERR_R_VERSION">An error occurred during version inquiry</entry>
+	<entry key="ERR_E_VERSION">An error occurred during version edits</entry>
+	<entry key="ERR_D_VERSION">An error occurred during version deletion</entry>
+	
+	<!-- Link -->
+	<entry key="ERR_C_LINK">An error occurred during linked info. registration</entry>
+	<entry key="ERR_R_LINK">An error occurred during linked info. inquiry</entry>
+	<entry key="ERR_E_LINK">An error occurred during linked info. edits</entry>
+	<entry key="ERR_D_LINK">An error occurred during linked info. deletion</entry>
+	<entry key="ERR_MIS_LINK">Linked info. is missing</entry>		
+	
+	<!-- Share -->
+	<entry key="ERR_MIS_SHARE">Shared info. is missing</entry>	
+	<entry key="ERR_C_SHARE">An error occurred during shared info. registration</entry>
+	<entry key="ERR_R_SHARE">An error occurred during shared info. inquiry</entry>
+	<entry key="ERR_E_SHARE">An error occurred during shared info. edits</entry>
+	<entry key="ERR_D_SHARE">An error occurred during shared info. deletion</entry>
+	<entry key="ERR_DUP_SHARE">Shared info. is duplicated</entry>	 
+		
+	<!-- Lock -->
+	<entry key="ERR_MIS_RTIME">Unlock time is missing</entry>	
+	<entry key="ERR_MIS_REASON">Reason for lock is missing</entry>	
+	<entry key="ERR_C_LOCK">An error occurred during locked info. registration</entry>
+	<entry key="ERR_R_LOCK">An error occurred during locked info. inquiry</entry>
+	<entry key="ERR_E_LOCK">An error occurred during locked info. edits</entry>
+	<entry key="ERR_D_LOCK">An error occurred during locked info. deletion</entry>
+	<entry key="ERR_C_LOCKOBJ">An error occurred during locked content info. registration</entry>
+	<entry key="ERR_R_LOCKOBJ">An error occurred during locked content info. inquiry</entry>
+	<entry key="ERR_E_LOCKOBJ">An error occurred during locked content info. edits</entry>
+	<entry key="ERR_D_LOCKOBJ">An error occurred during locked content info. deletion</entry>
+	<entry key="ERR_IDENTICAL_LOCKER">User of lock do not match</entry>
+
+	<!-- Mark -->
+	<entry key="ERR_MIS_MARK">Marked info. is missing</entry>	
+	<entry key="ERR_C_MARK">An error occurred during marked info. registration</entry>
+	<entry key="ERR_R_MARK">An error occurred during marked info. inquiry</entry>
+	<entry key="ERR_E_MARK">An error occurred during marked info. edits</entry>
+	<entry key="ERR_D_MARK">An error occurred during marked info. deletion</entry>
+	<entry key="ERR_NEXIST_MARK">Marked info. does not exist</entry>	
+	<entry key="ERR_C_MARKOBJ">An error occurred during marked content info. registration</entry>
+	<entry key="ERR_R_MARKOBJ">An error occurred during marked content info. inquiry</entry>
+	<entry key="ERR_E_MARKOBJ">An error occurred during marked content info. edits</entry>
+	<entry key="ERR_D_MARKOBJ">An error occurred during marked content info. deletion</entry>
+	<entry key="ERR_ALREADY_MARK">This is already marked</entry>
+
+	<!-- Temporary -->
+	<entry key="ERR_C_TEMP">An error occurred during temp. info. registration</entry>
+	<entry key="ERR_R_TEMP">An error occurred during temp. info. inquiry</entry>
+	<entry key="ERR_E_TEMP">An error occurred during temp. info. edits</entry>
+	<entry key="ERR_D_TEMP">An error occurred during temp. info. deletion</entry>
+	<entry key="ERR_MIS_TEMP">Temp. info. is missing</entry>
+	<entry key="ERR_NEXIST_TEMP">Temp. info. does not exist</entry>
+	
+	<!-- Keyword -->
+	<entry key="ERR_C_KEYWORD">An error occurred during keyword registration</entry>
+	<entry key="ERR_R_KEYWORD">An error occurred during keyword inquiry</entry>
+	<entry key="ERR_E_KEYWORD">An error occurred during keyword edits</entry>
+	<entry key="ERR_D_KEYWORD">An error occurred during keyword deletion</entry>
+	<entry key="ERR_MIS_KEYWORD">Keyword is missing</entry>		
+	<entry key="ERR_C_KEYWORDOBJ">An error occurred during content-keyword registration</entry>
+	<entry key="ERR_R_KEYWORDOBJ">An error occurred during content-keyword inquiry</entry>
+	<entry key="ERR_E_KEYWORDOBJ">An error occurred during content-keyword edits</entry>
+	<entry key="ERR_D_KEYWORDOBJ">An error occurred during content-keyword deletion</entry>
+	<entry key="ERR_MIS_KEYWORDOBJ">Content-keyword info. is missing</entry>	
+	
+	<!-- Access control (AC) info. (Common) -->
+	<entry key="ERR_NO_ACL">You do not have permission to process</entry>
+	
+	<!-- Access control (AC) info. (Classification) -->
+	<entry key="ERR_C_CLASSACL">An error occurred during classification AC info. registration</entry>
+	<entry key="ERR_R_CLASSACL">An error occurred during classification AC info. inquiry</entry>
+	<entry key="ERR_E_CLASSACL">An error occurred during classification AC info. edits</entry>
+	<entry key="ERR_D_CLASSACL">An error occurred during classification AC info. deletion</entry>
+	<entry key="ERR_NEXIST_CLASSACL">Classification AC info. does not exist</entry>		
+    <entry key="ERR_MIS_CLASSACL">Classification AC info. is missing</entry>
+	
+	<!-- Access control (AC) info. (Content) -->
+	<entry key="ERR_C_CONTENTACL">An error occurred during content AC info. registration</entry>
+	<entry key="ERR_R_CONTENTACL">An error occurred during content AC info. inquiry</entry>
+	<entry key="ERR_E_CONTENTACL">An error occurred during content AC info. edits</entry>
+	<entry key="ERR_D_CONTENTACL">An error occurred during content AC info. deletion</entry>
+	<entry key="ERR_NEXIST_CONTENTACL">Content AC info. does not exist</entry>	
+    <entry key="ERR_MIS_CONTENTACL">Content AC info. is missing</entry>
+	
+	<!-- Approval -->
+	<entry key="ERR_C_APPROVAL">An error occurred during approval info. registration</entry>
+	<entry key="ERR_R_APPROVAL">An error occurred during approval info. inquiry</entry>
+	<entry key="ERR_E_APPROVAL">An error occurred during approval info. edits</entry>
+	<entry key="ERR_D_APPROVAL">An error occurred during approval info. deletion</entry>
+	<entry key="ERR_MIS_APPROVAL">Info. for approval is missing</entry>	
+			
+	<!-- Classification -->
+	<entry key="ERR_C_CLASS">An error occurred during classification info. registration</entry>
+	<entry key="ERR_R_CLASS">An error occurred during classification info. inquiry</entry>
+	<entry key="ERR_E_CLASS">An error occurred during classification info. edits</entry>
+	<entry key="ERR_D_CLASS">An error occurred during classification info. deletion</entry>
+	<entry key="ERR_NEXIST_CLASS">Classification info. does not exist</entry>		
+	<entry key="ERR_IDENTICAL_CLASS">Classification info. is identical</entry>
+	<entry key="ERR_R_CLASSPRIORITY">An error occurred during classification priority inquiry</entry>
+	<entry key="ERR_MIS_CLASS">Classification info. is missing</entry>
+	<entry key="ERR_MIS_CLASSNAME">Classification name is missing</entry>
+	<entry key="ERR_MIS_CLASSNTYPE">Classification type is missing</entry>
+	<entry key="ERR_MIS_CLASSUPID">Up classification id is missing</entry>
+	<entry key="ERR_C_ADDCLASS">An error occurred during sub-classification info. registration</entry>
+	<entry key="ERR_R_ADDCLASS">An error occurred during sub-classification info. inquiry</entry>
+	<entry key="ERR_E_ADDCLASS">An error occurred during sub-classification info. edits</entry>
+	<entry key="ERR_D_ADDCLASS">An error occurred during sub-classification info. deletion</entry>	
+	<entry key="ERR_C_CLASSOBJ">An error occurred during classified content info. registration</entry>
+	<entry key="ERR_R_CLASSOBJ">An error occurred during classified content info. inquiry</entry>
+	<entry key="ERR_E_CLASSOBJ">An error occurred during classified content info. edits</entry>
+	<entry key="ERR_D_CLASSOBJ">An error occurred during classified content info. deletion</entry>
+	
+	<!-- Retention period -->
+	<entry key="ERR_C_EXPERIOD">An error occurred during retention period info. registration</entry>
+	<entry key="ERR_R_EXPERIOD">An error occurred during retention period info. inquiry</entry>
+	<entry key="ERR_E_EXPERIOD">An error occurred during retention period info. edits</entry>
+	<entry key="ERR_D_EXPERIOD">An error occurred during retention period info. deletion</entry>
+	<entry key="ERR_NEXIST_EXPERIOD">Retention period info. does not exist</entry>	
+	<entry key="ERR_MIS_EXPERIOD">Retention period info. is missing</entry>	
+	<entry key="ERR_IDENTICAL_EXPERIOD">The retention period is the same</entry>
+
+		
+	<!-- Workflow -->
+	<entry key="ERR_C_WFOBJ">An error occurred during approver-content info. registration</entry>
+	<entry key="ERR_R_WFOBJ">An error occurred during approver-content info. inquiry</entry>
+	<entry key="ERR_E_WFOBJ">An error occurred during approver-content info. edits</entry>
+	<entry key="ERR_D_WFOBJ">An error occurred during approver-content info. deletion</entry>
+	<entry key="ERR_NEXIST_WFOBJ">The approver-content info. does not exist</entry>	
+	<entry key="ERR_NIDEN_WFID">Approver does not match.</entry>
+	<entry key="ERR_NIDEN_WITHDRAWER">Withdrawer does not match.</entry>	
+	<entry key="ERR_NOSUBJECT_REG">This content is not subject to registering approval processing</entry>	
+	<entry key="ERR_NOSUBJECT_EDIT">This content is not subject to edit approval processing</entry>	
+	<entry key="ERR_NOSUBJECT_DEL">This content is not subject to deletion approval processing</entry>	
+	<entry key="ERR_MIS_WFID">Approving group ID is missing</entry>	
+	<entry key="ERR_NEXIST_1STAPPROVER">The first approver does not exist</entry>	
+	<entry key="ERR_ASSIGN_NEXTAPPROVER">An error occurred during assigining the next approver</entry>	
+	
+	<!-- Tag -->
+	<entry key="ERR_MIS_TAGID">Tag ID is missing</entry>	
+	<entry key="ERR_C_TAG">An error occurred during tag registration</entry>
+	<entry key="ERR_R_TAG">An error occurred during tag inquiry</entry>
+	<entry key="ERR_E_TAG">An error occurred during tag edits</entry>
+	<entry key="ERR_D_TAG">An error occurred during tag deletion</entry>
+	<entry key="ERR_ALREADY_TAG">This tag is already in use</entry>
+	<entry key="ERR_MIS_INDEX">This index is missing</entry>
+	
+	<!-- DOC -->
+	
+	<entry key="ARE_YOU_REG_DOC">Are you sure you want to register the doc?</entry>
+	<entry key="ARE_YOU_DEL_DOC">Are you sure you want to delete the doc?</entry>
+	<entry key="ARE_YOU_MODIFY_DOC">Are you sure you want to modify the doc?</entry>
+	<entry key="ARE_YOU_RESTORE_DOC">Are you sure you want to restore the doc?</entry>
+	<entry key="ARE_YOU_DISCARD_DOC">Are you sure you want to discard the doc?</entry>
+	<entry key="ARE_YOU_SHARE_DOC">Are you sure you want to share the doc?</entry>
+	<entry key="ARE_YOU_UNSHARE_DOC">Are you sure you want to unshare the doc?</entry>
+	<entry key="ARE_YOU_FAVORITE_DOC">Are you sure you want to favorite the doc?</entry>
+	<entry key="ARE_YOU_UNFAVORITE_DOC">Are you sure you want to unfavorite the doc?</entry>
+	<entry key="ARE_YOU_MOVE_DOC">Are you sure you want to move the doc?</entry>
+	<entry key="ARE_YOU_COPY_DOC">Are you sure you want to copy the doc?</entry>
+		
+	<entry key="REG_DOC_SUCCEEDED">The document register was successful.</entry>
+	<entry key="DEL_DOC_SUCCEEDED">The document disable was successful.</entry>
+	<entry key="MODIFY_DOC_SUCCEEDED">The document modify was successful.</entry>
+	<entry key="RESTORE_DOC_SUCCEEDED">The document restore was successful.</entry>
+	<entry key="DISCARD_DOC_SUCCEEDED">The document discard was successful.</entry>
+	<entry key="SHARE_DOC_SUCCEEDED">The document share was successful.</entry>
+	<entry key="UNSHARE_DOC_SUCCEEDED">The document unshare was successful.</entry>
+	<entry key="FAVORITE_DOC_SUCCEEDED">Added to Favorites.</entry>
+	<entry key="UNFAVORITE_DOC_SUCCEEDED">Removed from Favorites.</entry>
+	<entry key="MOVE_DOC_SUCCEEDED">The document movement was successful.</entry>
+	<entry key="COPY_DOC_SUCCEEDED">The document copying was successful.</entry>
+	
+	<!-- folder -->
+	<entry key="ARE_YOU_DISABLE_FOLDER">Do you want to disable a folder?</entry>
+	<entry key="ARE_YOU_RESTORE_FOLDER">Do you want to restore a folder?</entry>
+	<entry key="ARE_YOU_DISCARD_FOLDER">Do you want to discard a folder?</entry>
+	
+	<entry key="DISABLE_FOLDER_SUCCEEDED">the folder disable was successful.</entry>
+	<entry key="RESTORE_FOLDER_SUCCEEDED">the folder restore was successful.</entry>
+	<entry key="DISCARD_FOLDER_SUCCEEDED">the folder discard was successful.</entry>
+	<entry key="EXIST_LOWER_FOLDER">This folder has child folders.</entry>
+	
+	 <!-- message -->
+  <entry key="NOTEXIST_DOC">Contents does not exist.</entry>
+  <entry key="NOTRASH_DOC">삭제된 문서가 없습니다.</entry>
+  <entry key="NOSHARED_DOC">No contents were shared.</entry>
+  <entry key="NOTEXISTFAVORITE">The favorite does not exist.</entry>
+  <entry key="WAIT_A_MINUTE">Wait a minute, please.</entry>
+  <entry key="NOCLASSIFICATION">No Classification.</entry>
+  <entry key="NOAUTHORITY">No Authority.</entry>
+  <entry key="NOATTACHMENT">There is no attachment.</entry>
+  <entry key="DRAGATTACHEDFILE"><![CDATA[Drag&drop files here.]]></entry>
+  <entry key="NOTEXIST_LOG">The registered logs do not exist.</entry>
+  <entry key="NO_USERS">No users</entry>
+  <entry key="NO_TARGET_TO_SHARE">No target to share.</entry>
+  <entry key="OPERATION_IS_COMPLETED">Operation is Completed.</entry>
+  <entry key="INVALID_PASSWORD">Invalid Password.</entry>
+
+  <!-- Cabinet -->
+  <entry key="NO_ALERTED_CONTENT">There is no altered content.</entry>
+  <entry key="MINUMUN_CAPACITY">Minimum registration capacity is 10 MByte.</entry>
+  <entry key="INVALID_INFO">The essential information is missing.</entry>
+  <entry key="ERROR_HAS_OCCURRED">An error has occurred.</entry>
+  <entry key="REGISTERED_CABINET">The cabinet was registered.</entry>
+  <entry key="CABINET_MODIFIED">Cabinet was modified.</entry>
+  <entry key="PLEASE_SELECT_CABINET_DELETE">Please select the cabinet you want to delete</entry>
+  <entry key="CABINET_DELETED">Cabinet was deleted.</entry>
+  <entry key="ARE_YOU_DEL_CABINET">Are you sure you want to delete the cabinet?</entry>
+
+  <!-- Class -->
+  <entry key="ENTER_CLASSIFICATION_CODE">Enter the classification Code.</entry>
+  <entry key="ENTER_CLASSIFICATION_NAME">Enter the classification name.</entry>
+  <entry key="SELECTED_CLASSIFICATION_INFO_NOT_EXIST">The selected classification information does not exist.</entry>
+  <entry key="DO_YOU_REGISTER_CLASSIFICATION_INFO">Do you want to register classification information?</entry>
+  <entry key="REGISTERED_CLASSIFICATION_INFO">Classification information was registered.</entry>
+  <entry key="MODIFY_CLASSIFICATION_INFO">Do you want to modify the classification information?</entry>
+  <entry key="CORRECTED_CLASSIFICATION_INFO">Classification information was corrected.</entry>
+  <entry key="DO_YOU_DELETE_CLASSIFICATION_INFO">Do you want to delete the classification information?</entry>
+  <entry key="REMOVED_CLASSIFICATION_INFO">Classification information was deleted.</entry>
+  <entry key="DO_YOU_RESTORE_CLASSIFICATION_INFO">Do you want to restore classification information?</entry>
+  <entry key="RESTORED_CLASSIFICATION_INFO">Classification information was restored.</entry>
+  <entry key="DO_WO_DISCARD_CLASSIFICATION_INFO">Do you want to discard classification information?</entry>
+  <entry key="DISCARDED_CLASSIFICATION_INFO">Classification information was discarded.</entry>
+  <entry key="MOVED_CLASSIFICATION_INFO_SEQUENCE">Classification information sequence was moved.</entry>
+  <entry key="MOVE_DOC_CLASSIFICATION">Content classification move completed.</entry>
+  <entry key="DO_YOU_MOVE_CLASSIFICATION_INFO">Do you want to move the classification information?</entry>
+  <entry key="DO_YOU_MOVE_FOLDER_INFO">Do you want to move the folder information?</entry>
+  <entry key="DO_YOU_MOVE_DEPT_INFO">Do you want to move the dept?</entry>
+
+  <!-- CODE -->
+  <entry key="NO_ALERTED_CODE">There is no altered code.</entry>
+  <entry key="ENTER_CODE_NAME">Please enter a code name.</entry>
+  <entry key="ENTER_CODE_VALUE">Please enter a code value.</entry>  
+  <entry key="DUPLICATED_DATA">Data is duplicated.</entry>
+  <entry key="ARE_YOU_REGISTER_CODE_TYPE">Are you sure you want to register the code type?</entry>
+  <entry key="DO_YOU_MODIFY_CODE_TYPE">Do you want to modify the code type?</entry>
+  <entry key="ARE_YOU_DELETE_CODE_TYPE">Are you sure you want to delete the code type?</entry>
+  <entry key="DO_YOU_RESTORE_CODE_TYPE">Do you want to restore the code type?</entry>
+  <entry key="ARE_YOU_DISCARD_CODE_TYPE">Are you sure you want to discard the code type?</entry>
+  <entry key="ARE_YOU_REGISTER_CODE_INFO">Are you sure you want to register the code info.?</entry>
+  <entry key="DO_YOU_MODIFY_CODE_INFO">Do you want to modify the code info.?</entry>
+  <entry key="ARE_YOU_DELETE_CODE_INFO">Are you sure you want to delete the code info.?</entry>
+  <entry key="DO_YOU_RESTORE_CODE_INFO">Do you want to restore the code info.?</entry>
+  <entry key="ARE_YOU_DISCARD_CODE_INFO">Are you sure you want to discard the code info.?</entry>
+  <entry key="REGISTERED_CODE">I have registered an code.</entry>
+  <entry key="MODIFIED_CODE">The name of the code was modified.</entry>
+  <entry key="DISABLED_CHANGE_CODE">You have changed the code to Disabled.</entry>
+  <entry key="RESTORED_CODE">You have restored the code.</entry>
+  <entry key="DELETED_CODE">You have deleted the code.</entry>
+  <entry key="SELECT_CODE_DELETE">Select the code you want to delete.</entry>
+  <entry key="SELECT_CODE_RESTORE">Select the code you want to restory.</entry>
+  <entry key="SELECT_CODE_DISCARD">Select the code you want to discard.</entry>
+  <entry key="CANNOT_CODE_DELETED">The code cannot be delete than code information exists.</entry>
+
+  <!--DEPTUSER -->
+  <entry key="CANNOT_SAME_DEPT">You cannot register with the same department.</entry>
+  <entry key="WOULD_YOU_REGISTER_POSITION">Would you like to register for a concurrent position?</entry>
+  <entry key="ARE_YOU_DELETE_POSITIONS">Are you sure you want to delete concurrent positions?</entry>
+  <entry key="PRESS_INITIALZATION_REGISTER_BTN">Press the Initialzation button and proceed with the registration.</entry>
+  <entry key="DO_YO_REGISTER_DEPT">Do you want to register your department?</entry>
+  <entry key="REGISTERED_DEPT">Department was registered.</entry>
+  <entry key="DO_TO_REGISTER_USERS">Do you want to register users?</entry>
+  <entry key="USER_REGISTERED_SUCCESSFULLY">User registered successfully.</entry>
+  <entry key="SELECT_DEPT_REGISTER">Please select a department to register.</entry>
+  <entry key="DO_YOU_MODIFY_DEPT">Do you want to modify the department?</entry>
+  <entry key="REVISED_DEPT">Department was modified.</entry>
+  <entry key="DO_YOU_MODIFY_USER">Do you want to modify the user?</entry>
+  <entry key="MODIFIED_USER">User was modified.</entry>
+  <entry key="SELECT_DEPART">Please select a department.</entry>
+  <entry key="SELECT_USER">Please select a user.</entry>
+  <entry key="ARE_YOU_DELETE_DEPART">Are you sure you want to delete the department?</entry>
+  <entry key="DELETED_DEPART">Department was deleted.</entry>
+  <entry key="ARE_YOU_DELETE_USER">Are you sure you want to delete the user?</entry>
+  <entry key="DELEwas">User was deleted.</entry>
+  <entry key="DISCARD_USER_INFO">User information was discarded.</entry>
+  <entry key="ARE_YOU_DEPT_DISCARD">Are you sure you want to discard the department?</entry>
+  <entry key="DISCARED_DEPT">Department was discarded.</entry>
+  <entry key="NO_MATCHING_TARGET">No matching target found.</entry>
+  <entry key="SUCCESSFUL_SEARCH">Your search was successful.</entry>
+  <entry key="PASSWORD_SUCCEEDED_INIT">Password initialization succeeded.</entry>
+  <entry key="PASSWORD_FAILED_INIT">Password initialization failed.</entry>
+  <entry key="MODIFIED_GROUP_MEMBER">Group member information was modified.</entry>
+  <entry key="DO_YOU_WANT_RESET_PASSWORD">Do you want to reset the password?</entry>
+  <entry key="DO_YOU_WANT_CHANGE_PASSWORD">Do you want to change the password?</entry>
+  <entry key="ARE_YOU_RESTORE_DEPART">Are you sure you want to restore the department?</entry>
+  
+  <!-- DocType -->
+  <entry key="REGISTERED_NO_DATA">No data is registered.</entry>
+  <entry key="ARE_YOU_REGISTER_CONTENT_TYPE">Are you sure you want to register the content type?</entry>
+  <entry key="DO_YOU_MODIFY_CONTENT_TYPE">Do you want to modify the content type?</entry>
+  <entry key="ARE_YOU_DELETE_CONTENT_TYPE">Are you sure you want to delete the content type?</entry>
+  <entry key="DO_YOU_RESTORE_CONTENT_TYPE">Do you want to restore the content type?</entry>
+  <entry key="ARE_YOU_DISCARD_CONTENT_TYPE">Are you sure you want to discard the content type?</entry>
+  <entry key="REGISTERED_CONTENT_TYPE">I have registered an content type.</entry>
+  <entry key="MODIFIED_CONTENT_TYPE">The name of the content type was modified.</entry>
+  <entry key="DISABLED_CHANGE_CONTENT_TYPE">You have changed the content type to Disabled.</entry>
+  <entry key="RESTORED_CONTENT_TYPE">You have restored the content type.</entry>
+  <entry key="DELETED_CONTENT_TYPE">You have deleted the content type.</entry>
+  <entry key="ENTER_CONTENT_TYPE_NAME">Please enter a content type name.</entry>
+  <entry key="ENTER_CONTENT_TYPE_CODE">Please enter the content type code.</entry>
+  <entry key="SELECT_CONTENT_TYPE_DELETE">Select the content type you want to delete.</entry>
+  <entry key="SELECT_CONTENT_TYPE_RESTORE">Select the content type you want to restory.</entry>
+  <entry key="SELECT_CONTENT_TYPE_DISCARD">Select the content type you want to discard.</entry>
+  
+  <!-- ENV -->
+  <entry key="CHANGED_SETTING_VALUE">The setting value was changed.</entry>
+
+  <!-- FORMAT -->
+  <entry key="REGISTERED_FORMAT">File format information was registered.</entry>
+  <entry key="MODIFIED_FORMAT">File format information was modified.</entry>
+  <entry key="SELECT_FORMAT_DELETE">Select the file format information you want to delete.</entry>
+  <entry key="DELETE_FORMAT">File format information was deleted.</entry>
+  <entry key="ARE_YOU_FORMAT_DELETE">Are you sure you want to delete the file format?</entry>
+
+  <!-- GroupUser -->
+  <entry key="ENTER_GROUP_NAME">Please enter a group name.</entry>
+  <entry key="ENTER_GROUP_CODE">Please enter a group code.</entry>
+  <entry key="SELECTED_GROUP_NOT_EXIST">Selected group information does not exist.</entry>
+  <entry key="ARE_YOU_GROUP_INFO">Are you sure you want to register your group information?</entry>
+  <entry key="ARE_YOU_MODIFY_GROUP_INFO">Are you sure you want to modify your group information?</entry>
+  <entry key="GROUP_MEMBER_NOT_EXIST">Group member information does not exist.</entry>
+  <entry key="GROUP_REGISTERED_SUCCESSFULLY">Group registered successfully.</entry>
+  <entry key="DO_YOU_RESTORE_GROUP">Do you want to restore group information?</entry>
+  <entry key="GROUP_RESTORED">Group was restored.</entry>
+  <entry key="ARE_YOU_GROUP_DELETE">Are you sure you want to delete the group information?</entry>
+  <entry key="ARE_YOU_GROUP_DISCARD">Are you sure you want to discard the group information?</entry>
+  <entry key="GROUP_DELETED">The group was deleted.</entry>
+  <entry key="GROUP_DISCARDED">The group was discarded.</entry>
+  <entry key="ENTER_TERM">Please enter a search term.</entry>
+  <entry key="ERR_GROUP_INFO">An error occurred while retrieving group information.</entry>
+  <entry key="ERR_GROUP_LIST">An error occurred while querying the group list.</entry>
+  <entry key="ERR_DEPT_LIST">An error occurred while retrieving the department list.</entry>
+  <entry key="ERR_DEPT_USERS_LIST">An error occurred while retrieving the list of department users.</entry>
+  <entry key="MODIFIED_GROUP_MEMBER">The group member modified.</entry>
+
+  <!-- LOG -->
+  <entry key="ENTER_DATE">Please enter a date.</entry>
+  <entry key="STARTDATE_CANNOT_ENDDATE">The start date cannot be greater than the end date.</entry>
+  <entry key="UNABLE_DOC_NUMBER">Unable to get content number.</entry>
+  <entry key="ERR_DURING_LOOKUP">Error occurred during lookup.</entry>
+  <entry key="ERR_PAGING_OCCURRED">Paging Error Occurred</entry>
+
+  <!-- NodeDept -->
+  <entry key="MOVE_SAME_LOCATION">You cannot move to the same location.</entry>
+  <entry key="DO_YOU_MOVE_FOLDER">Do you want to move the folder?</entry>
+  <entry key="SELECTED_DEPART_FOLDER_NOT_EXIST">Selected department folder information does not exist.</entry>
+  <entry key="SELECTED_FOLDER_NOT_EXIST">Selected folder information does not exist.</entry>
+  <entry key="ENTER_FOLDER_CODE">Please enter the folder code.</entry>
+  <entry key="ENTER_FOLDER_NAME">Please enter a folder name.</entry>
+  <entry key="LEAST_ONE_PERMISSION">Please add at least one permission.</entry>
+  <entry key="DO_YOU_FOLDER_INFO_REGISTERED">Do you want to register folder information?</entry>
+  <entry key="DO_YOU_FOLDER_RENAME">Do you want to rename the folder?</entry>
+  <entry key="FOLDER_NAME_CHANGED">Folder name was changed.</entry>
+  <entry key="DO_YOU_FOLDER_MODIFY">Do you want to modify the folder information?</entry>
+  <entry key="FOLDER_INFO_CHANGED">Folder information was changed.</entry>
+  <entry key="DO_YOU_FOLDER_STATE_ENABLED">Do you want to change the folder state to Enabled?</entry>
+  <entry key="DO_YOU_FOLDER_STATE_DISABLED">Do you want to change the folder state to Disabled?</entry>
+  <entry key="FOLDER_STATE_CHANGED">Folder state has changed.</entry>
+  <entry key="ARE_YOU_FOLDER_DISCARD">Are you sure you want to discard the folder information?</entry>
+  <entry key="FOLDER_INFO_DISCARDED">Folder information was discarded.</entry>
+  <entry key="FOLDER_HAS_MOVED">Folder was moved.</entry>
+  <entry key="FOLDER_ORDER_CHANGED">Folder order was changed.</entry>
+  <entry key="REGISTERED_FOLDER_INFO">Folder information was registered.</entry>
+  <entry key="ARE_YOU_DELETE_FOLDER_INFO">Are you sure you want to delete folder information?</entry>
+  <entry key="RECCOVER_FOLDER_INFO">Do you want to restore folder information?</entry>
+
+  <!--NodeDoc -->
+  <entry key="DO_YOU_DOCUMENT_BOX_REGISTER">Do you want to register the content box information?</entry>
+  <entry key="DOCUMENT_BOX_REGISTERED">Your content box was registered.</entry>
+  <entry key="ENTER_DOCUMENT_BOX_NAME">Please enter the content box name.</entry>
+  <entry key="ENTER_DOCUMENT_BOX_CODE">Please enter the content box code.</entry>
+  <entry key="ARE_YOU_DOCUMENT_BOX_INFO_DISCARD">Are you sure you want to discard the content box information?</entry>
+  <entry key="DOCUMENT_BOX_DISCARDED">The content box information was discarded.</entry>
+  <entry key="DO_YOU_DOCUMENT_BOX_DELETED">Are you sure you want to delete the content box information?</entry>
+  <entry key="DOCUMENT_BOX_DELETED">The content box information was deleted.</entry>
+  <entry key="DO_YOU_DOCUMENT_BOX_MODIFY">Do you want to modify the content box information?</entry>
+  <entry key="DOCUMENT_BOX_MODIFIED">The content box information was modified.</entry>
+  <entry key="DOCUMENT_BOX_ENABLED">Do you want to change the state of your content box to Enabled?</entry>
+  <entry key="DOCUMENT_BOX_DISABLED">Do you want to change the state of folder to Disabled?</entry>
+  <entry key="DOCUMENT_BOX_CHANGED">The state of the content box has changed.</entry>
+
+  <!-- Node -->
+  <entry key="RETRIEVING_LIST_LIST">Retrieving list.</entry>
+  <entry key="INITIALIZATION_MODIFICATION_DELETION">Initialization, modification, and deletion are only possible.</entry>
+  <entry key="INITIALIZATION_MODIFICATION_DISPOSAL">Initialization, modification, and disposal are only possible.</entry>
+  <entry key="ENTER_NAME_ORGANIZATION">Enter the name of the organization.</entry>
+  <entry key="SELECT_INSTITUTION_MODIFY">Select the institution you want to modify.</entry>
+  <entry key="SELECT_INSTITUTION_DELETE">Select the institution you want to delete.</entry>
+  <entry key="SELECT_INSTITUTION_DISCARDE">Select the institution you want to discarde.</entry>
+  <entry key="SELECT_INSTITUTION_RESTORE">Select the institution you want to restore.</entry>
+  <entry key="ALREADY_BEEN_DISABLED">The organization has already been disabled.</entry>
+  <entry key="DISCARD_INSTITUTION">Are you sure you want to discard this institution?</entry>
+  <entry key="DELETE_INSTITUTION">Are you sure you want to delete this institution?</entry>
+  <entry key="DISABLED_ONLY_DISCARDED">It can only be discarded if it is disabled.</entry>
+  <entry key="CHOOSE_THE_DONT_USE">Choose the institution you want to dispose of among the institutions you don't use.</entry>
+  <entry key="SAM_AGENCY_NAME">It's the same agency name.</entry>
+  <entry key="CANNOT_BE_DELETED">The organization cannot be deleted.</entry>
+  <entry key="CANNOT_BE_DISPOSED">The organization cannot be disposed of.</entry>
+  <entry key="FAILED_AGENCY_INSTITUTION">Failed to delete institution.</entry>
+  <entry key="FAILED_DELETE_INSTITUTION">The disposal of the institution has failed.</entry>
+  <entry key="NO_LIST_INSTITUTIONS">There is no list of institutions.</entry>
+  <entry key="DUPLICATE_AGENCY_NAME">Duplicate organization name.</entry>
+  <entry key="DUPLICATE_ORGAN_CODE">Duplicate organ code.</entry>
+  <entry key="CHANGED_ORGAN_STATE">You have successfully changed the selected organ state.</entry>
+  <entry key="DELETED_INSTITUTION_SUCCESSFULLY">You have successfully deleted the selected institution.</entry>
+  <entry key="ENTER_ORGAN_CODE">Please enter the organ code.</entry>
+  <entry key="REGISTERED_AGENCY">I have registered an agency.</entry>
+  <entry key="MODIFIED_AGENCY_NAME">The name of the agency was modified.</entry>
+  <entry key="DISABLED_CHANGE_AGENCY">You have changed the agency to Disabled.</entry>
+  <entry key="RESTORED_AGENCY">You have restored the agency.</entry>
+  <entry key="DELETED_AGENCY">You have deleted the agency.</entry>
+
+  <!-- Task -->
+  <entry key="ENTER_TASK_NAME">Enter the task name.</entry>
+  <entry key="ENTER_TASK_CODE">Enter the task code.</entry>
+  <entry key="REGISTERED_TASK">The task was registered.</entry>
+  <entry key="EDITED_TASK">Edited the task.</entry>
+  <entry key="DELETED_TASK">I deleted the task.</entry>
+  <entry key="DELETE_SELECT_TASK">Select the task you want to delete.</entry>
+  <entry key="ARE_YOU_DELETE_TASK">Are you sure you want to delete the task?</entry>
+
+  <!-- Login -->
+  <entry key="ENTER_FIRST_ID">Please enter your ID first.</entry>
+  <entry key="ENTER_ID">Please enter your ID.</entry>
+  <entry key="ENTER_PASSWORD">Please enter your password.</entry>
+  <entry key="LOGIN_FAILED">Login failed.</entry>
+
+  <!-- Auth -->
+  <entry key="NO_SHARE_TARGET">No share target specified.</entry>
+
+  <!-- Bundle -->
+  <entry key="NO_CHANGE_FILE">No changes were made to the file.</entry>
+
+  <!-- DocMain -->
+  <entry key="DELETE_FAILED">Delete failed.</entry>
+  <entry key="RESTORE_FAILED">Restore failed.</entry>
+  <entry key="DISCARD_FAILED">Disposal failed.</entry>
+  <entry key="REGISTRATION_FAILED">Registration failed.</entry>
+  <entry key="FAILED_FOLDER_NAME">Failed to modify folder name.</entry>
+  <entry key="SELECT_SHARE_DOC">Select contents to share.</entry>
+  <entry key="IT_SHARED">It's been shared.</entry>
+  <entry key="SELECT_COPY_DOC">Select the content you want to copy.</entry>
+  <entry key="SELECT_MOVE_DOC">Select the content you want to move.</entry>
+  <entry key="SELECT_APPROVE_DOC">Select the content you want to approve.</entry>
+  <entry key="SELECT_RETURN_DOC">Select the content you want to return.</entry>
+  <entry key="SELECT_DELETE_DOC">Select the content you want to delete.</entry>
+  <entry key="SELECT_DISCARD_DOC">Select the content you want to discard.</entry>
+  <entry key="SELECT_RESTORE_DOC">Select the content you want to restore.</entry>
+  <entry key="SELECT_VIRTUAL_DOC">Select the content you want to make virtual doc.</entry>
+
+  <!-- FileEdit -->
+  <entry key="CANNOT_ADD_SAME_FILE_NAME">You cannot add a file with the same file name.</entry>
+  <entry key="CANNOT_DELETE_FILE">You cannot delete an export file.</entry>
+  <entry key="DOCUMENT_MODI_FAILED">Content modification failed.</entry>
+  <entry key="ENTER_EXPECTED_DATE">Please enter the expected date.</entry>
+  <entry key="ENTER_TAKING_OUT">Please enter the reason for taking out.</entry>
+  <entry key="ONLY_THE_IMPORTED">Only the same file name can be imported.</entry>
+  <entry key="FILE_TRAN_FAILED">File transfer failed.</entry>
+  <entry key="PROCESS_WITHOUT_FILE">Do you want to process import without files?</entry>
+  <entry key="FAILED_IMPORT_FILE">Failed to import file.</entry>
+  <entry key="CONTENT_INQUIRY_FAILED">Content history inquiry failed.</entry>
+  <entry key="TWO_FILES_COMPARE">Select two files to compare.</entry>
+  <entry key="NO_FILE_REGISTERED">No files are registered.</entry>
+  <entry key="NO_SELECTED_FILE">No selected file.</entry>
+  <entry key="DONT_HISTORY">I don't have a history.</entry>
+  <entry key="MODIFY_FILE">Modify the file.</entry>
+
+  <!-- FileReg -->
+  <entry key="REGISTERING">Registering.</entry>
+  <entry key="DOCUMENT_REGI_FAILED">Content registration failed.</entry>
+
+  <!-- FldTree -->
+  <entry key="CAN_NOT_SELECT_TOP-FOLDER">You cannot select a top-level folder.</entry>
+  <entry key="CAN_NOT_COPY_SAME_DOC">You can't copy a content to the same folder box.</entry>
+  <entry key="CAN_NOT_MOVE_SAME_DOC">You can't move a content to the same folder box.</entry>
+
+  <entry key="EXPIRED_SESSION">Your session has expired or is not valid.</entry>
+  
+  <!-- passwd Change  -->
+  <entry key="NO_SPACE_KEY">Spaces cannot be entered.</entry>
+  <entry key="PASSWD_RULE">Use a combination of 6-12 alphanumeric characters and two or more special characters</entry>
+  <entry key="CPASLOCK_ON">Caps Lock is on.</entry>
+	
+  <entry key="CHECK_APL">It is necessary to check the approval level.</entry>
+  <entry key="WAITING_APL">th. Waiting for approval.</entry>
+	
+  <!-- License -->
+  <entry key="ERR_R_LIC">An error occurred while inquiring license</entry>	
+  <entry key="ERR_EXCEED_NO_USER">Number of users exceeded</entry>  
+  
+  <!-- Session -->
+  <entry key="SESSION_EXPIRED">Session is expired.</entry>
+  
+  
+</properties>

@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.acl.mapper.ZappAclMapper" >
+
+  <sql id="depts_lower">
+  	<if test="auth.sessOnlyDeptUser != null" >
+
+  	</if>
+  </sql>
+  
+  <sql id="depts">
+  	<if test="auth.sessOnlyDeptUsers != null" >
+  		<foreach collection="auth.sessOnlyDeptUsers" item="dept" open="" separator=" union all " close="">
+  			select #{dept.deptid} as OBJID
+  		        , '02' as OBJTYPE
+  			  from dual
+  		</foreach>
+  	</if>
+  </sql>
+
+  <sql id="dept">
+  	<if test="auth.sessOnlyDeptUser != null" >
+  		select #{auth.sessOnlyDeptUser.deptid} as OBJID
+  		     , '02' as OBJTYPE
+  		 from dual
+  	</if>
+  </sql>
+    
+  <sql id="aclobjheader">
+  	with objlist as (
+  	
+		<choose>
+			<when test="deptRange.setval eq '1'.toString()">		<!-- 접속 부서만 -->
+				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.dept" />
+			</when>
+			<when test="deptRange.setval eq '2'.toString()">		<!-- 소속 부서 전체 -->
+				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.depts" />
+			</when>
+			<when test="deptRange.setval eq '3'.toString()">		<!-- 소속 부서 하위 전체 -->
+				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.depts_lower" />
+			</when>
+			<otherwise></otherwise>
+		</choose>
+	  	
+	  	<if test="auth.sessOnlyGroupUsers != null" >
+	  		<if test="auth.sessOnlyDeptUsers != null" >
+	  			<if test="auth.sessOnlyDeptUsers.size > 0 and auth.sessOnlyGroupUsers.size > 0" >
+	  			union all
+	  			</if>
+	  		</if>
+	  		<foreach collection="auth.sessOnlyGroupUsers" item="group" open="" separator=" union all " close="">
+	  			select #{group.groupid} as OBJID
+	  			     , '03' as OBJTYPE
+	  			  from dual
+	  		</foreach>
+	  	</if>
+
+	  	<if test="auth.sessOnlyDeptUser != null" >
+	  		<if test="auth.sessOnlyDeptUsers != null or auth.sessOnlyGroupUsers != null" >
+	  			<if test="auth.sessOnlyDeptUsers.size > 0 or auth.sessOnlyGroupUsers.size > 0" >
+	  			union all
+	  			</if>
+	  		</if>
+			select #{auth.sessOnlyDeptUser.deptuserid} as OBJID
+			     , '01' as OBJTYPE
+			 from dual
+	  	</if>
+  	)
+  </sql>
+  
+  <sql id="existAcl">
+		,
+		 acldata as (
+		      select contentid from (
+		       select
+		            ed.contentid ,
+		            99999 as acls
+		            from ecmdata ed
+		         where
+		            holderid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+		      union all
+		         select
+		            ed.contentid ,
+		            (case
+		               when acls = 0 then -9999
+		               else 1
+		            end ) as acls
+		         from
+		            zapp_contentacl CONTENTACL ,
+		            objlist obj ,
+		            ecmdata ed ,
+		            zapp_classobject CLSOBJ
+		         where
+		            CONTENTACL.contentid = CLSOBJ.classid
+		            and CONTENTACL.aclobjid = obj.OBJID
+		            and CONTENTACL.aclobjtype = obj.OBJTYPE
+		            and CONTENTACL.contenttype = '00'
+		            and CLSOBJ.cobjid = ed.contentid
+		            and CLSOBJ.classtype in ('01', 'N2', 'N4')
+		            and CLSOBJ.cobjtype = ed.contenttype
+		      union all
+		         select
+		            ed.contentid ,
+		            (case
+		               when acls = 0 then -999
+		               else 1
+		            end ) as acls
+		         from
+		            zapp_contentacl CONTENTACL ,            
+		            ecmdata ed ,
+		            objlist obj
+		         where
+		            CONTENTACL.contentid = ed.contentid
+		            and CONTENTACL.aclobjid = obj.OBJID
+		            and CONTENTACL.aclobjtype = obj.OBJTYPE            
+		            and CONTENTACL.contenttype ='02' ) ILST
+		      group by
+		         contentid having sum(acls) >0  
+		 )  
+  </sql>
+  
+  <sql id="existAcl_bundle">
+  		and 0 <![CDATA[<]]> (case (select 1
+					    			 from dual
+					   				where exists (select 1
+								       				from objlist
+								      			    where objtype = '01'
+								        			  and objid in (BUNDLE.holderid))	-- Holder 
+					   				)
+	   						when 1 then 1   
+				    	    else ( select sum(coalesce(checksum, 0))
+							  	     from (select 1 as checksum
+									  		 from dual
+									 		where exists ( select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist obj
+														        , zapp_classobject CLSOBJ
+														   where CONTENTACL.contentid = CLSOBJ.classid
+														     and CONTENTACL.aclobjid = obj.OBJID
+														     and CONTENTACL.aclobjtype = obj.OBJTYPE
+														     and CONTENTACL.contenttype = '00'	-- Classification (Node)
+														     and CLSOBJ.cobjid = BUNDLE.bundleid	
+														     and CLSOBJ.classtype in ('01','N2','N4')	-- Node
+														     and CLSOBJ.cobjtype = '01'		-- Bundle
+														     and CONTENTACL.acls > 0
+														   union all
+														   select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist obj
+														   where CONTENTACL.contentid = BUNDLE.bundleid
+														     and CONTENTACL.aclobjid = obj.OBJID
+														     and CONTENTACL.aclobjtype = obj.OBJTYPE
+														     and CONTENTACL.contenttype = '01'	-- Content (Bundle)
+														     and CONTENTACL.acls > 0
+														  ) 
+											union all
+											select -1 as checksum
+						  					  from dual
+						 					 where exists (select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist ACLOBJ
+														        , zapp_classobject CLSOBJ
+														   where CONTENTACL.contentid = CLSOBJ.classid
+														     and CONTENTACL.aclobjid = ACLOBJ.OBJID
+														     and CONTENTACL.aclobjtype = ACLOBJ.OBJTYPE
+														     and CONTENTACL.contenttype = '00' -- Classification (Node)
+														     and CONTENTACL.acls = 0
+														     and CLSOBJ.cobjid = BUNDLE.bundleid	
+														     and CLSOBJ.classtype in ('01','N2','N4')	-- Node
+														     and CLSOBJ.cobjtype = '01'		-- Bundle
+														     and ACLOBJ.objtype = '01'
+														   union all
+						 					 				select 1 
+										  					 from zapp_contentacl CONTENTACL
+											 					, objlist ACLOBJ
+															 where CONTENTACL.contentid = BUNDLE.bundleid
+															   and CONTENTACL.aclobjid = ACLOBJ.OBJID
+															   and CONTENTACL.aclobjtype = ACLOBJ.OBJTYPE
+															   and CONTENTACL.contenttype = '01'	-- Content (Bundle)
+															   and CONTENTACL.acls = 0
+															   and ACLOBJ.objtype = '01'
+									   					  ) 
+											) IL
+									)
+		 					end)
+  </sql>
+  
+  <sql id="existAcl_file">
+  		and 0 <![CDATA[<]]> (case (select 1
+					    			 from dual
+					   				where exists (select 1
+								       				from objlist
+								      			    where objtype = '01'
+								        			  and objid in (ZAPP_MFILE.holderid))	-- Holder 
+					   				)
+	   						when 1 then 1   
+				    	    else ( select sum(coalesce(checksum, 0))
+							  	     from (select 1 as checksum
+									  		 from dual
+									 		where exists ( select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist obj
+														        , zapp_classobject CLSOBJ
+														   where CONTENTACL.contentid = CLSOBJ.classid
+														     and CONTENTACL.aclobjid = obj.OBJID
+														     and CONTENTACL.aclobjtype = obj.OBJTYPE
+														     and CONTENTACL.contenttype = '00'	-- Classification (Node)
+														     and CLSOBJ.cobjid = ZA_MFILE.mfileid
+														     and CLSOBJ.classtype in ('01','N2','N4')	-- Node
+														     and CLSOBJ.cobjtype = '02'		-- File
+														     and CONTENTACL.acls > 0
+														   union all
+														   select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist obj
+														   where CONTENTACL.contentid = ZA_MFILE.mfileid
+														     and CONTENTACL.aclobjid = obj.OBJID
+														     and CONTENTACL.aclobjtype = obj.OBJTYPE
+														     and CONTENTACL.contenttype = '02'	-- Content (File)
+														     and CONTENTACL.acls > 0
+														  ) 
+											union all
+											select -1 as checksum
+						  					  from dual
+						 					 where exists (select 1 
+													  	     from zapp_contentacl CONTENTACL
+														        , objlist ACLOBJ
+														        , zapp_classobject CLSOBJ
+														   where CONTENTACL.contentid = CLSOBJ.classid
+														     and CONTENTACL.aclobjid = ACLOBJ.OBJID
+														     and CONTENTACL.aclobjtype = ACLOBJ.OBJTYPE
+														     and CONTENTACL.contenttype = '00' -- Classification (Node)
+														     and CONTENTACL.acls = 0
+														     and CLSOBJ.cobjid = ZA_MFILE.mfileid	
+														     and CLSOBJ.classtype in ('01','N2','N4')	-- Node
+														     and CLSOBJ.cobjtype = '02'		-- File
+														     and ACLOBJ.objtype = '01'
+														   union all
+						 					 				select 1 
+										  					 from zapp_contentacl CONTENTACL
+											 					, objlist ACLOBJ
+															 where CONTENTACL.contentid = ZA_MFILE.mfileid
+															   and CONTENTACL.aclobjid = ACLOBJ.OBJID
+															   and CONTENTACL.aclobjtype = ACLOBJ.OBJTYPE
+															   and CONTENTACL.contenttype = '02'	-- Content (File)
+															   and CONTENTACL.acls = 0
+															   and ACLOBJ.objtype = '01'
+									   					  ) 
+											) IL
+									)
+		 					end)  
+  </sql>  
+  
+  <sql id="existAcl_class">
+   		and 0 <![CDATA[<]]> (case (select 1
+					    			 from dual
+					   				where exists (select 1
+								       				from objlist
+								      			    where objtype = '01'
+								        			  and objid in (CLS.holderid))
+					   				)
+	   						when 1 then 1   
+				    	    else ( select sum(coalesce(checksum, 0))
+							  	     from (select 1 as checksum
+									  		 from dual
+									 		where exists ( select 1 
+													  	    from zapp_classacl CLASSACL
+														       , objlist obj
+														   where CLASSACL.classid = CLS.classid
+														     and CLASSACL.aclobjid = obj.OBJID
+														     and CLASSACL.aclobjtype = obj.OBJTYPE
+														     and CLASSACL.acls > 0
+														  ) 
+											union all
+											select -1 as checksum
+						  					  from dual
+						 					 where exists ( select 1 
+										  					 from zapp_classacl CLASSACL
+											 					, objlist obj
+															 where CLASSACL.classid = CLS.classid
+															   and CLASSACL.aclobjid = obj.OBJID
+															   and CLASSACL.aclobjtype = obj.OBJTYPE
+															   and obj.objtype = '01'
+															   and CLASSACL.acls = 0
+									   					  ) 
+											) IL
+									)
+		 					end)
+  </sql> 
+
+</mapper>

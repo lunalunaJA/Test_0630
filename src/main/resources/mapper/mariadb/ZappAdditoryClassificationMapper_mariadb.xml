@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.classification.mapper.ZappAdditoryClassificationMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.classification.vo.ZappAdditoryClassification" >
+    <id column="classid" property="classid" jdbcType="CHAR" />
+    <result column="dynamic01" property="dynamic01" jdbcType="VARCHAR" />
+    <result column="dynamic02" property="dynamic02" jdbcType="VARCHAR" />
+    <result column="dynamic03" property="dynamic03" jdbcType="VARCHAR" />
+    <result column="dynamic04" property="dynamic04" jdbcType="VARCHAR" />
+    <result column="dynamic05" property="dynamic05" jdbcType="VARCHAR" />
+    <result column="dynamic06" property="dynamic06" jdbcType="VARCHAR" />
+    <result column="dynamic07" property="dynamic07" jdbcType="VARCHAR" />
+    <result column="dynamic08" property="dynamic08" jdbcType="VARCHAR" />
+    <result column="dynamic09" property="dynamic09" jdbcType="VARCHAR" />
+    <result column="dynamic10" property="dynamic10" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.classification.vo.ZappAdditoryClassification" >
+    <id column="ADDCLS_classid" property="classid" jdbcType="CHAR" />
+    <result column="ADDCLS_dynamic01" property="dynamic01" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic02" property="dynamic02" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic03" property="dynamic03" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic04" property="dynamic04" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic05" property="dynamic05" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic06" property="dynamic06" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic07" property="dynamic07" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic08" property="dynamic08" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic09" property="dynamic09" jdbcType="VARCHAR" />
+    <result column="ADDCLS_dynamic10" property="dynamic10" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     classid
+   , dynamic01
+   , dynamic02
+   , dynamic03
+   , dynamic04
+   , dynamic05
+   , dynamic06
+   , dynamic07
+   , dynamic08
+   , dynamic09
+   , dynamic10
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     ADDCLS.classid		AS ADDCLS_classid
+   , ADDCLS.dynamic01		AS ADDCLS_dynamic01
+   , ADDCLS.dynamic02		AS ADDCLS_dynamic02
+   , ADDCLS.dynamic03		AS ADDCLS_dynamic03
+   , ADDCLS.dynamic04		AS ADDCLS_dynamic04
+   , ADDCLS.dynamic05		AS ADDCLS_dynamic05
+   , ADDCLS.dynamic06		AS ADDCLS_dynamic06
+   , ADDCLS.dynamic07		AS ADDCLS_dynamic07
+   , ADDCLS.dynamic08		AS ADDCLS_dynamic08
+   , ADDCLS.dynamic09		AS ADDCLS_dynamic09
+   , ADDCLS.dynamic10		AS ADDCLS_dynamic10
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)		AS ADDCLS_classid
+   , ''							AS ADDCLS_dynamic01
+   , ''							AS ADDCLS_dynamic02
+   , ''							AS ADDCLS_dynamic03
+   , ''							AS ADDCLS_dynamic04
+   , ''							AS ADDCLS_dynamic05
+   , ''							AS ADDCLS_dynamic06
+   , ''							AS ADDCLS_dynamic07
+   , ''							AS ADDCLS_dynamic08
+   , ''							AS ADDCLS_dynamic09
+   , ''							AS ADDCLS_dynamic10
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     ADDCLS_classid
+   , ADDCLS_dynamic01
+   , ADDCLS_dynamic02
+   , ADDCLS_dynamic03
+   , ADDCLS_dynamic04
+   , ADDCLS_dynamic05
+   , ADDCLS_dynamic06
+   , ADDCLS_dynamic07
+   , ADDCLS_dynamic08
+   , ADDCLS_dynamic09
+   , ADDCLS_dynamic10
+  </sql>  
+  <sql id="All_Value_List" >
+     #{classid,jdbcType=CHAR}
+   , #{dynamic01,jdbcType=VARCHAR}
+   , #{dynamic02,jdbcType=VARCHAR}
+   , #{dynamic03,jdbcType=VARCHAR}
+   , #{dynamic04,jdbcType=VARCHAR}
+   , #{dynamic05,jdbcType=VARCHAR}
+   , #{dynamic06,jdbcType=VARCHAR}
+   , #{dynamic07,jdbcType=VARCHAR}
+   , #{dynamic08,jdbcType=VARCHAR}
+   , #{dynamic09,jdbcType=VARCHAR}
+   , #{dynamic10,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.classid,jdbcType=CHAR}
+   , #{batch.dynamic01,jdbcType=VARCHAR}
+   , #{batch.dynamic02,jdbcType=VARCHAR}
+   , #{batch.dynamic03,jdbcType=VARCHAR}
+   , #{batch.dynamic04,jdbcType=VARCHAR}
+   , #{batch.dynamic05,jdbcType=VARCHAR}
+   , #{batch.dynamic06,jdbcType=VARCHAR}
+   , #{batch.dynamic07,jdbcType=VARCHAR}
+   , #{batch.dynamic08,jdbcType=VARCHAR}
+   , #{batch.dynamic09,jdbcType=VARCHAR}
+   , #{batch.dynamic10,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_additoryclass ADDCLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_additoryclass
+    where classid = #{classid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_additoryclass
+    where classid = #{classid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete ADDCLS from zapp_additoryclass ADDCLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.classification.vo.ZappAdditoryClassification" >
+    insert into zapp_additoryclass  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.classification.vo.ZappAdditoryClassification" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_additoryclass (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_additoryclass ADDCLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_additoryclass ADDCLS
+    <set >
+      <if test="record.classid != null" >
+        classid = #{record.classid,jdbcType=CHAR},
+      </if>
+      <if test="record.dynamic01 != null" >
+        dynamic01 = #{record.dynamic01,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic02 != null" >
+        dynamic02 = #{record.dynamic02,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic03 != null" >
+        dynamic03 = #{record.dynamic03,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic04 != null" >
+        dynamic04 = #{record.dynamic04,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic05 != null" >
+        dynamic05 = #{record.dynamic05,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic06 != null" >
+        dynamic06 = #{record.dynamic06,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic07 != null" >
+        dynamic07 = #{record.dynamic07,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic08 != null" >
+        dynamic08 = #{record.dynamic08,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic09 != null" >
+        dynamic09 = #{record.dynamic09,jdbcType=CHAR},
+      </if>      
+      <if test="record.dynamic10 != null" >
+        dynamic10 = #{record.dynamic10,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.classification.vo.ZappAdditoryClassification" >
+    update zapp_additoryclass
+    <set >
+      <if test="dynamic01 != null" >
+        dynamic01 = #{dynamic01,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic02 != null" >
+        dynamic02 = #{dynamic02,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic03 != null" >
+        dynamic03 = #{dynamic03,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic04 != null" >
+        dynamic04 = #{dynamic04,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic05 != null" >
+        dynamic05 = #{dynamic05,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic06 != null" >
+        dynamic06 = #{dynamic06,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic07 != null" >
+        dynamic07 = #{dynamic07,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic08 != null" >
+        dynamic08 = #{dynamic08,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic09 != null" >
+        dynamic09 = #{dynamic09,jdbcType=CHAR},
+      </if>    
+      <if test="dynamic10 != null" >
+        dynamic10 = #{dynamic10,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where classid = #{classid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_additoryclass ADDCLS
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

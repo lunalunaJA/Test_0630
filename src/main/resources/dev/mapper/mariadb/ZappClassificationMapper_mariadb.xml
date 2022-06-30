@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.classification.mapper.ZappClassificationMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.classification.vo.ZappClassification" >
+    <id column="CLASSID" property="classid" jdbcType="CHAR" />
+    <result column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCPT" property="descpt" jdbcType="VARCHAR" />
+    <result column="UPID" property="upid" jdbcType="CHAR" />
+    <result column="HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="WFREQUIRED" property="wfrequired" jdbcType="DECIMAL" />
+    <result column="WFID" property="wfid" jdbcType="VARCHAR" />
+    <result column="AFFILIATIONID" property="affiliationid" jdbcType="VARCHAR" />
+    <result column="RETENTIONID" property="retentionid" jdbcType="VARCHAR" />
+    <result column="ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.classification.vo.ZappClassification" extends="BaseResultMap" >
+  </resultMap>  
+  <resultMap id="JoinResultMap" type="com.zenithst.core.classification.vo.ZappClassification" >
+    <id column="CLS_CLASSID" property="classid" jdbcType="CHAR" />
+    <result column="CLS_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="CLS_CODE" property="code" jdbcType="VARCHAR" />
+    <result column="CLS_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="CLS_DESCPT" property="descpt" jdbcType="VARCHAR" />
+    <result column="CLS_UPID" property="upid" jdbcType="CHAR" />
+    <result column="CLS_HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="CLS_TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="CLS_PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="CLS_WFREQUIRED" property="wfrequired" jdbcType="DECIMAL" />
+    <result column="CLS_WFID" property="wfid" jdbcType="VARCHAR" />    
+    <result column="CLS_AFFILIATIONID" property="affiliationid" jdbcType="VARCHAR" />
+    <result column="CLS_RETENTIONID" property="retentionid" jdbcType="VARCHAR" />
+    <result column="CLS_ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.classification.vo.ZappClassification" extends="JoinResultMap" >
+  </resultMap>
+  <sql id="Base_Column_List" >
+	     CLASSID
+	   , COMPANYID
+	   , CODE
+	   , NAME
+	   , DESCPT
+	   , UPID
+	   , HOLDERID
+	   , TYPES
+	   , PRIORITY
+	   , WFREQUIRED
+	   , WFID
+	   , AFFILIATIONID
+	   , RETENTIONID
+	   , ISACTIVE
+  </sql>
+  <sql id="Base_Column_List_Alias" >
+	     R.CLASSID
+	   , R.COMPANYID
+	   , R.CODE
+	   , R.NAME
+	   , R.DESCPT
+	   , R.UPID
+	   , R.HOLDERID
+	   , R.TYPES
+	   , R.PRIORITY
+	   , R.WFREQUIRED
+	   , R.WFID	  
+	   , R.AFFILIATIONID 
+	   , R.RETENTIONID
+	   , R.ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+	     CLS.CLASSID		AS CLS_CLASSID
+	   , CLS.COMPANYID		AS CLS_COMPANYID
+	   , CLS.CODE			AS CLS_CODE
+	   , CLS.NAME			AS CLS_NAME
+	   , CLS.DESCPT			AS CLS_DESCPT
+	   , CLS.UPID			AS CLS_UPID
+	   , CLS.HOLDERID		AS CLS_HOLDERID
+	   , CLS.TYPES			AS CLS_TYPES
+	   , CLS.PRIORITY		AS CLS_PRIORITY
+	   , CLS.WFREQUIRED		AS CLS_WFREQUIRED
+	   , CLS.WFID			AS CLS_WFID	   
+	   , CLS.AFFILIATIONID  AS CLS_AFFILIATIONID
+	   , CLS.RETENTIONID	AS CLS_RETENTIONID
+	   , CLS.ISACTIVE		AS CLS_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+	     CLS_CLASSID
+	   , CLS_COMPANYID
+	   , CLS_CODE
+	   , CLS_NAME
+	   , CLS_DESCPT
+	   , CLS_UPID
+	   , CLS_HOLDERID
+	   , CLS_TYPES
+	   , CLS_PRIORITY
+	   , CLS_WFREQUIRED
+	   , CLS_WFID
+	   , CLS_AFFILIATIONID
+	   , CLS_RETENTIONID
+	   , CLS_ISACTIVE
+  </sql>    
+  <sql id="All_Value_List" >
+     #{classid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{code,jdbcType=VARCHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{descpt,jdbcType=VARCHAR}
+   , #{upid,jdbcType=CHAR}
+   , #{holderid,jdbcType=VARCHAR}
+   , #{types,jdbcType=VARCHAR}
+   , #{priority,jdbcType=DECIMAL}
+   , #{wfrequired,jdbcType=DECIMAL}
+   , #{wfid,jdbcType=VARCHAR}
+   , #{affiliationid,jdbcType=VARCHAR}
+   , #{retentionid,jdbcType=VARCHAR}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.classid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.code,jdbcType=VARCHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.descpt,jdbcType=VARCHAR}
+   , #{batch.upid,jdbcType=CHAR}
+   , #{batch.holderid,jdbcType=VARCHAR}
+   , #{batch.types,jdbcType=VARCHAR}
+   , #{batch.priority,jdbcType=DECIMAL}
+   , #{batch.wfrequired,jdbcType=DECIMAL}
+   , #{batch.wfid,jdbcType=VARCHAR}  
+   , #{batch.affiliationid,jdbcType=VARCHAR}  
+   , #{batch.retentionid,jdbcType=VARCHAR}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql> 
+  <sql id="classHierarchyDown">
+  	with recursive CLSTREE as 
+  	( select 1 as level
+           , <include refid="Base_Column_List" />
+		from zapp_class CLS
+	   where 1 = 1
+	   <if test="class != null" >
+	      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+	   </if>
+	  union all
+	  select T.level+1
+		   , <include refid="Base_Column_List_Alias" />
+	    from zapp_class R, clstree T
+	   where R.upid = T.classid
+	 )
+  </sql>
+  <sql id="classHierarchyUp">
+  	with recursive CLSTREE as 
+  	( select 1 as level
+           , <include refid="Base_Column_List" />
+		from zapp_class CLS
+	   where 1 = 1
+	   <if test="class != null" >
+	      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+	   </if>
+	  union all
+	  select T.level+1
+		   , <include refid="Base_Column_List_Alias" />
+	    from zapp_class R, clstree T
+	   where R.classid = T.upid
+	 )
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_class CLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_class
+    where CLASSID = #{classid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_class
+    where CLASSID = #{classid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete CLS from zapp_class CLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.classification.vo.ZappClassification" >
+    insert into zapp_class (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.classification.vo.ZappClassification" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_class (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_class CLS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_class CLS
+    <set >
+      <if test="vo.classid != null" >
+        CLASSID = #{vo.classid,jdbcType=CHAR},
+      </if>
+      <if test="vo.companyid != null" >
+        companyid = #{vo.companyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.code != null" >
+        CODE = #{vo.code,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.name != null" >
+        NAME = #{vo.name,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.descpt != null" >
+        DESCPT = #{vo.descpt,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.upid != null" >
+        UPID = #{vo.upid,jdbcType=CHAR},
+      </if>
+      <if test="vo.holderid != null" >
+        HOLDERID = #{vo.holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.types != null" >
+        TYPES = #{vo.types,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.priority != null" >
+      	<if test="vo.priority > 0" >
+        	PRIORITY = #{vo.priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="vo.wfrequired != null" >
+        WFREQUIRED = #{vo.wfrequired,jdbcType=DECIMAL},
+      </if> 
+      <if test="vo.wfid != null" >
+        WFID = #{vo.wfid,jdbcType=VARCHAR},
+      </if>     
+      <if test="vo.affiliationid != null" >
+        AFFILIATIONID = #{vo.affiliationid,jdbcType=VARCHAR},
+      </if>  
+      <if test="vo.retentionid != null" >
+        RETENTIONID = #{vo.retentionid,jdbcType=CHAR},
+      </if>          
+      <if test="vo.isactive != null" >
+        ISACTIVE = #{vo.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.classification.vo.ZappClassification" >
+    update zapp_class
+    <set >
+      <if test="companyid != null" >
+        companyid = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="descpt != null" >
+        DESCPT = #{descpt,jdbcType=VARCHAR},
+      </if>
+      <if test="upid != null" >
+        UPID = #{upid,jdbcType=CHAR},
+      </if>
+      <if test="holderid != null" >
+        HOLDERID = #{holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="types != null" >
+        TYPES = #{types,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null" >
+      	<if test="priority > 0" >
+        	PRIORITY = #{priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="wfrequired != null" >
+        WFREQUIRED = #{wfrequired,jdbcType=DECIMAL},
+      </if> 
+      <if test="wfid != null" >
+        WFID = #{wfid,jdbcType=VARCHAR},
+      </if>  
+      <if test="affiliationid != null" >
+        AFFILIATIONID = #{affiliationid,jdbcType=VARCHAR},
+      </if>  
+      <if test="retentionid != null" >
+        RETENTIONID = #{retentionid,jdbcType=CHAR},
+      </if>      
+      <if test="isactive != null" >
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where CLASSID = #{classid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_class CLS
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+  
+  <select id="selectNextPriority" resultType="java.lang.Integer"  parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+	select (case (select 1
+				   from dual
+				   where EXISTS(select 1
+					    	     from zapp_class CLS
+						        <if test="_parameter != null" >
+									<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								</if>)
+					 )
+			        when 1 then (select (coalesce(max(priority),0) + 1)
+							       from zapp_class CLS
+								   <if test="_parameter != null" >
+									 <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								   </if>
+								)
+			    	else 1
+			     	end)
+	  from dual
+  </select>  
+  <select id="selectDownByDynamic" resultMap="JoinResultMap" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<choose>
+	    	<when test="applyAcl.setval eq 'Y'.toString()">
+	    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+	    		, 
+	    	</when>
+	    	<otherwise>
+	    		with recursive
+	    	</otherwise>
+    	</choose>
+    </if>
+    <if test="applyAcl == null">
+    	with recursive
+    </if>
+  
+   clstree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_class CLS
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_class R, clstree T
+				 where R.upid = T.classid
+				 <if test="class != null" >
+				 	<if test="class.isactive != null" >
+				 		and R.ISACTIVE = #{class.isactive,jdbcType=CHAR}
+				 	</if>
+		     	 </if>
+				)
+	select <include refid="Base_Column_List" />
+	  from clstree CLS
+     where 1 = 1
+     
+    <!-- ACL -->
+    <if test="applyAcl != null">
+  		<if test="applyAcl.setval eq 'Y'.toString()">
+  			<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_class" /> 
+  		</if>
+  	</if>
+  	
+  	<!-- limit level -->
+  	<if test="viewlevel != null">
+  		<if test="viewlevel.objenum > 0">
+  			and level <![CDATA[<=]]> #{viewlevel.objenum, jdbcType=DECIMAL} 
+  		</if>
+  	</if>
+  	
+	order by level, priority   
+    
+   </select>
+   
+  <select id="selectUpByDynamic" resultMap="JoinResultMap" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<choose>
+	    	<when test="applyAcl.setval eq 'Y'.toString()">
+	    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+	    		, 
+	    	</when>
+	    	<otherwise>
+	    		with recursive
+	    	</otherwise>
+    	</choose>
+    </if>
+    
+    <if test="applyAcl == null">
+    	with recursive
+    </if>
+      
+   clstree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_class CLS
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_class R, clstree T
+				 where R.classid = T.upid
+				 <if test="class != null" >
+				 	<if test="class.isactive != null" >
+				 		and R.ISACTIVE = #{class.isactive,jdbcType=CHAR}
+				 	</if>
+		     	 </if>
+				)
+	select <include refid="Base_Column_List" />
+	  from clstree CLS
+     where 1 = 1
+     
+    <!-- ACL -->
+    <if test="applyAcl != null">
+  		<if test="applyAcl.setval eq 'Y'.toString()">
+  			<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_class" /> 
+  		</if>
+  	</if>
+  	
+	order by level, priority   
+    
+   </select>
+   <select id="selectMarkedCountByDynamic" resultType="java.lang.Integer"  parameterType="map" >
+	    select count(*)
+	     from zapp_class CLS
+	      left outer join zapp_additoryclass ADDCLS on ADDCLS.classid = CLS.classid
+          inner join zapp_markedobject MARKOBJ on MARKOBJ.mobjid = CLS.classid
+	     where MARKOBJ.mobjtype = '00'
+	       and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+	      <if test="class != null" >
+		     and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+		  </if>
+		  <if test="additoryclass != null" >
+		     and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryClass" />
+		  </if>
+  </select> 
+  <select id="selectMarkedListByDynamic" resultMap="JoinResultMap" parameterType="map" >
+    select CLS_CLASSID
+		   , CLS_COMPANYID
+		   , CLS_CODE
+		   , CLS_UPID
+		   , CLS_HOLDERID
+		   , CLS_TYPES
+		   , CLS_PRIORITY
+		   , CLS_ISACTIVE
+           , get_classpath_upward(CLS_CLASSID) AS CLS_NAME
+           , CLS_DESCPT
+      from (
+		    select
+		        <include refid="Join_Column_List_IN" />
+		       , <include refid="com.zenithst.core.content.mapper.ZappMarkedObjectMapper.Join_Column_List_IN" />
+		     from zapp_class CLS
+		        left outer join zapp_additoryclass ADDCLS on ADDCLS.classid = CLS.classid
+         	    inner join zapp_markedobject MARKOBJ on MARKOBJ.mobjid = CLS.classid
+		     where MARKOBJ.mobjtype = '00'
+		       and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+		      <if test="class != null" >
+			     and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+			  </if>
+			  <if test="additoryclass != null" >
+			     and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryClass" />
+			  </if>
+		   ) LIST
+		   
+     	<!-- Sorting -->
+     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+     	
+     	<!-- Paging -->
+     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+  </select>   
+  <!-- [UPDATE] 우선순위 변경 (하위로) -->
+  <update id="downwardPriority" parameterType="map">
+  		update zapp_class CLS
+  		   set priority = (priority - 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}  
+  </update>
+  <!-- [UPDATE] 우선순위 변경 (상위로) -->
+  <update id="upwardPriority" parameterType="map">
+  		update zapp_class CLS
+  		   set priority = (priority + 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}   	
+  </update> 
+  <select id="selectAffiliation" resultMap="BaseResultMap" parameterType="com.zenithst.core.classification.vo.ZappClassification" >
+  	select deptid as classid
+  	  from zapp_dept
+  	 where deptid = #{classid,jdbcType=CHAR}
+  	union all
+  	select affiliationid as classid
+  	  from zapp_class
+  	 where classid = #{classid,jdbcType=CHAR}
+  	   and types = 'N2'	-- 부서
+  </select>  
+</mapper>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.log.mapper.ZappSystemLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.log.vo.ZappSystemLog" >
+    <id column="LOGID" property="logid" jdbcType="CHAR" />
+    <result column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="LOGOBJID" property="logobjid" jdbcType="VARCHAR" />
+    <result column="LOGGERID" property="loggerid" jdbcType="VARCHAR" />
+    <result column="LOGGERNAME" property="loggername" jdbcType="VARCHAR" />
+    <result column="LOGGERDEPTID" property="loggerdeptid" jdbcType="VARCHAR" />
+    <result column="LOGGERDEPTNAME" property="loggerdeptname" jdbcType="VARCHAR" />
+    <result column="LOGTIME" property="logtime" jdbcType="VARCHAR" />
+    <result column="LOGTYPE" property="logtype" jdbcType="VARCHAR" />
+    <result column="ACTION" property="action" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zenithst.core.log.vo.ZappSystemLog" extends="BaseResultMap" >
+    <result column="LOGS" property="logs" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.log.vo.ZappSystemLog" >
+    <id column="SYSLOG_LOGID" property="logid" jdbcType="CHAR" />
+    <result column="SYSLOG_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="SYSLOG_LOGOBJID" property="logobjid" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGGERID" property="loggerid" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGGERNAME" property="loggername" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGGERDEPTID" property="loggerdeptid" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGGERDEPTNAME" property="loggerdeptname" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGTIME" property="logtime" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGTYPE" property="logtype" jdbcType="VARCHAR" />
+    <result column="SYSLOG_ACTION" property="action" jdbcType="VARCHAR" />
+    <result column="SYSLOG_LOGS" property="logs" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     LOGID
+   , COMPANYID
+   , LOGOBJID
+   , LOGGERID
+   , LOGGERNAME
+   , LOGGERDEPTID
+   , LOGGERDEPTNAME
+   , LOGTIME
+   , LOGTYPE
+   , ACTION
+  </sql>
+  <sql id="Blob_Column_List" >
+    LOGS
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     SYSLOG.LOGID			AS SYSLOG_LOGID
+   , SYSLOG.COMPANYID		AS SYSLOG_COMPANYID
+   , SYSLOG.LOGOBJID		AS SYSLOG_LOGOBJID
+   , SYSLOG.LOGGERID		AS SYSLOG_LOGGERID
+   , SYSLOG.LOGGERNAME		AS SYSLOG_LOGGERNAME
+   , SYSLOG.LOGGERDEPTID	AS SYSLOG_LOGGERDEPTID
+   , SYSLOG.LOGGERDEPTNAME	AS SYSLOG_LOGGERDEPTNAME
+   , SYSLOG.LOGTIME			AS SYSLOG_LOGTIME
+   , SYSLOG.LOGTYPE			AS SYSLOG_LOGTYPE
+   , SYSLOG.ACTION			AS SYSLOG_ACTION
+   , SYSLOG.LOGS			AS SYSLOG_LOGS
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     SYSLOG_LOGID
+   , SYSLOG_COMPANYID
+   , SYSLOG_LOGOBJID
+   , SYSLOG_LOGGERID
+   , SYSLOG_LOGGERNAME
+   , SYSLOG_LOGGERDEPTID
+   , SYSLOG_LOGGERDEPTNAME
+   , SYSLOG_LOGTIME
+   , SYSLOG_LOGTYPE
+   , SYSLOG_ACTION
+   , SYSLOG_LOGS
+  </sql>
+  <sql id="All_Value_List" >
+     get_sha256(gen_random_uuid(10) || #{logid,jdbcType=CHAR})
+   , #{companyid,jdbcType=CHAR}
+   , #{logobjid,jdbcType=VARCHAR}
+   , #{loggerid,jdbcType=VARCHAR}
+   , #{loggername,jdbcType=VARCHAR}
+   , #{loggerdeptid,jdbcType=VARCHAR}
+   , #{loggerdeptname,jdbcType=VARCHAR}
+   , #{logtime,jdbcType=VARCHAR}
+   , #{logtype,jdbcType=VARCHAR}
+   , #{action,jdbcType=VARCHAR}
+   , #{logs,jdbcType=LONGVARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     get_sha256(gen_random_uuid(10) || #{batch.logid,jdbcType=CHAR})
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.logobjid,jdbcType=VARCHAR}
+   , #{batch.loggerid,jdbcType=VARCHAR}
+   , #{batch.loggername,jdbcType=VARCHAR}
+   , #{batch.loggerdeptid,jdbcType=VARCHAR}
+   , #{batch.loggerdeptname,jdbcType=VARCHAR}
+   , #{batch.logtime,jdbcType=VARCHAR}
+   , #{batch.logtype,jdbcType=VARCHAR}
+   , #{batch.action,jdbcType=VARCHAR}
+   , #{batch.logs,jdbcType=LONGVARCHAR}
+  </sql> 
+  <select id="selectByDynaimc" resultMap="ResultMapWithBLOBs" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	<include refid="Base_Column_List" />
+    	,
+    	<include refid="Blob_Column_List" />
+    from zapp_systemlog SYSLOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="ResultMapWithBLOBs" parameterType="map" >
+    select
+       <include refid="Base_Column_List" />
+     , <include refid="Blob_Column_List" />
+    from zapp_systemlog SYSLOG
+    
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    	<include refid="Base_Column_List" />
+    	,
+    	<include refid="Blob_Column_List" />
+    from zapp_systemlog
+    where LOGID = #{logid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_systemlog
+    where LOGID = #{logid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_systemlog SYSLOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.log.vo.ZappSystemLog" >
+    insert into zapp_systemlog  (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.log.vo.ZappSystemLog" >
+  </insert>  
+  <insert id="insertb" parameterType="map">
+  		insert all 
+  			<foreach collection="batch" item="batch" separator="  " >
+  				into zapp_systemlog (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />) values (<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  		select * from dual
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_systemlog SYSLOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_systemlog SYSLOG
+    <set >
+      <if test="vo.logid != null" >
+        LOGID = #{vo.logid,jdbcType=CHAR},
+      </if>
+      <if test="vo.companyid != null" >
+        COMPANYID = #{vo.companyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.logobjid != null" >
+        LOGOBJID = #{vo.logobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.loggerid != null" >
+        LOGGERID = #{vo.loggerid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.loggername != null" >
+        LOGGERNAME = #{vo.loggername,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.loggerdeptid != null" >
+        LOGGERDEPTID = #{vo.loggerdeptid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.loggerdeptname != null" >
+        LOGGERDEPTNAME = #{vo.loggerdeptname,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.logtime != null" >
+        LOGTIME = #{vo.logtime,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.logtype != null" >
+        LOGTYPE = #{vo.logtype,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.action != null" >
+        ACTION = #{vo.action,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.logs != null" >
+        LOGS = #{vo.logs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.log.vo.ZappSystemLog" >
+    update zapp_systemlog
+    <set >
+      <if test="companyid != null" >
+        COMPANYID = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="logobjid != null" >
+        LOGOBJID = #{logobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerid != null" >
+        LOGGERID = #{loggerid,jdbcType=VARCHAR},
+      </if>
+      <if test="loggername != null" >
+        LOGGERNAME = #{loggername,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerdeptid != null" >
+        LOGGERDEPTID = #{loggerdeptid,jdbcType=VARCHAR},
+      </if>
+      <if test="loggerdeptname != null" >
+        LOGGERDEPTNAME = #{loggerdeptname,jdbcType=VARCHAR},
+      </if>
+      <if test="logtime != null" >
+        LOGTIME = #{logtime,jdbcType=VARCHAR},
+      </if>
+      <if test="logtype != null" >
+        LOGTYPE = #{logtype,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null" >
+        ACTION = #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="logs != null" >
+        LOGS = #{logs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where LOGID = #{logid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_systemlog SYSLOG
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

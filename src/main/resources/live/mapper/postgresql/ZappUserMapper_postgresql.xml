@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.organ.mapper.ZappUserMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappUser" >
+    <id column="USERID" property="userid" jdbcType="CHAR" />
+    <result column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="EMPNO" property="empno" jdbcType="VARCHAR" />
+    <result column="LOGINID" property="loginid" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="PASSWD" property="passwd" jdbcType="CHAR" />
+    <result column="PASSWDSALT" property="passwdsalt" jdbcType="CHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="MACLIMIT" property="maclimit" jdbcType="VARCHAR" />
+    <result column="IPLIMIT" property="iplimit" jdbcType="VARCHAR" />
+    <result column="ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappUser" >
+    <id column="USERS_USERID" property="userid" jdbcType="CHAR" />
+    <result column="USERS_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="USERS_EMPNO" property="empno" jdbcType="VARCHAR" />
+    <result column="USERS_LOGINID" property="loginid" jdbcType="VARCHAR" />
+    <result column="USERS_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="USERS_PASSWD" property="passwd" jdbcType="CHAR" />
+    <result column="USERS_PASSWDSALT" property="passwdsalt" jdbcType="CHAR" />
+    <result column="USERS_EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="USERS_MACLIMIT" property="maclimit" jdbcType="VARCHAR" />
+    <result column="USERS_IPLIMIT" property="iplimit" jdbcType="VARCHAR" />
+    <result column="USERS_ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     USERID
+   , COMPANYID
+   , EMPNO
+   , LOGINID
+   , NAME
+   , PASSWD
+   , PASSWDSALT
+   , EMAIL
+   , MACLIMIT
+   , IPLIMIT
+   , ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     USERS.USERID		AS USERS_USERID
+   , USERS.COMPANYID	AS USERS_COMPANYID	
+   , USERS.EMPNO		AS USERS_EMPNO
+   , USERS.LOGINID		AS USERS_LOGINID
+   , USERS.NAME			AS USERS_NAME
+   , USERS.PASSWD		AS USERS_PASSWD
+   , USERS.PASSWDSALT	AS USERS_PASSWDSALT
+   , USERS.EMAIL		AS USERS_EMAIL
+   , USERS.MACLIMIT		AS USERS_MACLIMIT
+   , USERS.IPLIMIT		AS USERS_IPLIMIT
+   , USERS.ISACTIVE		AS USERS_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)	AS USERS_USERID
+   , ''						AS USERS_COMPANYID	
+   , ''						AS USERS_EMPNO
+   , ''						AS USERS_LOGINID
+   , ''						AS USERS_NAME
+   , ''						AS USERS_PASSWD
+   , ''						AS USERS_PASSWDSALT
+   , ''						AS USERS_EMAIL
+   , ''						AS USERS_MACLIMIT
+   , ''						AS USERS_IPLIMIT
+   , ''						AS USERS_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     USERS_USERID
+   , USERS_COMPANYID
+   , USERS_EMPNO
+   , USERS_LOGINID
+   , USERS_NAME
+   , USERS_PASSWD
+   , USERS_PASSWDSALT
+   , USERS_EMAIL
+   , USERS_MACLIMIT
+   , USERS_IPLIMIT
+   , USERS_ISACTIVE
+  </sql>
+  <sql id="All_Value_List" >
+     #{userid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{empno,jdbcType=VARCHAR}
+   , #{loginid,jdbcType=VARCHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{passwd,jdbcType=CHAR}
+   , #{passwdsalt,jdbcType=CHAR}
+   , #{email,jdbcType=VARCHAR}
+   , #{maclimit,jdbcType=VARCHAR}
+   , #{iplimit,jdbcType=VARCHAR}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.userid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.empno,jdbcType=VARCHAR}
+   , #{batch.loginid,jdbcType=VARCHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.passwd,jdbcType=CHAR}
+   , #{batch.passwdsalt,jdbcType=CHAR}
+   , #{batch.email,jdbcType=VARCHAR}
+   , #{batch.maclimit,jdbcType=VARCHAR}
+   , #{batch.iplimit,jdbcType=VARCHAR}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_user USERS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_user
+    where USERID = #{userid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_user
+    where USERID = #{userid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_user USERS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappUser" >
+    insert into zapp_user  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappUser" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_user (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_user USERS
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_user USERS
+    <set >
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=CHAR},
+      </if>
+      <if test="record.companyid != null" >
+        COMPANYID = #{record.companyid,jdbcType=CHAR},
+      </if>
+      <if test="record.empno != null" >
+        EMPNO = #{record.empno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loginid != null" >
+        LOGINID = #{record.loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.passwd != null" >
+        PASSWD = #{record.passwd,jdbcType=CHAR},
+      </if>
+      <if test="record.passwdsalt != null" >
+        PASSWDSALT = #{record.passwdsalt,jdbcType=CHAR},
+      </if>
+      <if test="record.email != null" >
+        EMAIL = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.maclimit != null" >
+        MACLIMIT = #{record.maclimit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iplimit != null" >
+        IPLIMIT = #{record.iplimit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isactive != null" >
+        ISACTIVE = #{record.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappUser" >
+    update zapp_user
+    <set >
+      <if test="companyid != null" >
+        COMPANYID = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="empno != null" >
+        EMPNO = #{empno,jdbcType=VARCHAR},
+      </if>
+      <if test="loginid != null" >
+        LOGINID = #{loginid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="passwd != null" >
+        PASSWD = #{passwd,jdbcType=CHAR},
+      </if>
+      <if test="passwdsalt != null" >
+        PASSWDSALT = #{passwdsalt,jdbcType=CHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="maclimit != null" >
+        MACLIMIT = #{maclimit,jdbcType=VARCHAR},
+      </if>
+      <if test="iplimit != null" >
+        IPLIMIT = #{iplimit,jdbcType=VARCHAR},
+      </if>
+      <if test="isactive != null" >
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where USERID = #{userid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_user USERS
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

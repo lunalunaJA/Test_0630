@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappContentWorkflowMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappContentWorkflow" >
+    <id column="cwfid" property="cwfid" jdbcType="CHAR" />
+    <result column="contentid" property="contentid" jdbcType="CHAR" />
+    <result column="contenttype" property="contenttype" jdbcType="VARCHAR" />
+    <result column="drafterid" property="drafterid" jdbcType="VARCHAR" />
+    <result column="draftername" property="draftername" jdbcType="VARCHAR" />
+    <result column="wferid" property="wferid" jdbcType="VARCHAR" />
+    <result column="wfername" property="wfername" jdbcType="VARCHAR" />
+    <result column="wftime" property="wftime" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappContentWorkflow" >
+    <id column="CONWF_cwfid" property="cwfid" jdbcType="CHAR" />
+    <result column="CONWF_contentid" property="contentid" jdbcType="CHAR" />
+    <result column="CONWF_contenttype" property="contenttype" jdbcType="VARCHAR" />
+    <result column="CONWF_drafterid" property="drafterid" jdbcType="VARCHAR" />
+    <result column="CONWF_draftername" property="draftername" jdbcType="VARCHAR" />
+    <result column="CONWF_wferid" property="wferid" jdbcType="VARCHAR" />
+    <result column="CONWF_wfername" property="wfername" jdbcType="VARCHAR" />
+    <result column="CONWF_wftime" property="wftime" jdbcType="VARCHAR" />
+    <result column="CONWF_comments" property="comments" jdbcType="VARCHAR" />
+    <result column="CONWF_status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     cwfid
+   , contentid
+   , contenttype
+   , drafterid
+   , draftername
+   , wferid
+   , wfername
+   , wftime
+   , comments
+   , status
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     CONWF.cwfid			AS CONWF_cwfid
+   , CONWF.contentid		AS CONWF_contentid
+   , CONWF.contenttype		AS CONWF_contenttype
+   , CONWF.drafterid		AS CONWF_drafterid
+   , CONWF.draftername		AS CONWF_draftername
+   , CONWF.wferid			AS CONWF_wferid
+   , CONWF.wfername			AS CONWF_wfername
+   , CONWF.wftime			AS CONWF_wftime
+   , CONWF.comments			AS CONWF_comments
+   , CONWF.status			AS CONWF_status
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     CONWF_cwfid
+   , CONWF_contentid
+   , CONWF_contenttype
+   , CONWF_drafterid
+   , CONWF_draftername
+   , CONWF_wferid
+   , CONWF_wfername
+   , CONWF_wftime
+   , CONWF_comments
+   , CONWF_status
+  </sql>
+  <sql id="All_Value_List" >
+     #{cwfid,jdbcType=CHAR} 
+   , #{contentid,jdbcType=CHAR}
+   , #{contenttype,jdbcType=VARCHAR}
+   , #{drafterid,jdbcType=VARCHAR}
+   , #{draftername,jdbcType=VARCHAR}
+   , #{wferid,jdbcType=VARCHAR}
+   , #{wfername,jdbcType=VARCHAR}
+   , #{wftime,jdbcType=VARCHAR}
+   , #{comments,jdbcType=VARCHAR}
+   , #{status,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.cwfid,jdbcType=CHAR}
+   , #{batch.contentid,jdbcType=CHAR}
+   , #{batch.contenttype,jdbcType=VARCHAR}
+   , #{batch.drafterid,jdbcType=VARCHAR}
+   , #{batch.draftername,jdbcType=VARCHAR}
+   , #{batch.wferid,jdbcType=VARCHAR}
+   , #{batch.wfername,jdbcType=VARCHAR}
+   , #{batch.wftime,jdbcType=VARCHAR}
+   , #{batch.comments,jdbcType=VARCHAR}
+   , #{batch.status,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynaimc" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	<include refid="Base_Column_List" />
+    from zapp_contentworkflow CONWF
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="BaseResultMap" parameterType="map" >
+    select
+       <include refid="Base_Column_List" />
+    from zapp_contentworkflow CONWF
+    
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    	<include refid="Base_Column_List" />
+    from zapp_contentworkflow
+    where cwfid = #{cwfid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_contentworkflow
+    where cwfid = #{cwfid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete CONWF from zapp_contentworkflow CONWF
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappContentWorkflow" >
+    insert into zapp_contentworkflow  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappContentWorkflow" >
+  </insert>  
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_contentworkflow (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_contentworkflow CONWF
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_contentworkflow CONWF
+    <set >
+      <if test="vo.cwfid != null" >
+        cwfid = #{vo.cwfid,jdbcType=CHAR},
+      </if>
+      <if test="vo.contentid != null" >
+        contentid = #{vo.contentid,jdbcType=CHAR},
+      </if>
+      <if test="vo.contenttype != null" >
+        contenttype = #{vo.contenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.drafterid != null" >
+        drafterid = #{vo.drafterid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.draftername != null" >
+        draftername = #{vo.draftername,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.wferid != null" >
+        wferid = #{vo.wferid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.wfername != null" >
+        wfername = #{vo.wfername,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.wftime != null" >
+        wftime = #{vo.wftime,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.comments != null" >
+        comments = #{vo.comments,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.status != null" >
+        status = #{vo.status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappContentWorkflow" >
+    update zapp_contentworkflow
+    <set >
+      <if test="contentid != null" >
+        contentid = #{contentid,jdbcType=CHAR},
+      </if>
+      <if test="contenttype != null" >
+        contenttype = #{contenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="drafterid != null" >
+        drafterid = #{drafterid,jdbcType=VARCHAR},
+      </if>
+      <if test="draftername != null" >
+        draftername = #{draftername,jdbcType=VARCHAR},
+      </if>
+      <if test="wferid != null" >
+        wferid = #{wferid,jdbcType=VARCHAR},
+      </if>
+      <if test="wfername != null" >
+        wfername = #{wfername,jdbcType=VARCHAR},
+      </if>
+      <if test="wftime != null" >
+        wftime = #{wftime,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+     </set>
+    where cwfid = #{cwfid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_contentworkflow CONWF
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zenithst.core.organ.mapper.ZappDeptMapper">
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappDept">
+    <id column="DEPTID" jdbcType="CHAR" property="deptid" />
+    <result column="COMPANYID" jdbcType="CHAR" property="companyid" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="UPID" jdbcType="CHAR" property="upid" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="ABBRNAME" jdbcType="VARCHAR" property="abbrname" />
+    <result column="PRIORITY" jdbcType="DECIMAL" property="priority" />
+    <result column="ISACTIVE" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappDept">
+    <id column="DEPT_DEPTID" jdbcType="CHAR" property="deptid" />
+    <result column="DEPT_COMPANYID" jdbcType="CHAR" property="companyid" />
+    <result column="DEPT_NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DEPT_UPID" jdbcType="CHAR" property="upid" />
+    <result column="DEPT_CODE" jdbcType="VARCHAR" property="code" />
+    <result column="DEPT_ABBRNAME" jdbcType="VARCHAR" property="abbrname" />
+    <result column="DEPT_PRIORITY" jdbcType="DECIMAL" property="priority" />
+    <result column="DEPT_ISACTIVE" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+     DEPTID
+   , COMPANYID
+   , NAME
+   , UPID
+   , CODE
+   , ABBRNAME
+   , PRIORITY
+   , ISACTIVE
+  </sql>
+  <sql id="Base_Column_List_Alias" >
+     R.DEPTID
+   , R.COMPANYID
+   , R.NAME
+   , R.UPID
+   , R.CODE
+   , R.ABBRNAME
+   , R.PRIORITY
+   , R.ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     DEPT.DEPTID			AS DEPT_DEPTID
+   , DEPT.COMPANYID			AS DEPT_COMPANYID
+   , DEPT.NAME				AS DEPT_NAME
+   , DEPT.UPID				AS DEPT_UPID
+   , DEPT.CODE				AS DEPT_CODE
+   , DEPT.ABBRNAME			AS DEPT_ABBRNAME
+   , DEPT.PRIORITY			AS DEPT_PRIORITY
+   , DEPT.ISACTIVE			AS DEPT_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)	AS DEPT_DEPTID
+   , ''						AS DEPT_COMPANYID
+   , ''						AS DEPT_NAME
+   , ''						AS DEPT_UPID
+   , ''						AS DEPT_CODE
+   , ''						AS DEPT_ABBRNAME
+   , 0						AS DEPT_PRIORITY
+   , ''						AS DEPT_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     DEPT_DEPTID
+   , DEPT_COMPANYID
+   , DEPT_NAME
+   , DEPT_UPID
+   , DEPT_CODE
+   , DEPT_ABBRNAME
+   , DEPT_PRIORITY
+   , DEPT_ISACTIVE
+  </sql>
+  <sql id="All_Value_List" >
+     #{deptid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{upid,jdbcType=CHAR}
+   , #{code,jdbcType=VARCHAR}
+   , #{abbrname,jdbcType=VARCHAR}
+   , #{priority,jdbcType=DECIMAL}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.deptid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.upid,jdbcType=CHAR}
+   , #{batch.code,jdbcType=VARCHAR}
+   , #{batch.abbrname,jdbcType=VARCHAR}
+   , #{batch.priority,jdbcType=DECIMAL}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zapp_dept DEPT
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null">
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_dept
+    where DEPTID = #{deptid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zapp_dept
+    where DEPTID = #{deptid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic">
+    delete DEPT from zapp_dept DEPT
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappDept">
+    insert into zapp_dept  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappDept">
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_dept (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer">
+    select count(*) from zapp_dept DEPT
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map">
+    update zapp_dept DEPT
+    <set>
+      <if test="vo.deptid != null">
+        DEPTID = #{vo.deptid,jdbcType=CHAR},
+      </if>
+      <if test="vo.companyid != null">
+        COMPANYID = #{vo.companyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.name != null">
+        NAME = #{vo.name,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.upid != null">
+        UPID = #{vo.upid,jdbcType=CHAR},
+      </if>
+      <if test="vo.code != null">
+        CODE = #{vo.code,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.abbrname != null">
+        ABBRNAME = #{vo.abbrname,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.priority != null">
+      	<if test="vo.priority > 0">
+        	PRIORITY = #{vo.priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="vo.isactive != null">
+        ISACTIVE = #{vo.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappDept">
+    update zapp_dept
+    <set>
+      <if test="companyid != null">
+        COMPANYID = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="upid != null">
+        UPID = #{upid,jdbcType=CHAR},
+      </if>
+      <if test="code != null">
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="abbrname != null">
+        ABBRNAME = #{abbrname,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+      	<if test="priority > 0">
+       		PRIORITY = #{priority,jdbcType=DECIMAL},
+       	</if>
+      </if>
+      <if test="isactive != null">
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where DEPTID = #{deptid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_dept DEPT
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+  <select id="selectNextPriority" resultType="java.lang.Integer"  parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+	select (case (select 1
+				   from dual
+				   where EXISTS(select 1
+					    	     from zapp_dept DEPT
+						        <if test="_parameter != null" >
+									<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								</if>)
+					 )
+			        when 1 then (select (coalesce(max(priority),0) + 1)
+							       from zapp_dept DEPT
+								   <if test="_parameter != null" >
+									 <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								   </if>
+								)
+			    	else 1
+			     	end)
+	  from dual
+  </select>
+  <resultMap id="JoinResultMap_01" type="com.zenithst.core.organ.vo.ZappDept" extends="JoinResultMap">
+    <result column="DEPT_hasfolder" jdbcType="CHAR" property="objIncLower" />
+  </resultMap>    
+  <select id="selectDownByDynamic" resultMap="JoinResultMap_01" parameterType="map" >
+    with recursive depttree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_dept DEPT
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_dept R, depttree T
+				 where R.upid = T.deptid
+				)
+	select <include refid="Base_Column_List" />
+	     , hasFolder(CLS.deptid, 'N2') as DEPT_hasfolder
+	  from depttree CLS
+     where 1 = 1
+	order by level, priority   
+    
+  </select>
+  <select id="selectUpByDynamic" resultMap="JoinResultMap" parameterType="map" >
+   with recursive depttree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_dept DEPT
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_dept R, depttree T
+				 where R.deptid = T.upid
+				)
+	select <include refid="Base_Column_List" />
+	  from depttree CLS
+     where 1 = 1
+	order by level, priority   
+    
+   </select>
+  <!-- [UPDATE] 우선순위 변경 (하위로) -->
+  <update id="downwardPriority" parameterType="map">
+  		update zapp_dept DEPT
+  		   set priority = (priority - 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}  
+  </update>
+  <!-- [UPDATE] 우선순위 변경 (상위로) -->
+  <update id="upwardPriority" parameterType="map">
+  		update zapp_dept DEPT
+  		   set priority = (priority + 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}     	
+  </update>      
+</mapper>

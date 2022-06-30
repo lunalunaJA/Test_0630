@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.organ.mapper.ZappGroupUserMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappGroupUser" >
+    <id column="groupuserid" property="groupuserid" jdbcType="CHAR" />
+    <result column="groupid" property="groupid" jdbcType="CHAR" />
+    <result column="gobjid" property="gobjid" jdbcType="VARCHAR" />
+    <result column="gobjtype" property="gobjtype" jdbcType="VARCHAR" />
+    <result column="gobjseq" property="gobjseq" jdbcType="INTEGER" />
+    <result column="editable" property="editable" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.organ.vo.ZappGroupUserExtend" extends="BaseResultMap" >
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappGroupUser" >
+    <id column="groupuser_groupuserid" property="groupuserid" jdbcType="CHAR" />
+    <result column="groupuser_groupid" property="groupid" jdbcType="CHAR" />
+    <result column="groupuser_gobjid" property="gobjid" jdbcType="VARCHAR" />
+    <result column="groupuser_gobjtype" property="gobjtype" jdbcType="VARCHAR" />
+    <result column="groupuser_gobjseq" property="gobjseq" jdbcType="INTEGER" />
+    <result column="groupuser_editable" property="editable" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.organ.vo.ZappGroupUserExtend" extends="JoinResultMap" >
+    <!-- [ASSOCIATION:has-one:resultMap] 부서  -->
+	<association property="zappDept" 
+				 column="DEPT_DEPTID" 
+				 javaType="com.zenithst.core.organ.vo.ZappDept" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappDeptMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 사용자  -->
+	<association property="zappUser" 
+				 column="USERS_USERID" 
+				 javaType="com.zenithst.core.organ.vo.ZappUser" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappUserMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 직위  -->
+	<association property="zappPosition" 
+				 column="POS_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapPosition"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 직무  -->
+	<association property="zappDuty" 
+				 column="DUTY_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapDuty"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 보안등급  -->
+	<association property="zappSecurity" 
+				 column="SECURE_CODEID" 
+				 javaType="com.zenithst.core.system.vo.ZappCode" 
+				 resultMap="com.zenithst.core.system.mapper.ZappCodeMapper.JoinResultMapSecurity"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+     groupuserid
+   , gobjid
+   , groupid
+   , gobjtype
+   , gobjseq
+  </sql>
+  <sql id="Virtual_Column_List" >
+     editable
+  </sql>  
+  <sql id="Join_Column_List_IN" >
+     groupuser.groupuserid		AS groupuser_groupuserid
+   , groupuser.gobjid			AS groupuser_gobjid
+   , groupuser.groupid			AS groupuser_groupid
+   , groupuser.gobjtype			AS groupuser_gobjtype
+   , groupuser.gobjseq			AS groupuser_gobjseq
+   , groupuser.editable			AS groupuser_editable
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     groupuser_groupuserid
+   , groupuser_gobjid
+   , groupuser_groupid
+   , groupuser_gobjtype
+   , groupuser_gobjseq
+   , groupuser_editable
+  </sql>
+  <sql id="All_Value_List" >
+     #{groupuserid,jdbcType=CHAR}
+   , #{gobjid,jdbcType=VARCHAR}
+   , #{groupid,jdbcType=CHAR}
+   , #{gobjtype,jdbcType=VARCHAR}
+   , #{gobjseq,jdbcType=INTEGER}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.groupuserid,jdbcType=CHAR}
+   , #{batch.gobjid,jdbcType=VARCHAR}
+   , #{batch.groupid,jdbcType=CHAR}
+   , #{batch.gobjtype,jdbcType=VARCHAR}
+   , #{batch.gobjseq,jdbcType=INTEGER}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />, <include refid="Virtual_Column_List" />
+    from zapp_groupuser_mv groupuser
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="JoinResultMapExtend">
+  	select
+  	 	<include refid="Join_Column_List_OUT" />
+      , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_OUT" />
+   	  , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_OUT" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Position" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Duty" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Security" />
+  	 from (
+		    select <include refid="Join_Column_List_IN" />
+		         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+		    	 , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security_Blank" />
+		     from zapp_groupuser_mv groupuser
+		      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = groupuser.gobjid
+		     where groupuser.gobjtype = '02'	-- 부서
+		    <if test="_parameter != null">
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		    union all  
+		    select <include refid="Join_Column_List_IN" />
+		         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN_Blank" />
+		    	 , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+		     from zapp_groupuser_mv groupuser
+		      inner join ZAPP_DEPTUSER DEPTUSER on DEPTUSER.DEPTUSERID = groupuser.gobjid
+		      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+		      inner join ZAPP_USER USERS on USERS.USERID = DEPTUSER.USERID
+		      left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+		      left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+		      left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+		    where groupuser.gobjtype = '01'	-- 사용자
+		    <if test="_parameter != null">
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		   ) ILST
+     order by POS_PRIORITY
+  </select>
+  <select id="selectExtendAclByDynamic" parameterType="map" resultMap="JoinResultMapExtend">
+  	select
+  	 	<include refid="Join_Column_List_OUT" />
+      , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_OUT" />
+   	  , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_OUT" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Position" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Duty" />
+   	  , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_OUT_Security" />
+  	 from (
+		    select <include refid="Join_Column_List_IN" />
+		         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+		    	 , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty_Blank" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security_Blank" />
+		     from zapp_groupuser_mv groupuser
+		      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = groupuser.gobjid
+		     where groupuser.gobjtype = '02'	-- 부서
+		    <if test="_parameter != null">
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		    union all  
+		    select <include refid="Join_Column_List_IN" />
+		         , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN_Blank" />
+		    	 , <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+		    	 , <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+		     from zapp_groupuser_mv groupuser
+		      inner join ZAPP_DEPTUSER DEPTUSER on DEPTUSER.DEPTUSERID = groupuser.gobjid
+		      inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+		      inner join ZAPP_USER USERS on USERS.USERID = DEPTUSER.USERID
+		      left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+		      left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+		      left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+		    where groupuser.gobjtype = '01'	-- 사용자
+		    <if test="_parameter != null">
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_GroupUser" />
+		    </if>
+		   ) ILST
+     order by POS_PRIORITY
+  </select>  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />, <include refid="Virtual_Column_List" />
+    from zapp_groupuser_mv
+    where groupuserid = #{groupuserid,jdbcType=CHAR}
+  </select>
+  <select id="selectExtendByPrimaryKey" parameterType="java.lang.String" resultMap="JoinResultMapExtend">
+    select 
+    	  <include refid="Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+    from zapp_groupuser_mv groupuser
+     inner join ZAPP_DEPTUSER DEPTUSER on DEPTUSER.DEPTUSERID = groupuser.groupid
+     inner join ZAPP_DEPT DEPT on DEPT.DEPTID = DEPTUSER.DEPTID
+     inner join ZAPP_USER USERS on USERS.groupid = DEPTUSER.groupid
+     left join ZAPP_CODE as POS on DEPTUSER.POSITIONID = POS.CODEID
+     left join ZAPP_CODE as DUTY on DEPTUSER.DUTYID = DUTY.CODEID
+     left join ZAPP_CODE as SECURE on DEPTUSER.SECLEVELID = SECURE.CODEID
+    where groupuser.groupuserid = #{groupuserid,jdbcType=CHAR}
+  </select>  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_groupuser
+    where groupuserid = #{groupuserid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete groupuser from zapp_groupuser groupuser
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <delete id="deleteByCompany" parameterType="java.lang.String" >
+    delete from zapp_groupuser
+    where groupid in (select groupid
+    					from zapp_group 
+    				   where companyid = #{companyid,jdbcType=CHAR}) 
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappGroupUser" >
+    insert into zapp_groupuser  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappGroupUser" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_groupuser (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_groupuser_mv groupuser
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_groupuser groupuser
+    <set >
+      <if test="record.groupuserid != null" >
+        groupuserid = #{record.groupuserid,jdbcType=CHAR},
+      </if>
+      <if test="record.gobjid != null" >
+        gobjid = #{record.gobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupid != null" >
+        groupid = #{record.groupid,jdbcType=CHAR},
+      </if>
+      <if test="record.gobjtype != null" >
+        gobjtype = #{record.gobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issupervisor != null" >
+        issupervisor = #{record.issupervisor,jdbcType=CHAR},
+      </if>     
+      <if test="record.gobjseq != null" >
+      	<if test="record.gobjseq > 0" >
+        	gobjseq = #{record.gobjseq,jdbcType=INTEGER},
+        </if>
+      </if>    
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappGroupUser" >
+    update zapp_groupuser
+    <set >
+      <if test="gobjid != null" >
+        gobjid = #{gobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="groupid != null" >
+        groupid = #{groupid,jdbcType=CHAR},
+      </if>
+      <if test="gobjtype != null" >
+        gobjtype = #{gobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="gobjseq != null" >
+      	<if test="gobjseq > 0" >
+        	gobjseq = #{gobjseq,jdbcType=INTEGER},
+        </if>
+      </if>   
+    </set>
+    where groupuserid = #{groupuserid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from dual 
+     where exists (select 1
+    		         from zapp_groupuser_mv groupuser
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+ <select id="refreshView" statementType="CALLABLE" parameterType="com.zenithst.core.organ.vo.ZappGroupUser">
+	call sp_dummy()
+ </select>    
+</mapper>

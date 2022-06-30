@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.log.mapper.ZappCycleLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.log.vo.ZappCycleLog" >
+    <id column="cycleid" property="cycleid" jdbcType="CHAR" />
+    <result column="companyid" property="companyid" jdbcType="CHAR" />
+    <result column="cycletime" property="cycletime" jdbcType="VARCHAR" />
+    <result column="cycletype" property="cycletype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zenithst.core.log.vo.ZappCycleLog" extends="BaseResultMap" >
+    <result column="cyclelogs" property="cyclelogs" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.log.vo.ZappCycleLog" >
+    <id column="CYCLELOG_cycleid" property="cycleid" jdbcType="CHAR" />
+    <result column="CYCLELOG_companyid" property="companyid" jdbcType="CHAR" />
+    <result column="CYCLELOG_cycletime" property="cycletime" jdbcType="VARCHAR" />
+    <result column="CYCLELOG_cycletype" property="cycletype" jdbcType="VARCHAR" />
+    <result column="CYCLELOG_cyclelogs" property="cyclelogs" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    cycleid
+  , companyid
+  , cycletime
+  , cycletype
+  </sql>
+  <sql id="Blob_Column_List" >
+    cyclelogs
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     CYCLELOG.cycleid			AS CYCLELOG_cycleid
+   , CYCLELOG.companyid			AS CYCLELOG_companyid
+   , CYCLELOG.cycletime			AS CYCLELOG_cycletime
+   , CYCLELOG.cycletype			AS CYCLELOG_cycletype
+   , CYCLELOG.cyclelogs			AS CYCLELOG_cyclelogs
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     CYCLELOG_cycleid
+   , CYCLELOG_companyid
+   , CYCLELOG_cycletime
+   , CYCLELOG_cycletype
+   , CYCLELOG_cyclelogs
+  </sql> 
+  <sql id="All_Value_List" >
+     #{cycleid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{cycletime,jdbcType=VARCHAR}
+   , #{cycletype,jdbcType=VARCHAR}
+   , #{cyclelogs,jdbcType=LONGVARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.cycleid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.cycletime,jdbcType=VARCHAR}
+   , #{batch.cycletype,jdbcType=VARCHAR}
+   , #{batch.cyclelogs,jdbcType=LONGVARCHAR}
+  </sql>
+  <!-- INSERT -->
+  <insert id="insert" parameterType="com.zenithst.core.log.vo.ZappCycleLog" >
+    insert into zapp_cyclelog (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.log.vo.ZappCycleLog" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+	insert into zapp_cyclelog (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />) values 
+		<foreach collection="batch" item="batch" separator=" , " >
+			(<include refid="Batch_All_Value_List" />)
+		</foreach>
+  </insert>
+  <!-- UPDATE -->
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_cyclelog CYCLELOG
+    <set >
+      <if test="vo.cycleid != null" >
+        cycleid = #{vo.cycleid,jdbcType=CHAR},
+      </if>
+      <if test="vo.companyid != null" >
+        companyid = #{vo.companyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.cycletime != null" >
+        cycletime = #{vo.cycletime,jdbcType=CHAR},
+      </if>
+      <if test="vo.cycletype != null" >
+        cycletype = #{vo.cycletype,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.cyclelogs != null" >
+        cyclelogs = #{vo.cyclelogs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zenithst.core.log.vo.ZappCycleLog" >
+    update zapp_cyclelog
+    <set >
+      <if test="companyid != null" >
+        companyid = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="cycletime != null" >
+        cycletime = #{cycletime,jdbcType=CHAR},
+      </if>
+      <if test="cycletype != null" >
+        cycletype = #{cycletype,jdbcType=VARCHAR},
+      </if>
+      <if test="cyclelogs != null" >
+        cyclelogs = #{cyclelogs,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where cycleid = #{cycleid,jdbcType=CHAR}
+  </update>
+  <select id="selectByDynamic" resultMap="ResultMapWithBLOBs" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+       <include refid="Base_Column_List" />
+     , <include refid="Blob_Column_List" />
+    from zapp_cyclelog CYCLELOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="ResultMapWithBLOBs" parameterType="map" >
+    select
+       <include refid="Base_Column_List" />
+     , <include refid="Blob_Column_List" />
+    from zapp_cyclelog CYCLELOG
+    
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    	<include refid="Base_Column_List" />
+      , <include refid="Blob_Column_List" />
+    from zapp_cyclelog
+    where cycleid = #{cycleid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_cyclelog
+    where cycleid = #{cycleid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_cyclelog CYCLELOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_cyclelog CYCLELOG
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_cyclelog CYCLELOG
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>  
+</mapper>

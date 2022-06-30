@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <!-- Korean Message / Caption -->
+  <util:properties id="msg_ko" location="classpath:message/Zenithst_Message_ko.xml" />
+  <util:properties id="cap_ko" location="classpath:message/Zenithst_Caption_ko.xml" />
+  <!-- English Message / Caption -->
+  <util:properties id="msg_en" location="classpath:message/Zenithst_Message_en.xml" />
+  <util:properties id="cap_en" location="classpath:message/Zenithst_Caption_en.xml" />
+  
+    <!-- English Message / Caption -->
+  <util:properties id="msg_se" location="classpath:message/Zenithst_Message_en.xml" />
+  <util:properties id="cap_se" location="classpath:message/Zenithst_Caption_en.xml" />
+    
+  <!-- configuration -->
+  <util:properties id="archiveconfig" location="classpath:config/Archive_Config.xml" />
+</beans>

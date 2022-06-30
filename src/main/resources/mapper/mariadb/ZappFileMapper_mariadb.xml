@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappFileMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappFile" >
+    <id column="MFILEID" property="mfileid" jdbcType="CHAR" />
+    <result column="FNO" property="fno" jdbcType="VARCHAR" />
+    <result column="RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="DISCARDERID" property="discarderid" jdbcType="VARCHAR" />
+    <result column="ext" property="ext" jdbcType="VARCHAR" />
+    <result column="dynamic01" property="dynamic01" jdbcType="VARCHAR" />
+    <result column="dynamic02" property="dynamic02" jdbcType="VARCHAR" />
+    <result column="dynamic03" property="dynamic03" jdbcType="VARCHAR" />
+    <result column="drafter" property="drafter" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="SECLEVEL" property="seclevel" jdbcType="INTEGER" />    
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappFile" >
+    <id column="ZAPP_MFILE_MFILEID" property="mfileid" jdbcType="CHAR" />
+    <result column="ZAPP_MFILE_FNO" property="fno" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="ZAPP_MFILE_EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_DISCARDERID" property="discarderid" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_ext" property="ext" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic01" property="dynamic01" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic02" property="dynamic02" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic03" property="dynamic03" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_drafterid" property="drafter" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_summary" property="summary" jdbcType="VARCHAR" />  
+    <result column="ZAPP_MFILE_SECLEVEL" property="seclevel" jdbcType="INTEGER" />          
+  </resultMap>
+  <resultMap id="JoinResultMap_All" type="com.zenithst.core.content.vo.ZappFile" extends="com.zenithst.archive.mapper.ZArchMFileMapper.LinkResultMap">
+    <result column="ZAPP_MFILE_FNO" property="fno" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="ZAPP_MFILE_EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_DISCARDERID" property="discarderid" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_ext" property="ext" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic01" property="dynamic01" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic02" property="dynamic02" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_dynamic03" property="dynamic03" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_drafterid" property="drafter" jdbcType="VARCHAR" />
+    <result column="ZAPP_MFILE_summary" property="summary" jdbcType="VARCHAR" />    
+    <result column="ZAPP_MFILE_SECLEVEL" property="seclevel" jdbcType="INTEGER" />    
+  </resultMap>
+  <resultMap id="JoinResultMap_All_IncFile" type="com.zenithst.core.content.vo.ZappFile" extends="JoinResultMap">
+    <result column="maxhashid" property="maxhashid" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+      MFILEID
+    , FNO
+    , RETENTIONID
+    , EXPIRETIME
+    , HOLDERID
+    , DISCARDERID
+    , ext
+    , dynamic01
+    , dynamic02
+    , dynamic03
+    , drafter
+    , summary
+    , SECLEVEL
+  </sql>
+  <sql id="Join_Column_List_IN" >
+      ZAPP_MFILE.MFILEID		AS ZAPP_MFILE_MFILEID
+    , ZAPP_MFILE.FNO			AS ZAPP_MFILE_FNO
+    , ZAPP_MFILE.RETENTIONID	AS ZAPP_MFILE_RETENTIONID
+    , ZAPP_MFILE.EXPIRETIME	AS ZAPP_MFILE_EXPIRETIME
+    , ZAPP_MFILE.HOLDERID		AS ZAPP_MFILE_HOLDERID
+    , ZAPP_MFILE.DISCARDERID	AS ZAPP_MFILE_DISCARDERID
+    , ZAPP_MFILE.ext			AS ZAPP_MFILE_ext
+    , ZAPP_MFILE.dynamic01			AS ZAPP_MFILE_dynamic01
+    , ZAPP_MFILE.dynamic02			AS ZAPP_MFILE_dynamic02
+    , ZAPP_MFILE.dynamic03			AS ZAPP_MFILE_dynamic03
+    , ZAPP_MFILE.drafter			AS ZAPP_MFILE_drafter
+    , ZAPP_MFILE.summary			AS ZAPP_MFILE_summary
+    , ZAPP_MFILE.SECLEVEL			AS ZAPP_MFILE_SECLEVEL
+  </sql>
+  <sql id="Join_Column_List_IN_Archive" >
+      ZA_MFILE.mfileid 	  AS ZA_MFILE_mfileid
+  	, ZA_MFILE.linkid 	  AS ZA_MFILE_linkid
+  	, ZA_MFILE.seq 		  AS ZA_MFILE_seq
+  	, ZA_MFILE.creator    AS ZA_MFILE_creator
+  	, ZA_MFILE.createtime AS ZA_MFILE_createtime
+  	, ZA_MFILE.updatetime AS ZA_MFILE_updatetime
+  	, ZA_MFILE.state 	  AS ZA_MFILE_state
+  	, ZA_MFILE.filename   AS ZA_MFILE_filename
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     ''						AS ZAPP_MFILE_MFILEID
+    , ''					AS ZAPP_MFILE_FNO
+    , ''					AS ZAPP_MFILE_RETENTIONID
+    , ''					AS ZAPP_MFILE_EXPIRETIME
+    , ''					AS ZAPP_MFILE_HOLDERID
+    , ''					AS ZAPP_MFILE_DISCARDERID
+    , ''					AS ZAPP_MFILE_ext
+    , ''					AS ZAPP_MFILE_dynamic01
+    , ''					AS ZAPP_MFILE_dynamic02
+    , ''					AS ZAPP_MFILE_dynamic03
+    , ''					AS ZAPP_MFILE_drafter
+    , ''					AS ZAPP_MFILE_summary
+    , 0						AS ZAPP_MFILE_SECLEVEL
+    ,  get_random_string(20) AS ZA_MFILE_mfileid
+  	,  '' 	  				AS ZA_MFILE_linkid
+  	, 0 		  			AS ZA_MFILE_seq
+  	, ''    				AS ZA_MFILE_creator
+  	, '' 					AS ZA_MFILE_createtime
+  	, '' 					AS ZA_MFILE_updatetime
+  	, '' 	  				AS ZA_MFILE_state
+  	, ''   					AS ZA_MFILE_filename    
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     ZAPP_MFILE_MFILEID
+   , ZAPP_MFILE_FNO
+   , ZAPP_MFILE_RETENTIONID
+   , ZAPP_MFILE_EXPIRETIME
+   , ZAPP_MFILE_HOLDERID
+   , ZAPP_MFILE_DISCARDERID
+   , ZAPP_MFILE_ext
+   , ZAPP_MFILE_dynamic01
+   , ZAPP_MFILE_dynamic02
+   , ZAPP_MFILE_dynamic01
+   , ZAPP_MFILE_drafter
+   , ZAPP_MFILE_summary
+   , ZAPP_MFILE_SECLEVEL
+  </sql>   
+  <sql id="Join_Column_List_OUT_All" >
+     ZAPP_MFILE_MFILEID
+   , ZAPP_MFILE_FNO
+   , ZAPP_MFILE_RETENTIONID
+   , ZAPP_MFILE_EXPIRETIME
+   , ZAPP_MFILE_HOLDERID
+   , ZAPP_MFILE_DISCARDERID
+   , ZAPP_MFILE_ext
+   , ZAPP_MFILE_dynamic01
+   , ZAPP_MFILE_dynamic02
+   , ZAPP_MFILE_dynamic03
+   , ZAPP_MFILE_drafter
+   , ZAPP_MFILE_summary
+   , ZAPP_MFILE_SECLEVEL
+   , ZA_MFILE_linkid
+   , ZA_MFILE_seq
+   , ZA_MFILE_creator
+   , ZA_MFILE_createtime
+   , ZA_MFILE_updatetime
+   , ZA_MFILE_state
+   , ZA_MFILE_filename
+  </sql>
+  <sql id="All_Value_List" >
+     #{mfileid,jdbcType=CHAR}
+   , #{fno,jdbcType=VARCHAR}
+   , #{retentionid,jdbcType=CHAR}
+   , #{expiretime,jdbcType=VARCHAR}
+   , #{holderid,jdbcType=VARCHAR}
+   , #{discarderid,jdbcType=VARCHAR}
+   , #{ext,jdbcType=VARCHAR}
+   , #{dynamic01,jdbcType=VARCHAR}
+   , #{dynamic02,jdbcType=VARCHAR}
+   , #{dynamic03,jdbcType=VARCHAR}
+   , #{drafter,jdbcType=VARCHAR}
+   , #{summary,jdbcType=VARCHAR}
+   , #{seclevel,jdbcType=INTEGER}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.mfileid,jdbcType=CHAR}
+   , #{batch.fno,jdbcType=VARCHAR}
+   , #{batch.retentionid,jdbcType=CHAR}
+   , #{batch.expiretime,jdbcType=VARCHAR}
+   , #{batch.holderid,jdbcType=VARCHAR}
+   , #{batch.discarderid,jdbcType=VARCHAR}
+   , #{batch.ext,jdbcType=VARCHAR}
+   , #{batch.dynamic01,jdbcType=VARCHAR}
+   , #{batch.dynamic02,jdbcType=VARCHAR}
+   , #{batch.dynamic03,jdbcType=VARCHAR}
+   , #{batch.drafter,jdbcType=VARCHAR}
+   , #{batch.summary,jdbcType=VARCHAR}
+   , #{batch.seclevel,jdbcType=INTEGER}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_mfile ZAPP_MFILE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_mfile
+    where MFILEID = #{mfileid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_mfile
+    where MFILEID = #{mfileid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete ZAPP_MFILE from zapp_mfile ZAPP_MFILE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappFile" >
+    insert into zapp_mfile (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappFile" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_mfile (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_mfile ZAPP_MFILE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_mfile ZAPP_MFILE
+    <set >
+      <if test="record.mfileid != null" >
+        MFILEID = #{record.mfileid,jdbcType=CHAR},
+      </if>
+      <if test="record.fno != null" >
+        FNO = #{record.fno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retentionid != null" >
+        RETENTIONID = #{record.retentionid,jdbcType=CHAR},
+      </if>
+      <if test="record.expiretime != null" >
+        EXPIRETIME = #{record.expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.holderid != null" >
+        HOLDERID = #{record.holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.discarderid != null" >
+        DISCARDERID = #{record.discarderid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ext != null" >
+        ext = #{record.ext,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic01 != null" >
+        dynamic01 = #{record.dynamic01,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic02 != null" >
+        dynamic02 = #{record.dynamic02,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dynamic03 != null" >
+        dynamic03 = #{record.dynamic03,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drafter != null" >
+        drafter = #{record.drafter,jdbcType=VARCHAR},
+      </if>
+      <if test="record.summary != null" >
+        summary = #{record.summary,jdbcType=VARCHAR},
+      </if>
+      <if test="record.seclevel != null" >
+        <if test="record.seclevel > 0" >
+        	SECLEVEL = #{record.seclevel,jdbcType=INTEGER},
+        </if>
+      </if>       
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappFile" >
+    update zapp_mfile
+    <set >
+      <if test="fno != null" >
+        FNO = #{fno,jdbcType=VARCHAR},
+      </if>
+      <if test="retentionid != null" >
+        RETENTIONID = #{retentionid,jdbcType=CHAR},
+      </if>
+      <if test="expiretime != null" >
+        EXPIRETIME = #{expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="holderid != null" >
+        HOLDERID = #{holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="discarderid != null" >
+        DISCARDERID = #{discarderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ext != null" >
+        ext = #{ext,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic01 != null" >
+        dynamic01 = #{dynamic01,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic02 != null" >
+        dynamic02 = #{dynamic02,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic03 != null" >
+        dynamic03 = #{dynamic03,jdbcType=VARCHAR},
+      </if>
+      <if test="drafter != null" >
+        drafter = #{drafter,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>      
+      <if test="seclevel != null" >
+        <if test="seclevel > 0" >
+        	SECLEVEL = #{seclevel,jdbcType=INTEGER},
+        </if>
+      </if>       
+    </set>
+    where MFILEID = #{mfileid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_mfile ZAPP_MFILE
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+  <select id="selectByFilename" resultMap="JoinResultMap_All_IncFile" parameterType="map" >
+    select *
+      from (
+			select <include refid="Join_Column_List_IN" />
+			     , <include refid="Join_Column_List_IN_Archive" />
+			     , get_fileid_by_maxversion(ZA_MFILE.mfileid) AS maxhashid
+			     , get_max_version_filename(ZA_MFILE.mfileid) as maxfilename
+		      from zarch_mfile ZA_MFILE
+		          , zapp_mfile ZAPP_MFILE
+				  , zapp_classobject CLSOBJ
+		     where ZA_MFILE.mfileid = ZAPP_MFILE.mfileid
+		       and ZA_MFILE.mfileid = CLSOBJ.cobjid
+		       and CLSOBJ.cobjtype = '02'
+		       and CLSOBJ.classid = #{class.classid,jdbcType=CHAR} ) maxinfo
+	 where maxinfo.maxfilename = #{file.filename,jdbcType=VARCHAR}
+  </select>
+  <resultMap id="VersionResultMap" type="com.zenithst.core.content.vo.ZappVersion" extends="com.zenithst.archive.mapper.ZArchVersionMapper.LinkResultMap">
+    
+    <result column="ZA_VERSION_CREATORNAME" property="creatorname" jdbcType="VARCHAR" />
+    
+	<!-- [ASSOCIATION:has-one:resultMap] 유일 파일  -->
+	<association property="zArchFile" 
+				 column="ZA_UFILE_UFILEID" 
+				 javaType="com.zenithst.archive.vo.ZArchFile" 
+				 resultMap="com.zenithst.archive.mapper.ZArchFileMapper.LinkResultMap"/>
+				 
+	<!-- [ASSOCIATION:has-one:resultMap] 포맷  -->
+	<association property="zArchFormat" 
+				 column="ZA_FORMAT_FORMATID" 
+				 javaType="com.zenithst.archive.vo.ZArchFormat" 
+				 resultMap="com.zenithst.archive.mapper.ZArchFormatMapper.LinkResultMap"/>
+				 				   	
+  </resultMap>
+  <select id="selectByVersion" 
+          resultMap="VersionResultMap" 
+          parameterType="map" >
+    select
+        <include refid="com.zenithst.archive.mapper.ZArchVersionMapper.Link_Column_List" />
+      , <include refid="com.zenithst.archive.mapper.ZArchFileMapper.Link_Column_List" />
+      , <include refid="com.zenithst.archive.mapper.ZArchFormatMapper.Link_Column_List" />
+      , get_name_by_deptuserid(ZA_VERSION.creator) AS ZA_VERSION_CREATORNAME
+      from ZARCH_VERSION ZA_VERSION
+         , ZARCH_UFILE ZA_UFILE
+         , ZARCH_FORMAT ZA_FORMAT
+     where ZA_VERSION.UFILEID = ZA_UFILE.UFILEID
+       and ZA_FORMAT.FORMATID = ZA_UFILE.FORMATID
+    	<if test="auth != null"> 
+		   	<choose>
+		   		<when test="auth.objType eq '01'.toString()">
+		   			and ZA_VERSION.lver = 0
+		   		</when>
+		   		<when test="auth.objType eq '02'.toString()">
+		   		</when>
+		   	</choose>
+       </if>
+       <if test="version != null">
+	       <if test="version.mfileid != null">
+	       	 and ZA_VERSION.mfileid = #{version.mfileid,jdbcType=CHAR}  
+	       </if>
+	       <if test="version.versionid != null">
+	         and ZA_VERSION.versionid = #{version.versionid,jdbcType=CHAR}
+	       </if>
+       </if>
+       <if test="ufile != null">
+       		<if test="ufile.ufileid != null">
+	         and ZA_UFILE.ufileid = #{ufile.ufileid,jdbcType=CHAR}
+	       </if>
+       </if>
+     order by ZA_VERSION.HVER ASC, ZA_VERSION.LVER ASC 
+  </select> 
+  <select id="selectByMaxVersion" 
+          resultMap="com.zenithst.archive.mapper.ZArchMFileMapper.LinkResultMap_Extend" 
+          parameterType="map" >
+		with ZARCH_MAXVER as ( 
+		   <foreach collection="auth.objList" item="mfileid" separator=" union all " >
+				select mfileid, hver, lver
+				  from (
+					select R.mfileid, R.hver, R.lver
+						  , row_number() over (order by R.hver desc, R.lver desc) as rno 
+					  from zarch_version R
+					  where  R.mfileid = #{mfileid, jdbcType=CHAR}
+					   <if test="auth != null"> 
+					   	<choose>
+					   		<when test="auth.objType eq '01'.toString()">
+					   			and R.LVER = 0
+					   		</when>
+					   	</choose>
+					   </if>
+				  ) hver
+				where rno = 1		   
+		   </foreach>
+		)
+		select <include refid="com.zenithst.archive.mapper.ZArchMFileMapper.Link_Column_List" />
+		      , <include refid="com.zenithst.archive.mapper.ZArchVersionMapper.Link_Column_List" />
+		      , <include refid="com.zenithst.archive.mapper.ZArchFileMapper.Link_Column_List" />
+		      , <include refid="com.zenithst.archive.mapper.ZArchFormatMapper.Link_Column_List" />
+		from ZARCH_MFILE ZA_MFILE
+				 , ZARCH_VERSION ZA_VERSION
+		         , ZARCH_UFILE ZA_UFILE
+		         , ZARCH_FORMAT ZA_FORMAT
+				 , ZARCH_MAXVER ZA_MAXVER 
+		     where ZA_MFILE.MFILEID = ZA_VERSION.MFILEID
+			   and ZA_VERSION.UFILEID = ZA_UFILE.UFILEID
+		       and ZA_FORMAT.FORMATID = ZA_UFILE.FORMATID
+			   and ZA_VERSION.MFILEID = ZA_MAXVER.mfileid
+			   and ZA_VERSION.HVER = ZA_MAXVER.hver
+			   <if test="auth != null"> 
+			   	<choose>
+			   		<when test="auth.objType eq '01'.toString()">
+			   			and ZA_VERSION.LVER = 0
+			   		</when>
+			   		<when test="auth.objType eq '02'.toString()">
+			   		    and ZA_VERSION.LVER = ZA_MAXVER.lver
+			   		</when>
+			   	</choose>
+			   </if>
+		       <if test="version != null">
+			       <if test="version.mfileid != null">
+			       	 and ZA_VERSION.mfileid = #{version.mfileid,jdbcType=CHAR}  
+			       </if>
+			       <if test="version.versionid != null">
+			         and ZA_VERSION.versionid = #{version.versionid,jdbcType=CHAR}
+			       </if>
+		       </if>
+		order by ZA_VERSION.hver asc, ZA_VERSION.lver asc      
+  </select>       
+</mapper>

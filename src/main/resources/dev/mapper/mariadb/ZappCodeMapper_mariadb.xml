@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.system.mapper.ZappCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.system.vo.ZappCode" >
+    <id column="CODEID" property="codeid" jdbcType="CHAR" />
+    <result column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="UPID" property="upid" jdbcType="CHAR" />
+    <result column="TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="CODEVALUE" property="codevalue" jdbcType="VARCHAR" />
+    <result column="CODEKEY" property="codekey" jdbcType="VARCHAR" />
+    <result column="ISACTIVE" property="isactive" jdbcType="CHAR" />
+    <result column="EDITABLE" property="editable" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.system.vo.ZappCode" extends="BaseResultMap" >
+  </resultMap>  
+  <resultMap id="JoinResultMap" type="com.zenithst.core.system.vo.ZappCode" >
+    <id column="CODE_CODEID" property="codeid" jdbcType="CHAR" />
+    <result column="CODE_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="CODE_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="CODE_UPID" property="upid" jdbcType="CHAR" />
+    <result column="CODE_TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="CODE_PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="CODE_CODEVALUE" property="codevalue" jdbcType="VARCHAR" />
+    <result column="CODE_CODEKEY" property="codekey" jdbcType="VARCHAR" />
+    <result column="CODE_ISACTIVE" property="isactive" jdbcType="CHAR" />
+    <result column="CODE_EDITABLE" property="editable" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.system.vo.ZappCode" extends="JoinResultMap" >
+  </resultMap>
+  <resultMap id="JoinResultMapPosition" type="com.zenithst.core.system.vo.ZappCode" >
+    <id column="POS_CODEID" property="codeid" jdbcType="CHAR" />
+    <result column="POS_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="POS_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="POS_UPID" property="upid" jdbcType="CHAR" />
+    <result column="POS_TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="POS_PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="POS_CODEVALUE" property="codevalue" jdbcType="VARCHAR" />
+    <result column="POS_CODEKEY" property="codekey" jdbcType="VARCHAR" />
+    <result column="POS_ISACTIVE" property="isactive" jdbcType="CHAR" />
+    <result column="POS_EDITABLE" property="editable" jdbcType="CHAR" />
+  </resultMap>  
+  <resultMap id="JoinResultMapDuty" type="com.zenithst.core.system.vo.ZappCode" >
+    <id column="DUTY_CODEID" property="codeid" jdbcType="CHAR" />
+    <result column="DUTY_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="DUTY_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DUTY_UPID" property="upid" jdbcType="CHAR" />
+    <result column="DUTY_TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="DUTY_PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="DUTY_CODEVALUE" property="codevalue" jdbcType="VARCHAR" />
+    <result column="DUTY_CODEKEY" property="codekey" jdbcType="VARCHAR" />
+    <result column="DUTY_ISACTIVE" property="isactive" jdbcType="CHAR" />
+    <result column="DUTY_EDITABLE" property="editable" jdbcType="CHAR" />
+  </resultMap>  
+  <resultMap id="JoinResultMapSecurity" type="com.zenithst.core.system.vo.ZappCode" >
+    <id column="SECURE_CODEID" property="codeid" jdbcType="CHAR" />
+    <result column="SECURE_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="SECURE_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SECURE_UPID" property="upid" jdbcType="CHAR" />
+    <result column="SECURE_TYPES" property="types" jdbcType="VARCHAR" />
+    <result column="SECURE_PRIORITY" property="priority" jdbcType="DECIMAL" />
+    <result column="SECURE_CODEVALUE" property="codevalue" jdbcType="VARCHAR" />
+    <result column="SECURE_CODEKEY" property="codekey" jdbcType="VARCHAR" />
+    <result column="SECURE_ISACTIVE" property="isactive" jdbcType="CHAR" />
+    <result column="SECURE_EDITABLE" property="editable" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+	     CODEID
+	   , COMPANYID
+	   , NAME
+	   , UPID
+	   , TYPES
+	   , PRIORITY
+	   , CODEVALUE
+	   , CODEKEY
+	   , ISACTIVE
+	   , EDITABLE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+	     CODE.CODEID		AS CODE_CODEID
+	   , CODE.COMPANYID		AS CODE_COMPANYID
+	   , CODE.NAME			AS CODE_NAME
+	   , CODE.UPID			AS CODE_UPID
+	   , CODE.TYPES			AS CODE_TYPES
+	   , CODE.PRIORITY		AS CODE_PRIORITY
+	   , CODE.CODEVALUE		AS CODE_CODEVALUE
+	   , CODE.CODEKEY		AS CODE_CODEKEY
+	   , CODE.ISACTIVE		AS CODE_ISACTIVE
+	   , CODE.EDITABLE		AS CODE_EDITABLE
+  </sql>
+  <sql id="Join_Column_List_IN_Position" >
+	     COALESCE(POS.CODEID, get_random_string(64))	AS POS_CODEID
+	   , POS.COMPANYID		AS POS_COMPANYID
+	   , POS.NAME			AS POS_NAME
+	   , POS.UPID			AS POS_UPID
+	   , POS.TYPES			AS POS_TYPES
+	   , POS.PRIORITY		AS POS_PRIORITY
+	   , POS.CODEVALUE		AS POS_CODEVALUE
+	   , POS.CODEKEY		AS POS_CODEKEY
+	   , POS.ISACTIVE		AS POS_ISACTIVE
+	   , POS.EDITABLE		AS POS_EDITABLE
+  </sql> 
+  <sql id="Join_Column_List_IN_Position_Blank" >
+	     get_random_string(20)	AS POS_CODEID
+	   , ''						AS POS_COMPANYID
+	   , ''						AS POS_NAME
+	   , ''						AS POS_UPID
+	   , ''						AS POS_TYPES
+	   , 0						AS POS_PRIORITY
+	   , ''						AS POS_CODEVALUE
+	   , ''						AS POS_CODEKEY
+	   , ''						AS POS_ISACTIVE
+	   , ''						AS POS_EDITABLE
+  </sql>
+  <sql id="Join_Column_List_OUT_Position" >
+	     POS_CODEID
+	   , POS_COMPANYID
+	   , POS_NAME
+	   , POS_UPID
+	   , POS_TYPES
+	   , POS_PRIORITY
+	   , POS_CODEVALUE
+	   , POS_CODEKEY
+	   , POS_ISACTIVE
+	   , POS_EDITABLE
+  </sql> 
+  <sql id="Join_Column_List_IN_Duty" >
+	     COALESCE(DUTY.CODEID, get_random_string(64))		AS DUTY_CODEID
+	   , DUTY.COMPANYID		AS DUTY_COMPANYID
+	   , DUTY.NAME			AS DUTY_NAME
+	   , DUTY.UPID			AS DUTY_UPID
+	   , DUTY.TYPES			AS DUTY_TYPES
+	   , DUTY.PRIORITY		AS DUTY_PRIORITY
+	   , DUTY.CODEVALUE		AS DUTY_CODEVALUE
+	   , DUTY.CODEKEY		AS DUTY_CODEKEY
+	   , DUTY.ISACTIVE		AS DUTY_ISACTIVE
+	   , DUTY.EDITABLE		AS DUTY_EDITABLE	   
+  </sql> 
+  <sql id="Join_Column_List_IN_Duty_Blank" >
+	     get_random_string(20)	AS DUTY_CODEID
+	   , ''						AS DUTY_COMPANYID
+	   , ''						AS DUTY_NAME
+	   , ''						AS DUTY_UPID
+	   , ''						AS DUTY_TYPES
+	   , 0						AS DUTY_PRIORITY
+	   , ''						AS DUTY_CODEVALUE
+	   , ''						AS DUTY_CODEKEY
+	   , ''						AS DUTY_ISACTIVE
+	   , ''						AS DUTY_EDITABLE
+  </sql> 
+  <sql id="Join_Column_List_OUT_Duty" >
+	     DUTY_CODEID
+	   , DUTY_COMPANYID
+	   , DUTY_NAME
+	   , DUTY_UPID
+	   , DUTY_TYPES
+	   , DUTY_PRIORITY
+	   , DUTY_CODEVALUE
+	   , DUTY_CODEKEY
+	   , DUTY_ISACTIVE
+	   , DUTY_EDITABLE
+  </sql> 
+  <sql id="Join_Column_List_IN_Security" >
+	     COALESCE(SECURE.CODEID, get_random_string(64))		AS SECURE_CODEID
+	   , SECURE.COMPANYID	AS SECURE_COMPANYID
+	   , SECURE.NAME		AS SECURE_NAME
+	   , SECURE.UPID		AS SECURE_UPID
+	   , SECURE.TYPES		AS SECURE_TYPES
+	   , SECURE.PRIORITY	AS SECURE_PRIORITY
+	   , SECURE.CODEVALUE	AS SECURE_CODEVALUE
+	   , SECURE.CODEKEY		AS SECURE_CODEKEY
+	   , SECURE.ISACTIVE	AS SECURE_ISACTIVE
+	   , SECURE.EDITABLE	AS SECURE_EDITABLE	   
+  </sql>   
+  <sql id="Join_Column_List_IN_Security_Blank" >
+	     get_random_string(20)	AS SECURE_CODEID
+	   , ''						AS SECURE_COMPANYID
+	   , ''						AS SECURE_NAME
+	   , ''						AS SECURE_UPID
+	   , ''						AS SECURE_TYPES
+	   , 0						AS SECURE_PRIORITY
+	   , ''						AS SECURE_CODEVALUE
+	   , ''						AS SECURE_CODEKEY
+	   , ''						AS SECURE_ISACTIVE
+	   , ''						AS SECURE_EDITABLE
+  </sql>  
+  <sql id="Join_Column_List_OUT_Security" >
+	     SECURE_CODEID
+	   , SECURE_COMPANYID
+	   , SECURE_NAME
+	   , SECURE_UPID
+	   , SECURE_TYPES
+	   , SECURE_PRIORITY
+	   , SECURE_CODEVALUE
+	   , SECURE_CODEKEY
+	   , SECURE_ISACTIVE
+	   , SECURE_EDITABLE
+  </sql>   
+  <sql id="Join_Column_List_OUT" >
+	     CODE_CODEID
+	   , CODE_COMPANYID
+	   , CODE_NAME
+	   , CODE_UPID
+	   , CODE_TYPES
+	   , CODE_PRIORITY
+	   , CODE_CODEVALUE
+	   , CODE_CODEKEY
+	   , CODE_ISACTIVE
+	   , CODE_EDITABLE
+  </sql>    
+  <sql id="All_Value_List" >
+     #{codeid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{upid,jdbcType=CHAR}
+   , #{types,jdbcType=VARCHAR}
+   , #{priority,jdbcType=DECIMAL}
+   , #{codevalue,jdbcType=VARCHAR}
+   , #{codekey,jdbcType=VARCHAR}
+   , #{isactive,jdbcType=CHAR}
+   , #{editable,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.codeid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.upid,jdbcType=CHAR}
+   , #{batch.types,jdbcType=VARCHAR}
+   , #{batch.priority,jdbcType=DECIMAL}
+   , #{batch.codevalue,jdbcType=VARCHAR}
+   , #{batch.codekey,jdbcType=VARCHAR}
+   , #{batch.isactive,jdbcType=CHAR}
+   , #{batch.editable,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from ZAPP_CODE CODE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="BaseResultMap" parameterType="map" >
+    select
+       <include refid="Base_Column_List" />
+    from ZAPP_CODE CODE
+    
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ZAPP_CODE
+    where CODEID = #{codeid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ZAPP_CODE
+    where CODEID = #{codeid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete CODE from ZAPP_CODE CODE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.system.vo.ZappCode" >
+    insert into ZAPP_CODE (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.system.vo.ZappCode" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into ZAPP_CODE (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from ZAPP_CODE CODE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update ZAPP_CODE CODE
+    <set >
+      <if test="record.codeid != null" >
+        CODEID = #{record.codeid,jdbcType=CHAR},
+      </if>
+      <if test="record.companyid != null" >
+        COMPANYID = #{record.companyid,jdbcType=CHAR},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.upid != null" >
+        UPID = #{record.upid,jdbcType=CHAR},
+      </if>
+      <if test="record.types != null" >
+        TYPES = #{record.types,jdbcType=VARCHAR},
+      </if>
+      <if test="record.priority != null" >
+      	<if test="record.priority > 0" >
+        	PRIORITY = #{record.priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="record.codevalue != null" >
+        CODEVALUE = #{record.codevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.codekey != null" >
+        CODEKEY = #{record.codekey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isactive != null" >
+        ISACTIVE = #{record.isactive,jdbcType=CHAR},
+      </if>
+      <if test="record.editable != null" >
+        EDITABLE = #{record.editable,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.system.vo.ZappCode" >
+    update ZAPP_CODE
+    <set >
+      <if test="companyid != null" >
+        COMPANYID = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="upid != null" >
+        UPID = #{upid,jdbcType=CHAR},
+      </if>
+      <if test="types != null" >
+        TYPES = #{types,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null" >
+      	<if test="priority > 0" >
+        	PRIORITY = #{priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="codevalue != null" >
+        CODEVALUE = #{codevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="codekey != null" >
+        CODEKEY = #{codekey,jdbcType=VARCHAR},
+      </if>
+      <if test="isactive != null" >
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+      <if test="editable != null" >
+        EDITABLE = #{editable,jdbcType=CHAR},
+      </if>
+    </set>
+    where CODEID = #{codeid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from ZAPP_CODE CODE
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+  <select id="selectNextPriority" resultType="java.lang.Integer"  parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+	select (case (select 1
+				   from dual
+				   where EXISTS(select 1
+					    	     from zapp_code CODE
+						        <if test="_parameter != null" >
+									<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								</if>)
+					 )
+			        when 1 then (select (coalesce(max(priority),0) + 1)
+							       from zapp_code CODE
+								   <if test="_parameter != null" >
+									 <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								   </if>
+								)
+			    	else 1
+			     	end)
+	  from dual
+  </select>   
+   <!-- [UPDATE] 우선순위 변경 (하위로) -->
+  <update id="downwardPriority" parameterType="map">
+  		update zapp_code CODE
+  		   set priority = (priority - 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}  
+  </update>
+  <!-- [UPDATE] 우선순위 변경 (상위로) -->
+  <update id="upwardPriority" parameterType="map">
+  		update zapp_code CODE
+  		   set priority = (priority + 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}    	
+  </update>  
+  <insert id="initCode" parameterType="com.zenithst.core.organ.vo.ZappCompany" >
+    insert into zapp_code (<include refid="Base_Column_List" />) 
+	SELECT get_sha256(concat(#{companyid,jdbcType=CHAR}, upid, types, codevalue, codekey)) as codeid
+     	, #{companyid,jdbcType=CHAR} as companyid
+     	, name, upid, types, priority, codevalue, codekey, isactive 
+	 from zapp_code
+	 where companyid = 'DEFAULT'
+	   and upid = 'ROOT'
+	union all
+	select get_sha256(concat(#{companyid,jdbcType=CHAR}, root.newcodeid, sub.types, codevalue, sub.codekey)) as codeid
+	      , #{companyid,jdbcType=CHAR} as companyid
+		  , name
+		  , root.newcodeid as upid
+		  , sub.types, priority, codevalue, sub.codekey, isactive 
+	   from zapp_code sub
+		 , (select get_sha256(concat(#{companyid,jdbcType=CHAR}, upid, types, codevalue, codekey)) as newcodeid
+		         , codeid
+			     , types
+		         , codekey
+		     from zapp_code
+		    where companyid = 'DEFAULT'
+		      and upid = 'ROOT') as root
+	  where sub.types = root.types
+	    and sub.codekey = root.codekey
+		and sub.upid = root.codeid
+  </insert>     
+</mapper>

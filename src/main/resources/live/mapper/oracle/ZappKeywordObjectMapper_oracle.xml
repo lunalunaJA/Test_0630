@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappKeywordObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappKeywordObject" >
+    <id column="kwobjid" property="kwobjid" jdbcType="CHAR" />
+    <result column="kobjid" property="kobjid" jdbcType="VARCHAR" />
+    <result column="kobjtype" property="kobjtype" jdbcType="VARCHAR" />
+    <result column="kwordid" property="kwordid" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.content.vo.ZappKeywordExtend" extends="BaseResultMap" >
+  	<result column="kword" property="kword" jdbcType="VARCHAR" />
+  </resultMap>  
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappKeywordObject" >
+    <id column="KWOBJ_kwobjid" property="kwobjid" jdbcType="CHAR" />
+    <result column="KWOBJ_kobjid" property="kobjid" jdbcType="VARCHAR" />
+    <result column="KWOBJ_kobjtype" property="kobjtype" jdbcType="VARCHAR" />
+    <result column="KWOBJ_kwordid" property="kwordid" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.content.vo.ZappKeywordExtend" extends="JoinResultMap" >
+  	<result column="KW_kword" property="kword" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     kwobjid
+   , kobjid
+   , kobjtype
+   , kwordid
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     KWOBJ.kwobjid		AS KWOBJ_kwobjid
+   , KWOBJ.kobjid		AS KWOBJ_kobjid
+   , KWOBJ.kobjtype		AS KWOBJ_kobjtype
+   , KWOBJ.kwordid		AS KWOBJ_kwordid
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     KWOBJ_kwobjid
+   , KWOBJ_kobjid
+   , KWOBJ_kobjtype
+   , KWOBJ_kwordid
+  </sql>
+  <sql id="All_Value_List" >
+     #{kwobjid,jdbcType=CHAR}
+   , #{kobjid,jdbcType=VARCHAR}
+   , #{kobjtype,jdbcType=VARCHAR}
+   , #{kwordid,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.kwobjid,jdbcType=CHAR}
+   , #{batch.kobjid,jdbcType=VARCHAR}
+   , #{batch.kobjtype,jdbcType=VARCHAR}
+   , #{batch.kwordid,jdbcType=VARCHAR}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_keywordobject KWOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	  <include refid="Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.content.mapper.ZappKeywordMapper.Join_Column_List_IN" />
+    from zapp_keywordobject KWOBJ
+       , zapp_keywords KW
+    where KWOBJ.kwordid = KW.kwordid
+    <if test="_parameter != null" >
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_keywordobject
+    where kwobjid = #{kwobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_keywordobject
+    where kwobjid = #{kwobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_keywordobject KWOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappKeywordObject" >
+    insert into zapp_keywordobject  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappKeywordObject" >
+  </insert>
+  <insert id="inserte" parameterType="com.zenithst.core.content.vo.ZappKeywordObject" >
+    insert into zapp_keywordobject  (<include refid="Base_Column_List" />)
+    select <include refid="All_Value_List" />
+      where not exists ( select 1 from zapp_keywordobject where kwobjid = #{kwobjid,jdbcType=CHAR} )
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert all 
+  			<foreach collection="batch" item="batch" separator="  " >
+  				into zapp_keywordobject (<include refid="Base_Column_List" />) values (<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  		select * from dual
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_keywordobject KWOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_keywordobject KWOBJ
+    <set >
+      <if test="record.kobjid != null" >
+        kobjid = #{record.kobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kobjtype != null" >
+        kobjtype = #{record.kobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kwordid != null" >
+        kwordid = #{record.kwordid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappKeywordObject" >
+    update zapp_keywordobject
+    <set >
+      <if test="kobjid != null" >
+        kobjid = #{kobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="kobjtype != null" >
+        kobjtype = #{kobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="kwordid != null" >
+        kwordid = #{kwordid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where kwobjid = #{kwobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_keywordobject KWOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

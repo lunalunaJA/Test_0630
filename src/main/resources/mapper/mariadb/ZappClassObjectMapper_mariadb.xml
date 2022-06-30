@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappClassObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappClassObject" >
+    <id column="classobjid" property="classobjid" jdbcType="CHAR" />
+    <result column="classid" property="classid" jdbcType="CHAR" />
+    <result column="classtype" property="classtype" jdbcType="CHAR" />
+    <result column="cobjid" property="cobjid" jdbcType="VARCHAR" />
+    <result column="cobjtype" property="cobjtype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappClassObject" >
+    <id column="CLSOBJ_classobjid" property="classobjid" jdbcType="CHAR" />
+    <result column="CLSOBJ_classid" property="classid" jdbcType="CHAR" />
+    <result column="CLSOBJ_classtype" property="classtype" jdbcType="CHAR" />
+    <result column="CLSOBJ_cobjid" property="cobjid" jdbcType="VARCHAR" />
+    <result column="CLSOBJ_cobjtype" property="cobjtype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     classobjid
+   , classid
+   , classtype
+   , cobjid
+   , cobjtype
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     CLSOBJ.classobjid		AS CLSOBJ_classobjid
+   , CLSOBJ.classid			AS CLSOBJ_classid
+   , CLSOBJ.classtype		AS CLSOBJ_classtype
+   , CLSOBJ.cobjid			AS CLSOBJ_cobjid
+   , CLSOBJ.cobjtype			AS CLSOBJ_cobjtype
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     CLSOBJ_classobjid
+   , CLSOBJ_classid
+   , CLSOBJ_classtype
+   , CLSOBJ_cobjid
+   , CLSOBJ_cobjtype
+  </sql> 
+  <sql id="All_Value_List" >
+     #{classobjid,jdbcType=CHAR}
+   , #{classid,jdbcType=CHAR}
+   , #{classtype,jdbcType=CHAR}
+   , #{cobjid,jdbcType=VARCHAR}
+   , #{cobjtype,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.classobjid,jdbcType=CHAR}
+   , #{batch.classid,jdbcType=CHAR}
+   , #{batch.classtype,jdbcType=CHAR}
+   , #{batch.cobjid,jdbcType=VARCHAR}
+   , #{batch.cobjtype,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_classobject CLSOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="com.zenithst.core.classification.mapper.ZappClassificationMapper.JoinResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 
+    	<include refid="com.zenithst.core.classification.mapper.ZappClassificationMapper.Join_Column_List_OUT" />
+     from (
+		    select
+		    	  <include refid="Join_Column_List_IN" />
+		    	, <include refid="com.zenithst.core.classification.mapper.ZappClassificationMapper.Join_Column_List_IN" /> 
+		    from zapp_classobject CLSOBJ
+		       , zapp_class CLS
+		    where CLS.classid = CLSOBJ.classid
+		    <if test="_parameter != null" >
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		   ) ILST
+	order by CLS_types    
+  </select>  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_classobject
+    where classobjid = #{classobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_classobject
+    where classobjid = #{classobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete CLSOBJ from zapp_classobject CLSOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappClassObject" >
+    insert into zapp_classobject (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappClassObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_classobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_classobject CLSOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_classobject CLSOBJ
+    <set >
+      <if test="record.classobjid != null" >
+        classobjid = #{record.classobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.classid != null" >
+        classid = #{record.classid,jdbcType=CHAR},
+      </if>
+      <if test="record.classtype != null" >
+        classtype = #{record.classtype,jdbcType=CHAR},
+      </if>
+      <if test="record.cobjid != null" >
+        cobjid = #{record.cobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cobjtype != null" >
+        cobjtype = #{record.cobjtype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappClassObject" >
+    update zapp_classobject
+    <set >
+      <if test="classid != null" >
+        classid = #{classid,jdbcType=CHAR},
+      </if>
+       <if test="classtype != null" >
+        classtype = #{classtype,jdbcType=CHAR},
+      </if>
+      <if test="cobjid != null" >
+        cobjid = #{cobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="cobjtype != null" >
+        cobjtype = #{cobjtype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where classobjid = #{classobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_classobject CLSOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

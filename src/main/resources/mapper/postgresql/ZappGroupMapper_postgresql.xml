@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zenithst.core.organ.mapper.ZappGroupMapper">
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappGroup">
+    <id column="groupid" jdbcType="CHAR" property="groupid" />
+    <result column="companyid" jdbcType="CHAR" property="companyid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="upid" jdbcType="CHAR" property="upid" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="types" jdbcType="VARCHAR" property="types" />
+    <result column="PRIORITY" jdbcType="DECIMAL" property="priority" />
+    <result column="isactive" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappGroup">
+    <id column="GROUP_groupid" jdbcType="CHAR" property="groupid" />
+    <result column="GROUP_companyid" jdbcType="CHAR" property="companyid" />
+    <result column="GROUP_name" jdbcType="VARCHAR" property="name" />
+    <result column="GROUP_upid" jdbcType="CHAR" property="upid" />
+    <result column="GROUP_code" jdbcType="VARCHAR" property="code" />
+    <result column="GROUP_types" jdbcType="VARCHAR" property="types" />
+    <result column="GROUP_PRIORITY" jdbcType="DECIMAL" property="priority" />
+    <result column="GROUP_isactive" jdbcType="CHAR" property="isactive" />
+  </resultMap>
+  <sql id="Base_Column_List">
+     groupid
+   , companyid
+   , name
+   , upid
+   , code
+   , types
+   , PRIORITY
+   , isactive
+  </sql>
+  <sql id="Base_Column_List_Alias" >
+     R.groupid
+   , R.companyid
+   , R.name
+   , R.upid
+   , R.code
+   , R.types
+   , R.PRIORITY
+   , R.isactive
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     GROUPS.groupid			AS GROUP_groupid
+   , GROUPS.companyid			AS GROUP_companyid
+   , GROUPS.name				AS GROUP_name
+   , GROUPS.upid				AS GROUP_upid
+   , GROUPS.code				AS GROUP_code
+   , GROUPS.types				AS GROUP_types
+   , GROUPS.PRIORITY			AS GROUP_PRIORITY
+   , GROUPS.isactive			AS GROUP_isactive
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     GROUP_groupid
+   , GROUP_companyid
+   , GROUP_name
+   , GROUP_upid
+   , GROUP_code
+   , GROUP_types
+   , GROUP_PRIORITY
+   , GROUP_isactive
+  </sql>
+  <sql id="All_Value_List" >
+     #{groupid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{upid,jdbcType=CHAR}
+   , #{code,jdbcType=VARCHAR}
+   , #{types,jdbcType=VARCHAR}
+   , #{priority,jdbcType=DECIMAL}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.groupid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.upid,jdbcType=CHAR}
+   , #{batch.code,jdbcType=VARCHAR}
+   , #{batch.types,jdbcType=VARCHAR}
+   , #{batch.priority,jdbcType=DECIMAL}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zapp_group_mv GROUPS
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null">
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_group_mv
+    where groupid = #{groupid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zapp_group
+    where groupid = #{groupid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic">
+    delete from zapp_group GROUPS
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappGroup">
+    insert into zapp_group  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappGroup">
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_group (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer">
+    select count(*) from zapp_group_mv GROUPS
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map">
+    update zapp_group GROUPS
+    <set>
+      <if test="vo.groupid != null">
+        groupid = #{vo.groupid,jdbcType=CHAR},
+      </if>
+      <if test="vo.companyid != null">
+        companyid = #{vo.companyid,jdbcType=CHAR},
+      </if>
+      <if test="vo.name != null">
+        name = #{vo.name,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.upid != null">
+        upid = #{vo.upid,jdbcType=CHAR},
+      </if>
+      <if test="vo.code != null">
+        code = #{vo.code,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.types != null">
+        types = #{vo.types,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.priority != null">
+      	<if test="vo.priority > 0">
+        	PRIORITY = #{vo.priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="vo.isactive != null">
+        isactive = #{vo.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappGroup">
+    update zapp_group
+    <set>
+      <if test="companyid != null">
+        companyid = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="upid != null">
+        upid = #{upid,jdbcType=CHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="types != null">
+        types = #{types,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null">
+      	<if test="priority > 0">
+        	PRIORITY = #{priority,jdbcType=DECIMAL},
+        </if>
+      </if>
+      <if test="isactive != null">
+        isactive = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where groupid = #{groupid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_group_mv GROUPS
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+  <select id="selectNextPriority" resultType="java.lang.Integer"  parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+	select (case (select 1
+				   from dual
+				   where EXISTS(select 1
+					    	     from zapp_group_mv GROUPS
+						        <if test="_parameter != null" >
+									<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								</if>)
+					 )
+			        when 1 then (select (coalesce(max(priority),0) + 1)
+							       from zapp_group_mv GROUPS
+								   <if test="_parameter != null" >
+									 <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+								   </if>
+								)
+			    	else 1
+			     	end)
+	  from dual
+  </select>  
+  <select id="selectDownByDynamic" resultMap="JoinResultMap" parameterType="map" >
+  
+    with recursive grouptree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_group_mv GROUPS
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_group_mv R, grouptree T
+				 where R.upid = T.groupid
+				)
+	select <include refid="Base_Column_List" />
+	  from grouptree CLS
+     where 1 = 1
+	order by level, priority   
+    
+  </select>
+  <select id="selectUpByDynamic" resultMap="JoinResultMap" parameterType="map" >
+  
+   with recursive grouptree as ( select 1 as level
+	 		        , <include refid="Base_Column_List" />
+				 from zapp_group_mv GROUPS
+	 			where 1 = 1
+				<if test="_parameter != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+			    </if>
+				union all
+				select T.level+1
+	  			    , <include refid="Base_Column_List_Alias" />
+				  from zapp_group_mv R, grouptree T
+				 where R.groupid = T.upid
+				)
+	select <include refid="Base_Column_List" />
+	  from grouptree CLS
+     where 1 = 1
+	order by level, priority   
+    
+   </select>  
+   <!-- [UPDATE] 우선순위 변경 (하위로) -->
+  <update id="downwardPriority" parameterType="map">
+  		update zapp_group GROUPS
+  		   set priority = (priority - 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}  
+  </update>
+  <!-- [UPDATE] 우선순위 변경 (상위로) -->
+  <update id="upwardPriority" parameterType="map">
+  		update zapp_group GROUPS
+  		   set priority = (priority + 1)
+  		 where companyid = #{start.companyid,jdbcType=CHAR}
+  		   and upid = #{start.upid,jdbcType=CHAR}
+		   and priority between #{start.priority,jdbcType=DECIMAL} and #{end.priority,jdbcType=DECIMAL}     	
+  </update>
+  <resultMap id="JoinResultMap_01" type="com.zenithst.core.organ.vo.ZappGroup" extends="JoinResultMap">
+    <result column="GROUP_hasfolder" jdbcType="CHAR" property="objIncLower" />
+  </resultMap>  
+  <select id="selectByUser" resultMap="JoinResultMap_01" parameterType="map" >
+    
+    <include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+    select
+      <include refid="Join_Column_List_IN" />
+      , hasFolder(GROUPS.groupid, GROUPS.types) as GROUP_hasfolder
+    from zapp_group_mv GROUPS
+       , zapp_groupuser_mv GROUPUSER
+       , objlist OBJ
+    where GROUPS.groupid = GROUPUSER.groupid
+      and GROUPUSER.gobjid = OBJ.OBJID
+      and GROUPUSER.gobjtype = OBJ.OBJTYPE 
+    <if test="_parameter != null">
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+    </if>
+      order by GROUPS.name desc
+ </select>  
+ <select id="refreshView" statementType="CALLABLE" parameterType="com.zenithst.core.organ.vo.ZappGroup">
+ 	REFRESH MATERIALIZED VIEW zapp_group_mv
+ </select>    
+</mapper>

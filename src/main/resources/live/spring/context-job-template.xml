@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:batch="http://www.springframework.org/schema/batch" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-4.0.xsd">
+
+    <!--
+    Spring batch flow
+    1. JobRunner 는 JobLocator 를 사용해서 Job 을 찾아내고, JobParameter 와 함께 Job 을 시작한다(launch).
+    2. JobLauncher 는 JobRepository 에서 JobExecution 을 받아오고, Job 을 실행한다(execute).
+    3. Job 은 순서에 따라 Step 을 실행한다.
+    4. Step 은 ItemReader 로 읽기 작업을 호출하고, 반환되는 값이 null이 될 때까지 ItemWriter 로 아이템의 결과값을 제어해서, 주기적으로 JobRepository 에 상태를 커밋하거나 저장한다
+    -->
+
+    <!-- jobRegistry 설정 :  MapJobRegistry -->
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+    
+    <!-- jobRegistry 설정 : job 들을 jobRegistry 에 매핑해준다  
+                           jobRegistry 를  jobLocator 로써 사용한다.  
+    -->
+    <bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor"> 
+        <property name="jobRegistry" ref="jobRegistry"/> 
+    </bean> 
+    
+    <!-- jobRepository 설정 :  각 구성요소들의 persistance를 유지하는 기능을 제공 -->
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+        lazy-init="true" autowire-candidate="true" >
+              <property name="databaseType" value="SQLSERVER" />
+              <property name="dataSource" ref="dataSource" />
+              <property name="transactionManager" ref="transactionManager" />
+              <property name="isolationLevelForCreate" value="ISOLATION_READ_COMMITTED"/>
+              <!-- 
+              	DEFAULT : DB에서 설정된 기본 격리 수준을 따릅니다.
+				SERIALIZABLE : 가장 높은 격리수준을 가지며 사용시 성능 저하가 있을 수 있음.
+				READ_UNCOMMITTED : 커밋되지 않은 데이터에 대한 읽기를 허용.
+				READ_COMMITTED : 커밋된 트랜잭션에 대해 읽기를 허용.
+				REPEATABLE_READ : 동일한 필드에 대한 다중 접근 시 동일한 결과를 얻을 수 잇는 것을 보장              
+               -->
+    </bean>    
+
+    <!-- JobLauncher 설정 :  JobLauncher 는 JobRepository 에서 JobExecution 을 받아오고, Job 을 실행한다(execute) -->
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+        <property name="jobRepository" ref="jobRepository" />
+        <property name="taskExecutor">
+            <bean class="org.springframework.core.task.SyncTaskExecutor" />
+       </property>
+<!--         <property name="taskExecutor" ref="throttledTaskExecutor" /> -->
+    </bean>
+    
+    <!-- all jobs launched using throttledJobLauncher above will be running only one instance at a time. -  2014.06.09 
+    <task:executor id="poolTaskExecutor" pool-size="500" />
+    
+    <bean id="throttledTaskExecutor" class="org.springframework.batch.admin.util.ThrottledTaskExecutor">
+        <property name="taskExecutor" ref="poolTaskExecutor" />
+        <property name="throttleLimit" value="1" />
+    </bean>
+-->
+
+    <!-- SimpleJob 설정 : 하나 이상의 step 을 포함한다. 
+                        job configuration과 대응되는 단위. JobInstance를 어떻게 구성하고 실행할지에 대한 명세. 
+                        Job interface를 구현하는 Spring bean으로 나타남 
+    -->
+    <bean id="simpleJob" class="org.springframework.batch.core.job.SimpleJob" abstract="true">
+        <property name="jobRepository" ref="jobRepository" />
+        <property name="restartable" value="true" />
+    </bean>
+    
+    <!-- TaskletStep 설정 : Batch job을 구성하는 독립적인 하나의 단계 
+                                                간단한 task 를 이용할 때 사용.
+                            단순 작업을 처리하는 Step내에서 사용하는 요소. System command, Store procedure 실행 등의 작업에 적합하다. 
+     -->
+    <bean id="taskletStep" class="org.springframework.batch.core.step.tasklet.TaskletStep" abstract="true">
+        <property name="jobRepository" ref="jobRepository" />
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="allowStartIfComplete" value="true" />
+    </bean>
+
+    <!-- simpleStep 설정 : Batch job을 구성하는 독립적인 하나의 단계 
+                          FlatFileItemWriter 나  StaxEventItemReader 등을 이용할 때 사용할 수 있다. -->
+    <!--
+        <bean id="simpleStep" class="org.springframework.batch.core.step.item.SimpleStepFactoryBean"
+        spring batch 4 : not found
+    -->
+    <bean id="simpleStep" class="org.springframework.batch.core.step.factory.SimpleStepFactoryBean"
+        abstract="true">
+        <property name="jobRepository" ref="jobRepository" />
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="startLimit" value="100" />
+        <property name="commitInterval" value="10" />
+    </bean>
+
+</beans>

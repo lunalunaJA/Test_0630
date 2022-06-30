@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappBundleMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappBundle" >
+    <id column="BUNDLEID" property="bundleid" jdbcType="CHAR" />
+    <result column="BNO" property="bno" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CREATORID" property="creatorid" jdbcType="VARCHAR" />
+    <result column="CREATORNAME" property="creatorname" jdbcType="VARCHAR" />
+    <result column="HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="DISCARDERID" property="discarderid" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="VARCHAR" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="VARCHAR" />
+    <result column="RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="BTYPE" property="btype" jdbcType="CHAR" />
+    <result column="SECLEVEL" property="seclevel" jdbcType="INTEGER" />
+    <result column="STATE" property="state" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappBundle" >
+    <id column="BUNDLE_BUNDLEID" property="bundleid" jdbcType="CHAR" />
+    <result column="BUNDLE_BNO" property="bno" jdbcType="VARCHAR" />
+    <result column="BUNDLE_TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="BUNDLE_CREATORID" property="creatorid" jdbcType="VARCHAR" />
+    <result column="BUNDLE_CREATORNAME" property="creatorname" jdbcType="VARCHAR" />
+    <result column="BUNDLE_HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="BUNDLE_DISCARDERID" property="discarderid" jdbcType="VARCHAR" />
+    <result column="BUNDLE_CREATETIME" property="createtime" jdbcType="VARCHAR" />
+    <result column="BUNDLE_UPDATETIME" property="updatetime" jdbcType="VARCHAR" />
+    <result column="BUNDLE_RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="BUNDLE_EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="BUNDLE_BTYPE" property="btype" jdbcType="CHAR" />
+    <result column="BUNDLE_SECLEVEL" property="seclevel" jdbcType="INTEGER" />
+    <result column="BUNDLE_STATE" property="state" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     BUNDLEID
+   , BNO
+   , TITLE
+   , CREATORID
+   , CREATORNAME
+   , HOLDERID
+   , DISCARDERID
+   , CREATETIME
+   , UPDATETIME
+   , RETENTIONID
+   , EXPIRETIME
+   , BTYPE
+   , SECLEVEL
+   , STATE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     BUNDLE.BUNDLEID		AS BUNDLE_BUNDLEID
+   , BUNDLE.BNO				AS BUNDLE_BNO
+   , BUNDLE.TITLE			AS BUNDLE_TITLE
+   , BUNDLE.CREATORID		AS BUNDLE_CREATORID
+   , BUNDLE.CREATORNAME		AS BUNDLE_CREATORNAME
+   , BUNDLE.HOLDERID		AS BUNDLE_HOLDERID
+   , BUNDLE.DISCARDERID		AS BUNDLE_DISCARDERID
+   , BUNDLE.CREATETIME		AS BUNDLE_CREATETIME
+   , BUNDLE.UPDATETIME		AS BUNDLE_UPDATETIME
+   , BUNDLE.RETENTIONID		AS BUNDLE_RETENTIONID
+   , BUNDLE.EXPIRETIME		AS BUNDLE_EXPIRETIME
+   , BUNDLE.BTYPE			AS BUNDLE_BTYPE
+   , BUNDLE.SECLEVEL		AS BUNDLE_SECLEVEL
+   , BUNDLE.STATE			AS BUNDLE_STATE
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)		AS BUNDLE_BUNDLEID
+   , ''							AS BUNDLE_BNO
+   , ''							AS BUNDLE_TITLE
+   , ''							AS BUNDLE_CREATORID
+   , ''							AS BUNDLE_CREATORNAME
+   , ''							AS BUNDLE_HOLDERID
+   , ''							AS BUNDLE_DISCARDERID
+   , ''							AS BUNDLE_CREATETIME
+   , ''							AS BUNDLE_UPDATETIME
+   , ''							AS BUNDLE_RETENTIONID
+   , ''							AS BUNDLE_EXPIRETIME
+   , ''							AS BUNDLE_BTYPE
+   , 0							AS BUNDLE_SECLEVEL
+   , ''							AS BUNDLE_STATE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     BUNDLE_BUNDLEID
+   , BUNDLE_BNO
+   , BUNDLE_TITLE
+   , BUNDLE_CREATORID
+   , BUNDLE_CREATORNAME
+   , BUNDLE_HOLDERID
+   , BUNDLE_DISCARDERID
+   , BUNDLE_CREATETIME
+   , BUNDLE_UPDATETIME
+   , BUNDLE_RETENTIONID
+   , BUNDLE_EXPIRETIME
+   , BUNDLE_BTYPE
+   , BUNDLE_SECLEVEL
+   , BUNDLE_STATE
+  </sql>  
+  <sql id="All_Value_List" >
+     #{bundleid,jdbcType=CHAR}
+   , #{bno,jdbcType=VARCHAR}
+   , #{title,jdbcType=VARCHAR}
+   , #{creatorid,jdbcType=VARCHAR}
+   , #{creatorname,jdbcType=VARCHAR}
+   , #{holderid,jdbcType=VARCHAR}
+   , #{discarderid,jdbcType=VARCHAR}
+   , #{createtime,jdbcType=VARCHAR}
+   , #{updatetime,jdbcType=VARCHAR}
+   , #{retentionid,jdbcType=CHAR}
+   , #{expiretime,jdbcType=VARCHAR}
+   , #{btype,jdbcType=CHAR}
+   , #{seclevel,jdbcType=INTEGER}
+   , #{state,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.bundleid,jdbcType=CHAR}
+   , #{batch.bno,jdbcType=VARCHAR}
+   , #{batch.title,jdbcType=VARCHAR}
+   , #{batch.creatorid,jdbcType=VARCHAR}
+   , #{batch.creatorname,jdbcType=VARCHAR}
+   , #{batch.holderid,jdbcType=VARCHAR}
+   , #{batch.discarderid,jdbcType=VARCHAR}
+   , #{batch.createtime,jdbcType=VARCHAR}
+   , #{batch.updatetime,jdbcType=VARCHAR}
+   , #{batch.retentionid,jdbcType=CHAR}
+   , #{batch.expiretime,jdbcType=VARCHAR}
+   , #{batch.btype,jdbcType=CHAR}
+   , #{batch.seclevel,jdbcType=INTEGER}
+   , #{batch.state,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_bundle BUNDLE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_bundle
+    where BUNDLEID = #{bundleid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_bundle
+    where BUNDLEID = #{bundleid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete BUNDLE from zapp_bundle BUNDLE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappBundle" >
+    insert into zapp_bundle  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappBundle" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_bundle (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_bundle BUNDLE
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_bundle BUNDLE
+    <set >
+      <if test="record.bundleid != null" >
+        BUNDLEID = #{record.bundleid,jdbcType=CHAR},
+      </if>
+      <if test="record.bno != null" >
+        BNO = #{record.bno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null" >
+        TITLE = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatorid != null" >
+        CREATORID = #{record.creatorid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creatorname != null" >
+        CREATORNAME = #{record.creatorname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.holderid != null" >
+        HOLDERID = #{record.holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.discarderid != null" >
+        DISCARDERID = #{record.discarderid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null" >
+        CREATETIME = #{record.createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatetime != null" >
+        UPDATETIME = #{record.updatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retentionid != null" >
+        RETENTIONID = #{record.retentionid,jdbcType=CHAR},
+      </if>      
+      <if test="record.expiretime != null" >
+        EXPIRETIME = #{record.expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.btype != null" >
+        BTYPE = #{record.btype,jdbcType=CHAR},
+      </if> 
+      <if test="record.seclevel != null" >
+        <if test="record.seclevel > 0" >
+        	SECLEVEL = #{record.seclevel,jdbcType=INTEGER},
+        </if>
+      </if> 
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappBundle" >
+    update zapp_bundle
+    <set >
+      <if test="bno != null" >
+        BNO = #{bno,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorid != null" >
+        CREATORID = #{creatorid,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorname != null" >
+        CREATORNAME = #{creatorname,jdbcType=VARCHAR},
+      </if>
+      <if test="holderid != null" >
+        HOLDERID = #{holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="discarderid != null" >
+        DISCARDERID = #{discarderid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CREATETIME = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="retentionid != null" >
+        RETENTIONID = #{retentionid,jdbcType=CHAR},
+      </if>    
+      <if test="expiretime != null" >
+        EXPIRETIME = #{expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="btype != null" >
+        BTYPE = #{btype,jdbcType=CHAR},
+      </if> 
+      <if test="seclevel != null" >
+        <if test="seclevel > 0" >
+        	SECLEVEL = #{seclevel,jdbcType=INTEGER},
+        </if>
+      </if> 
+      <if test="state != null" >
+        STATE = #{state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BUNDLEID = #{bundleid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_bundle BUNDLE
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

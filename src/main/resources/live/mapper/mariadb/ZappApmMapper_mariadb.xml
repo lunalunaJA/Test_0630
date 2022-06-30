@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.status.mapper.ZappApmMapper">
+  <resultMap id="BaseResultMap" type="com.zenithst.core.status.vo.ZappApm">
+    <id column="APMID" jdbcType="CHAR" property="apmid" />
+    <result column="APMTYPE" jdbcType="CHAR" property="apmtype" />
+    <result column="APMTIME" jdbcType="VARCHAR" property="apmtime" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zenithst.core.status.vo.ZappApm" extends="BaseResultMap">
+    <result column="APM" jdbcType="LONGVARCHAR" property="apm" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    APMID, APMTYPE, APMTIME
+  </sql>
+  <sql id="Batch_Value_List">
+      #{batch.apmid,jdbcType=CHAR}
+    , #{batch.apmtype,jdbcType=CHAR}
+    , #{batch.apmtime,jdbcType=VARCHAR}
+    , #{batch.apm,jdbcType=LONGVARCHAR}
+  </sql>
+  <sql id="Blob_Column_List">
+    APM
+  </sql>
+  <sql id="All_Value_List" >
+     #{apmid,jdbcType=CHAR}
+   , #{apmtype,jdbcType=CHAR}
+   , #{apmtime,jdbcType=VARCHAR}
+   , #{apm,jdbcType=LONGVARCHAR}
+  </sql>  
+  <select id="selectByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zapp_apm APM
+    
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    
+   	<!-- Sorting -->
+   	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+    
+    <!-- Paging -->
+	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zapp_apm
+    where APMID = #{apmid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zapp_apm
+    where APMID = #{apmid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic">
+    delete from zapp_apm APM
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.status.vo.ZappApm">
+    insert into zapp_apm (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertb"
+  		  parameterType="map">
+  		insert into zapp_apm (<include refid="Base_Column_List" />, <include refid="Blob_Column_List" />)
+  			values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  			  (<include refid="Batch_Value_List" />)
+  			</foreach>
+  </insert> 
+  <insert id="insertSelective" parameterType="com.zenithst.core.status.vo.ZappApm">
+    insert into zapp_apm
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="apmid != null">
+        APMID,
+      </if>
+      <if test="apmtype != null">
+        APMTYPE,
+      </if>
+      <if test="apmtime != null">
+        APMTIME,
+      </if>
+      <if test="apm != null">
+        APM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="apmid != null">
+        #{apmid,jdbcType=CHAR},
+      </if>
+      <if test="apmtype != null">
+        #{apmtype,jdbcType=CHAR},
+      </if>
+      <if test="apmtime != null">
+        #{apmtime,jdbcType=VARCHAR},
+      </if>
+      <if test="apm != null">
+        #{apm,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer">
+    select count(*) from zapp_apm APM
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map">
+    update zapp_apm APM
+    <set>
+      <if test="record.apmid != null">
+        APMID = #{record.apmid,jdbcType=CHAR},
+      </if>
+      <if test="record.apmtype != null">
+        APMTYPE = #{record.apmtype,jdbcType=CHAR},
+      </if>
+      <if test="record.apmtime != null">
+        APMTIME = #{record.apmtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.apm != null">
+        APM = #{record.apm,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.status.vo.ZappApm">
+    update zapp_apm
+    <set>
+      <if test="apmtype != null">
+        APMTYPE = #{apmtype,jdbcType=CHAR},
+      </if>
+      <if test="apmtime != null">
+        APMTIME = #{apmtime,jdbcType=VARCHAR},
+      </if>
+      <if test="apm != null">
+        APM = #{apm,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where APMID = #{apmid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_apm APM
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+  
+
+  <resultMap id="BaseResultMap_" type="com.zenithst.core.status.vo.ZappApmExtend" >
+    <id column="SCHEMANAME" property="dbscheme" jdbcType="VARCHAR" />
+    <result column="USED_SPACE_MB" property="dbused" jdbcType="VARCHAR" />
+    <result column="TOTAL_SPACE_MB" property="dbtotal" jdbcType="VARCHAR" />
+    <result column="USED_RATIO" property="dbratio" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <!-- 테이블 정보 조회  -->
+  <select id="selectDbStatus" 
+  		  resultMap="BaseResultMap_" 
+  		  parameterType="com.zenithst.core.status.vo.ZappApm">
+
+	<![CDATA[
+	select SCHEMANAME
+		,  USED_SPACE_MB
+		,  '' as FREE_SPACE_MB
+		,  '' as TOTAL_SPACE_MB
+		,  0 as USED_RATIO
+	  from (
+			SELECT table_schema as SCHEMANAME
+     		     , ROUND(SUM(data_length+index_length)/1024/1024,1) as USED_SPACE_MB
+			 FROM information_schema.TABLES
+			 GROUP BY 1
+			) IL
+	  where 1 = 1 	
+	]]>
+        <foreach collection="objDbList" item="item" open=" AND SCHEMANAME in ("  separator=" , "  close=")" >
+			#{item}
+		</foreach>
+
+  </select>
+  
+  <!-- Lock 리스트 조회 --> 
+  <select id="selectLockList"
+  		  resultType="java.util.HashMap"
+  		  parameterType="com.zenithst.core.status.vo.ZappApm">
+	select * from information_schema.innodb_locks
+  </select>   
+    
+</mapper>

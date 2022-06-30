@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.acl.mapper.ZappClassAclMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.acl.vo.ZappClassAcl" >
+    <id column="aclid" property="aclid" jdbcType="CHAR" />
+    <result column="classid" property="classid" jdbcType="CHAR" />
+    <result column="aclobjid" property="aclobjid" jdbcType="VARCHAR" />
+    <result column="aclobjtype" property="aclobjtype" jdbcType="VARCHAR" />
+    <result column="acls" property="acls" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.acl.vo.ZappClassAcl" >
+    <id column="CLSACL_aclid" property="aclid" jdbcType="CHAR" />
+    <result column="CLSACL_classid" property="classid" jdbcType="CHAR" />
+    <result column="CLSACL_aclobjid" property="aclobjid" jdbcType="VARCHAR" />
+    <result column="CLSACL_aclobjtype" property="aclobjtype" jdbcType="VARCHAR" />
+    <result column="CLSACL_acls" property="acls" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.acl.vo.ZappAclExtend" extends="JoinResultMap" >
+    <result column="CLSACL_OBJNAME" property="objname" jdbcType="VARCHAR" />
+  </resultMap> 
+  <sql id="Base_Column_List" >
+     aclid
+   , classid
+   , aclobjid
+   , aclobjtype
+   , acls
+  </sql>
+  <sql id="Base_Column_List_Alias">
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     CLSACL.aclid		AS CLSACL_aclid
+   , CLSACL.classid		AS CLSACL_classid
+   , CLSACL.aclobjid	AS CLSACL_aclobjid
+   , CLSACL.aclobjtype	AS CLSACL_aclobjtype
+   , CLSACL.acls		AS CLSACL_acls
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     CLSACL_aclid
+   , CLSACL_classid
+   , CLSACL_aclobjid
+   , CLSACL_aclobjtype
+   , CLSACL_acls
+  </sql>
+  <sql id="Join_Extend_Column_List_OUT" >
+     CLSACL_aclid
+   , CLSACL_classid
+   , CLSACL_aclobjid
+   , CLSACL_aclobjtype
+   , (case CLSACL_aclobjtype 
+   		when '01' then concat(get_name_by_deptuserid(CLSACL_aclobjid), ' [' , get_dname_by_deptuserid(CLSACL_aclobjid), ']')		
+   		when '02' then get_name_by_deptid(CLSACL_aclobjid)
+   		when '03' then get_name_by_groupid(CLSACL_aclobjid)
+   		else ''
+   	  end) AS CLSACL_OBJNAME
+   , CLSACL_acls
+  </sql>
+  <sql id="All_Value_List" >
+     #{aclid,jdbcType=CHAR}
+   , #{classid,jdbcType=CHAR}
+   , #{aclobjid,jdbcType=VARCHAR}
+   , #{aclobjtype,jdbcType=VARCHAR}
+   , #{acls,jdbcType=INTEGER}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.aclid,jdbcType=CHAR}
+   , #{batch.classid,jdbcType=CHAR}
+   , #{batch.aclobjid,jdbcType=VARCHAR}
+   , #{batch.aclobjtype,jdbcType=VARCHAR}
+   , #{batch.acls,jdbcType=INTEGER}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_classacl CLSACL
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+  	select
+  	    <include refid="Join_Extend_Column_List_OUT" />
+  	  from (
+		    select
+		    <include refid="Join_Column_List_IN" />
+		    from zapp_classacl CLSACL
+		    <if test="_parameter != null" >
+		      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+		    </if>
+		    <if test="dynamic.orderByClause != null" >
+		      order by ${dynamic.orderByClause}
+		    </if>
+		   ) ILIST
+  </select>  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_classacl
+    where aclid = #{aclid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_classacl
+    where aclid = #{aclid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_classacl CLSACL
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <delete id="deleteByClassHierarchy" parameterType="map" >
+    <include refid="com.zenithst.core.classification.mapper.ZappClassificationMapper.classHierarchyDown" />
+    delete from zapp_classacl
+    where classid in (select classid from CLSTREE)
+    <if test="classacl != null" >
+       and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_ClassAcl" />
+    </if>
+  </delete>  
+  <insert id="insertu" parameterType="com.zenithst.core.acl.vo.ZappClassAcl" >
+  		insert into zapp_classacl (<include refid="Base_Column_List" />) 
+  		values (<include refid="All_Value_List" />)
+  		on conflict (aclid)
+  		do update set acls = #{acls,jdbcType=INTEGER}
+  </insert>
+  <insert id="insert" parameterType="com.zenithst.core.acl.vo.ZappClassAcl" >
+  		insert into zapp_classacl (<include refid="Base_Column_List" />) 
+  		values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_classacl (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_classacl CLSACL
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_classacl
+    <set >
+      <if test="record.aclid != null" >
+        aclid = #{record.aclid,jdbcType=CHAR},
+      </if>
+      <if test="record.classid != null" >
+        classid = #{record.classid,jdbcType=CHAR},
+      </if>
+      <if test="record.aclobjid != null" >
+        aclobjid = #{record.aclobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.aclobjtype != null" >
+        aclobjtype = #{record.aclobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acls != null" >
+        acls = #{record.acls,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.acl.vo.ZappClassAcl" >
+    update zapp_classacl
+    <set >
+      <if test="classid != null" >
+        classid = #{classid,jdbcType=CHAR},
+      </if>
+      <if test="aclobjid != null" >
+        aclobjid = #{aclobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="aclobjtype != null" >
+        aclobjtype = #{aclobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="acls != null" >
+        acls = #{acls,jdbcType=INTEGER},
+      </if>
+    </set>
+    where aclid = #{aclid,jdbcType=CHAR}
+  </update>
+  <update id="updateByClassHierarchy" parameterType="map">
+    <include refid="com.zenithst.core.classification.mapper.ZappClassificationMapper.classHierarchyDown" />
+  	update zapp_classacl
+  	  set acls = #{classacl.acls,jdbcType=INTEGER} 
+  	 where classid in (select classid from CLSTREE)
+    <if test="classacl != null" >
+      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_ClassAcl" />
+    </if>  	  
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_classacl CLSACL
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

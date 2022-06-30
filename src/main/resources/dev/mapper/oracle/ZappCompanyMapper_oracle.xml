@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.organ.mapper.ZappCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappCompany" >
+    <id column="COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="ABBRNAME" property="abbrname" jdbcType="VARCHAR" />
+    <result column="ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappCompany" >
+    <id column="COMPANY_COMPANYID" property="companyid" jdbcType="CHAR" />
+    <result column="COMPANY_NAME" property="name" jdbcType="VARCHAR" />
+    <result column="COMPANY_TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="COMPANY_ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="COMPANY_CODE" property="code" jdbcType="VARCHAR" />
+    <result column="COMPANY_ABBRNAME" property="abbrname" jdbcType="VARCHAR" />
+    <result column="COMPANY_ISACTIVE" property="isactive" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     COMPANYID
+   , NAME
+   , TEL
+   , ADDRESS
+   , CODE
+   , ABBRNAME
+   , ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     COMPANY.COMPANYID		AS COMPANY_COMPANYID
+   , COMPANY.NAME			AS COMPANY_NAME
+   , COMPANY.TEL			AS COMPANY_TEL
+   , COMPANY.ADDRESS		AS COMPANY_ADDRESS
+   , COMPANY.CODE			AS COMPANY_CODE
+   , COMPANY.ABBRNAME		AS COMPANY_ABBRNAME
+   , COMPANY.ISACTIVE		AS COMPANY_ISACTIVE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     COMPANY_COMPANYID
+   , COMPANY_NAME
+   , COMPANY_TEL
+   , COMPANY_ADDRESS
+   , COMPANY_CODE
+   , COMPANY_ABBRNAME
+   , COMPANY_ISACTIVE
+  </sql>  
+  <sql id="All_Value_List" >
+     #{companyid,jdbcType=CHAR}
+   , #{name,jdbcType=VARCHAR}
+   , #{tel,jdbcType=VARCHAR}
+   , #{address,jdbcType=VARCHAR}
+   , #{code,jdbcType=VARCHAR}
+   , #{abbrname,jdbcType=VARCHAR}
+   , #{isactive,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.companyid,jdbcType=CHAR}
+   , #{batch.name,jdbcType=VARCHAR}
+   , #{batch.tel,jdbcType=VARCHAR}
+   , #{batch.address,jdbcType=VARCHAR}
+   , #{batch.code,jdbcType=VARCHAR}
+   , #{batch.abbrname,jdbcType=VARCHAR}
+   , #{batch.isactive,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from ZAPP_COMPANY COMPANY
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ZAPP_COMPANY
+    where COMPANYID = #{companyid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ZAPP_COMPANY
+    where COMPANYID = #{companyid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from ZAPP_COMPANY COMPANY
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappCompany" >
+    insert into ZAPP_COMPANY  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappCompany" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert all 
+  			<foreach collection="list" item="batch" separator="  " >
+  				into ZAPP_COMPANY (<include refid="Base_Column_List" />) values (<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  			select * from dual
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from ZAPP_COMPANY COMPANY
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update ZAPP_COMPANY
+    <set >
+      <if test="record.companyid != null" >
+        COMPANYID = #{record.companyid,jdbcType=CHAR},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tel != null" >
+        TEL = #{record.tel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        ADDRESS = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null" >
+        CODE = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.abbrname != null" >
+        ABBRNAME = #{record.abbrname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isactive != null" >
+        ISACTIVE = #{record.isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappCompany" >
+    update ZAPP_COMPANY
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="abbrname != null" >
+        ABBRNAME = #{abbrname,jdbcType=VARCHAR},
+      </if>
+      <if test="isactive != null" >
+        ISACTIVE = #{isactive,jdbcType=CHAR},
+      </if>
+    </set>
+    where COMPANYID = #{companyid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from ZAPP_COMPANY COMPANY
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

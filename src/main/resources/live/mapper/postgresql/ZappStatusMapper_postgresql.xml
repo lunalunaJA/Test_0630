@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.status.mapper.ZappStatusMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.status.vo.ZappStatus" >
+    <id column="stakey" property="stakey" jdbcType="CHAR" />
+    <result column="stasdate" property="stasdate" jdbcType="VARCHAR" />
+    <result column="staedate" property="staedate" jdbcType="VARCHAR" />
+    <result column="stacnt" property="stacnt" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.status.vo.ZappStatus" extends="BaseResultMap" >
+  </resultMap>  
+  <resultMap id="JoinResultMap" type="com.zenithst.core.status.vo.ZappStatus" >
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.status.vo.ZappStatus" extends="JoinResultMap" >
+  </resultMap>
+  <sql id="Base_Column_List" >
+     stakey
+   , stasdate
+   , staedate
+   , stacnt
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     STATUS.stakey		AS STATUS_stakey
+   , STATUS.stasdate	AS STATUS_stasdate
+   , STATUS.staedate	AS STATUS_staedate
+   , STATUS.stacnt		AS STATUS_stacnt
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     STATUS_stakey
+   , STATUS_stasdate
+   , STATUS_staedate
+   , STATUS_stacnt
+  </sql>
+  <sql id="All_Value_List" >
+  </sql>
+  <sql id="Batch_All_Value_List" >
+  </sql>
+  
+  <!-- Create Table -->
+  <update id="createTmpDateTbl" parameterType="map">
+  		CREATE TEMPORARY TABLE 
+  		IF NOT EXISTS zapp_date_t (dt_s varchar(20) NOT NULL, dt_e varchar(20) NULL, wod int null)
+  </update>
+  
+  <!-- Drop Table -->
+  <update id="dropTmpDateTbl" parameterType="map">
+  		DROP TABLE IF EXISTS zapp_date_t
+  </update> 
+
+  <!-- Caculate Weeks -->
+  <resultMap id="DateMap" type="com.zenithst.core.status.vo.ZappStatus">
+    <id column="wy" property="stakey" jdbcType="CHAR"/>
+    <result column="wy1" property="stasdate" jdbcType="VARCHAR"/>
+    <result column="wy2" property="staedate" jdbcType="VARCHAR"/>
+  </resultMap>  
+  <select id="getWeeks" parameterType="map" resultMap="DateMap" >
+   	select substring('${stasdate}', 0, 5) as wy
+  		 , EXTRACT('week' from TO_DATE('${stasdate}', 'YYYY-MM-DD')) as wy1
+  		 , EXTRACT('week' from TO_DATE('${staedate}', 'YYYY-MM-DD')) as wy2
+  	from dual;
+  </select>   
+  
+  <select id="selectQuarter" parameterType="map" resultMap="DateMap" >
+  	select 'Q1' as wy
+  	      , '${stayear}' || '-01-01' as wy1
+  	      , (date_trunc('MONTH', to_date('${stayear}' || '-03', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual
+  	union all
+   	select 'Q2' as wy
+  	      , '${stayear}' || '-04-01' as wy1
+  	      , (date_trunc('MONTH', to_date('${stayear}' || '-06', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual
+    union all
+    select 'Q3' as wy
+  	      , '${stayear}' || '-07-01' as wy1
+  	      , (date_trunc('MONTH', to_date('${stayear}' || '-09', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual    	  	
+     union all
+    select 'Q4' as wy
+  	      , '${stayear}' || '-10-01' as wy1
+  	      ,  (date_trunc('MONTH', to_date('${stayear}' || '-12', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual
+  </select>
+  
+  <select id="selectHalf" parameterType="map" resultMap="DateMap" >
+  	select 'FH' as wy
+  	      , '${stayear}' || '-01-01' as wy1
+  	      , (date_trunc('MONTH', to_date('${stayear}' || '-06', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual
+  	union all
+   	select 'SF' as wy
+  	      , '${stayear}' || '-07-01' as wy1
+  	      , (date_trunc('MONTH', to_date('${stayear}' || '-12', 'YYYY-MM')) + INTERVAL '1 MONTH - 1 day')::date as wy2
+  	  from dual
+  </select>
+    
+  <!-- Insert Tmp Data -->
+  <insert id="insertTmpDate" parameterType="map">
+  
+  		<choose>
+   			<when test="objTerm eq 'D'.toString()">
+  				insert into zapp_date_t (dt_s)
+				select cast(date_trunc('day', dd):: date as varchar(20))
+				  from generate_series ( '${stasdate}'::timestamp, '${staedate}'::timestamp, '1 day'::interval) dd
+  			</when>
+  			<when test="objTerm eq 'W'.toString()">
+  				insert into zapp_date_t (dt_s, dt_e)
+			    select sd as dt_s
+			        ,  (sd + 6) as dt_e
+			     from (
+			     	   <foreach collection="dates" item="date" separator=" union all " >
+			     	   	select to_date(#{date.stasdate, jdbcType=VARCHAR}, 'iyyyiw') as sd
+			     	   </foreach>
+				  ) LIST
+  			</when>
+  			<when test="objTerm eq 'M'.toString()">
+  				insert into zapp_date_t (dt_s)
+  				<foreach collection="dates" item="date" separator=" union all " >
+			     	select #{date.stasdate, jdbcType=VARCHAR} as sd1
+			     	  from dual
+			    </foreach>
+  			</when>
+   			<when test="objTerm eq 'Q'.toString()">
+  				insert into zapp_date_t (dt_s, dt_e)
+  				<foreach collection="dates" item="date" separator=" union all " >
+			     	select #{date.stasdate, jdbcType=VARCHAR} as sd1
+			     	     , #{date.staedate, jdbcType=VARCHAR} as sd2
+			     	  from dual
+			    </foreach>
+  			</when>
+			<when test="objTerm eq 'H'.toString()">
+  				insert into zapp_date_t (dt_s, dt_e)
+  				<foreach collection="dates" item="date" separator=" union all " >
+			     	select #{date.stasdate, jdbcType=VARCHAR} as sd1
+			     	     , #{date.staedate, jdbcType=VARCHAR} as sd2
+			     	  from dual
+			    </foreach>
+  			</when>
+ 			<when test="objTerm eq 'Y'.toString()">
+  				insert into zapp_date_t (dt_s)
+  				<foreach collection="dates" item="date" separator=" union all " >
+			     	select #{date.stasdate, jdbcType=VARCHAR} as sd1
+			     	  from dual
+			    </foreach>
+  			</when>
+  			<otherwise></otherwise>
+  		</choose>
+ 
+  </insert>
+ 
+  <select id="selectProcessStatusList_Old" parameterType="map" resultMap="BaseResultMap" >
+    select dt_s as stasdate
+		<!--  기간 옵션 -->
+	  	<choose>
+	   		<when test="objTerm eq 'W'.toString()">
+	   			, dt_e as staedate
+	   		</when>
+	   		<when test="objTerm eq 'M'.toString()">
+	   			, dt_e as staedate
+	   		</when>	
+	   		<when test="objTerm eq 'Q'.toString()">
+	   			, dt_e as staedate 
+	   		</when>		
+	   		<when test="objTerm eq 'H'.toString()">
+	   			, dt_e as staedate
+	   		</when>		
+	   		<otherwise></otherwise>
+	   	</choose>    
+         , coalesce((select count(*)
+    				   from zapp_contentlog
+    				  where 1 = 1
+    				
+    				<!-- 대상 옵션 -->
+					<choose>
+						<when test="objType eq '01'.toString()">	<!-- 사용자 -->
+							and loggerid = '${objid}'
+						</when>
+						<when test="objType eq '02'.toString()">	<!-- 부서 -->
+							and loggerdeptid = '${objid}' 
+						</when>
+						<otherwise></otherwise>
+					</choose>    				  
+     				
+    				<!-- 처리 옵션 -->
+					<foreach collection="objActions" item="act" separator=" , " open=" and action in ( "  close =" )">
+						'${act}'
+					</foreach>
+					 
+  					<!--  기간 옵션 -->
+				  	<choose>
+				   		<when test="objTerm eq 'D'.toString()">
+				   			and logtime like (dt_s || '%')
+				   		</when>
+				   		<when test="objTerm eq 'W'.toString()">
+				   			and logtime between (dt_s || ' 00:00:00') and (dt_e || ' 23:59:59') 
+				   		</when>
+				   		<when test="objTerm eq 'M'.toString()">
+				   			and logtime between (dt_s || ' 00:00:00') and (dt_e || ' 23:59:59') 
+				   		</when>	
+				   		<when test="objTerm eq 'Q'.toString()">
+				   			and logtime between (dt_s || ' 00:00:00') and (dt_e || ' 23:59:59') 
+				   		</when>		
+				   		<when test="objTerm eq 'H'.toString()">
+				   			and logtime between (dt_s || ' 00:00:00') and (dt_e || ' 23:59:59') 
+				   		</when>		
+				   		<when test="objTerm eq 'Y'.toString()">
+				   			and logtime like (dt_s || '%') 
+				   		</when>					   		
+				   		<otherwise></otherwise>
+				   	</choose>
+				   	
+    				<!-- 대상 옵션 -->
+					<choose>
+						<when test="objType eq '01'.toString()">	<!-- 사용자 -->
+							group by loggerid 
+						</when>
+						<when test="objType eq '02'.toString()">	<!-- 부서 -->
+							group by loggerdeptid
+						</when>
+						<otherwise></otherwise>
+					</choose>
+			), 0) AS stacnt
+	from zapp_date_t		  
+  </select>
+
+  <select id="selectProcessStatusList" parameterType="map" resultMap="BaseResultMap" >
+  	with recursive R_STATUS as (
+		select statusid
+		     , staobjid
+		     , staobjtype
+		     , stacnt
+		     , stadate
+		     , staaction
+		     , statermtype
+		  from zapp_status
+	     where staobjid = '${staObjId}'
+		   and staobjtype = '${staObjType}'
+		   and stadate between '${staSdate}' and '${staEdate}'
+		   and staaction = '${staAction}'
+		<if test="staIncToday eq 'Y'.toString()">	<!-- 검색 일자에 today가 포함된 경우 -->
+		union all
+		select 
+			   get_sha256('${staObjId}' || to_char(now(), 'YYYY-MM-DD') || '${staObjType}' || '${staAction}') as statusid
+	  		 , '${staObjId}' 								as staobjid
+	  		 , '${staObjType}' 								as staobjtype
+	  		 , coalesce((select count(*) 
+	  		              from zapp_contentlog
+						  where loggerid = '${staObjId}'
+	   						and action = '${staAction}'
+	       					and logtime like to_char(now(), 'YYYY-MM-DD') || '%'
+	      				 group by loggerid), 0) 			as stacnt
+	  		 , to_char(now(), 'YYYY-MM-DD')					as stadate
+	  		 , '${staAction}'								as staaction
+			 , 'D'											as statermtype
+	     from dual
+	     </if>
+	 )
+     select dt_s as stasdate
+		<!--  기간 옵션 -->
+	  	<choose>
+	   		<when test="staObjTerm eq 'W'.toString()">
+	   			, dt_e as staedate
+	   		</when>
+	   		<when test="staObjTerm eq 'M'.toString()">
+	   			, dt_e as staedate
+	   		</when>	
+	   		<when test="staObjTerm eq 'Q'.toString()">
+	   			, dt_e as staedate 
+	   		</when>		
+	   		<when test="staObjTerm eq 'H'.toString()">
+	   			, dt_e as staedate
+	   		</when>		
+	   		<otherwise></otherwise>
+	   	</choose>    
+         , coalesce((select sum(stacnt)
+    				   from R_STATUS
+    				  where 1 = 1
+					 
+  					<!--  기간 옵션 -->
+				  	<choose>
+				   		<when test="staObjTerm eq 'D'.toString()">
+				   			and stadate = dt_s
+				   		</when>
+				   		<when test="staObjTerm eq 'W'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>
+				   		<when test="staObjTerm eq 'M'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>	
+				   		<when test="staObjTerm eq 'Q'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>		
+				   		<when test="staObjTerm eq 'H'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>		
+				   		<when test="staObjTerm eq 'Y'.toString()">
+				   			and stadate like (dt_s || '%') 
+				   		</when>					   		
+				   		<otherwise></otherwise>
+				   	</choose>
+
+			), 0) AS stacnt
+	from zapp_date_t	
+  </select>
+
+  <!--  -->
+  <select id="selectProcessStatusList_All" parameterType="map" resultMap="BaseResultMap" >
+    <if test="status.staobjid != null">
+	    <choose>
+		  	<when test="status.objType eq '02'.toString()">	<!-- Department -->
+		 	<choose>
+		      	<when test="status.objIncLower eq 'Y'.toString()">
+		  		with recursive depttree as ( select 1 as level
+			 		        , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Base_Column_List" />
+						 from zapp_dept DEPT
+			 			where 1 = 1
+						  and DEPT.deptid = '${status.staobjid}'
+						union all
+						select T.level+1
+			  			    , <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Base_Column_List_Alias" />
+						  from zapp_dept R, depttree T
+						 where R.upid = T.deptid
+				) ,       	
+		      	</when>
+		      	<otherwise>
+		      	 with recursive depttree as (
+		      	  select '${status.staobjid}' as deptid from dual
+		      	),	
+		      	</otherwise>
+		      </choose> 
+		     </when>
+		     <otherwise>
+		     	with recursive	
+		     </otherwise>
+	     </choose>
+    </if>
+    <if test="status.staobjid == null">
+		with recursive
+	</if>
+  	R_STATUS as (
+		select statusid
+		     , staobjid
+		     , staobjtype
+		     , stacnt
+		     , stadate
+		     , staaction
+		     , statermtype
+		  from zapp_status
+	     where stacompanyid = #{status.stacompanyid, jdbcType=VARCHAR}
+	       <if test="status.staobjid != null">
+	         <choose>
+			  	<when test="status.objType eq '02'.toString()">	<!-- Department -->
+		       		and staobjid in (select deptid from depttree)
+		       	</when>
+		       	<otherwise>
+		       		and staobjid in (#{status.staobjid, jdbcType=CHAR})
+		       	</otherwise>
+	       	</choose>
+	       </if>
+		   and staobjtype = #{status.staobjtype, jdbcType=CHAR}
+		   and stadate between #{status.stasdate, jdbcType=VARCHAR} and #{status.staedate, jdbcType=VARCHAR}
+		   and staaction = #{status.staaction, jdbcType=CHAR}		   
+		<if test="status.staIncToday eq 'Y'.toString()">	<!-- 검색 일자에 today가 포함된 경우 -->
+		union all
+		<choose>
+			<when test="status.objType eq '02'.toString()">		<!-- Department -->
+	 			select
+	            	  get_sha256(dept.deptid || to_char(now(), 'YYYY-MM-DD') || '${status.staobjtype}' || '${status.staaction}') as statusid
+	            	, dept.deptid as staobjid
+	            	, '${status.staobjtype}' as staobjtype
+	  			    , coalesce((select count(*)
+	               				 from zapp_contentlog
+	 						    where loggerdeptid = dept.deptid
+	  						      and action = '${status.staaction}'
+	      						  and logtime like to_char(now(), 'YYYY-MM-DD') || '%'
+	     						 group by loggerdeptid), 0) as stacnt
+	  				, to_char(now(), 'YYYY-MM-DD') as stadate
+	  				, '${status.staaction}' as staaction
+				    , 'D' as statermtype
+	  			  from zapp_dept dept
+	  			  where dept.companyid = #{status.stacompanyid, jdbcType=VARCHAR}
+	  			  <if test="status.staobjid != null">
+		       		and dept.deptid in (select deptid from depttree)
+		          </if>   
+			</when>
+			<when test="status.objType eq '01'.toString()">		<!-- User -->
+			select
+            	  get_sha256(deptuser.deptuserid || to_char(now(), 'YYYY-MM-DD') || '${status.staobjtype}' || '${status.staaction}') as statusid
+            	, deptuser.deptuserid as staobjid
+            	, '${status.staobjtype}' as staobjtype
+  				, coalesce((select count(*)
+               				  from zapp_contentlog
+ 							 where loggerid = deptuser.deptuserid
+  							   and action = '${status.staaction}'
+      						   and logtime like to_char(now(), 'YYYY-MM-DD') || '%'
+      						 group by loggerid), 0) as stacnt
+  				, to_char(now(), 'YYYY-MM-DD') as stadate
+  				, '${status.staaction}' as staaction
+				, 'D' as statermtype
+  			 from zapp_deptuser deptuser
+     			, zapp_dept dept
+  			where deptuser.deptid = dept.deptid
+   			  and dept.companyid = #{status.stacompanyid, jdbcType=VARCHAR}  
+  			  <if test="status.staobjid != null">
+	       		and deptuser.deptuserid = #{status.staobjid, jdbcType=CHAR}
+	          </if>  
+			</when>
+			<otherwise></otherwise>
+		</choose>
+        </if>
+	 )
+     select 
+	   	<choose>
+			<when test="status.objType eq '02'.toString()">		<!-- Department -->
+				dept.name as staname
+			</when>
+			<when test="status.objType eq '01'.toString()">		<!-- User -->
+				deptuser.deptuserid as staname
+			</when>
+			<otherwise></otherwise>
+		</choose>     
+        
+        , dt_s as stasdate
+        
+		<!--  기간 옵션 -->
+	  	<choose>
+	   		<when test="status.statermtype eq 'W'.toString()">
+	   			, dt_e as staedate
+	   		</when>
+	   		<when test="status.statermtype eq 'Q'.toString()">
+	   			, dt_e as staedate 
+	   		</when>		
+	   		<when test="status.statermtype eq 'H'.toString()">
+	   			, dt_e as staedate
+	   		</when>		
+	   		<otherwise></otherwise>
+	   	</choose>    
+         , coalesce((select sum(stacnt)
+    				   from R_STATUS
+    				  where 1 = 1
+					 
+  					<!--  기간 옵션 -->
+				  	<choose>
+				   		<when test="status.statermtype eq 'D'.toString()">
+				   			and stadate = dt_s
+				   		</when>
+				   		<when test="status.statermtype eq 'W'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>
+				   		<when test="status.statermtype eq 'M'.toString()">
+				   			and stadate like concat(dt_s, '%')
+				   		</when>	
+				   		<when test="status.statermtype eq 'Q'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>		
+				   		<when test="status.statermtype eq 'H'.toString()">
+				   			and stadate between dt_s and dt_e
+				   		</when>		
+				   		<when test="status.statermtype eq 'Y'.toString()">
+				   			and stadate like concat(dt_s, '%')
+				   		</when>					   		
+				   		<otherwise></otherwise>
+				   	</choose>
+				   	
+				   	<!--  -->
+				   	<choose>
+						<when test="status.objType eq '02'.toString()">		<!-- Department -->
+							and staobjid = dept.deptid
+						</when>
+						<when test="status.objType eq '01'.toString()">		<!-- User -->
+							and staobjid = deptuser.deptuserid
+						</when>
+						<otherwise></otherwise>
+					</choose>
+
+			), 0) AS stacnt
+	from zapp_date_t	
+   	<choose>
+		<when test="status.objType eq '02'.toString()">		<!-- Department -->	
+		, (select deptid, name 
+		     from zapp_dept 
+		    where companyid = #{status.stacompanyid, jdbcType=VARCHAR} 
+	 		  <if test="status.staobjid != null">
+			  	  and deptid in (select deptid from depttree)
+			  </if>
+		    ) dept
+		  group by dept.deptid, dept.name, dt_s
+		<!--  기간 옵션 -->
+	  	<choose>
+	   		<when test="status.statermtype eq 'W'.toString()">
+	   			, dt_e
+	   		</when>
+	   		<when test="status.statermtype eq 'Q'.toString()">
+	   			, dt_e
+	   		</when>		
+	   		<when test="status.statermtype eq 'H'.toString()">
+	   			, dt_e
+	   		</when>		
+	   		<otherwise></otherwise>
+	   	</choose>		  
+		  order by dept.name, dt_s
+		</when>
+		<when test="status.objType eq '01'.toString()">		<!-- User -->
+		, (select deptuserid
+		    from zapp_deptuser du
+		      , zapp_dept d
+		     where du.deptid = d.deptid
+		       and d.companyid = #{status.stacompanyid, jdbcType=VARCHAR} ) deptuser
+  		  group by deptuser.deptuserid, dt_s
+		<!--  기간 옵션 -->
+	  	<choose>
+	   		<when test="status.statermtype eq 'W'.toString()">
+	   			, dt_e
+	   		</when>
+	   		<when test="status.statermtype eq 'Q'.toString()">
+	   			, dt_e
+	   		</when>		
+	   		<when test="status.statermtype eq 'H'.toString()">
+	   			, dt_e
+	   		</when>		
+	   		<otherwise></otherwise>
+	   	</choose>
+  		  order by deptuser.deptuserid, dt_s
+		</when>
+		<otherwise></otherwise>
+	</choose>
+		
+  </select>   
+</mapper>

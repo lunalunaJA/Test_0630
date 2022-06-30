@@ -1,0 +1,2213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappContentMapper" >
+
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappContentRes" >
+    <id column="UID" property="uid" jdbcType="CHAR" />
+    <result column="CONTENTID" property="contentid" jdbcType="CHAR" />
+    <result column="CONTENTNO" property="contentno" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CREATORID" property="creatorid" jdbcType="VARCHAR" />
+    <result column="CREATORNAME" property="creatorname" jdbcType="VARCHAR" />
+    <result column="CREATORDEPTNAME" property="creatordeptname" jdbcType="VARCHAR" />
+    <result column="HOLDERID" property="holderid" jdbcType="VARCHAR" />
+    <result column="HOLDERNAME" property="holdername" jdbcType="VARCHAR" />
+    <result column="HOLDERDEPTNAME" property="holderdeptname" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="VARCHAR" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="VARCHAR" />
+    <result column="RETENTIONID" property="retentionid" jdbcType="CHAR" />
+    <result column="EXPIRETIME" property="expiretime" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="islocked" property="islocked" jdbcType="CHAR" />
+    <result column="isshared" property="isshared" jdbcType="CHAR" />
+    <result column="classname" property="classname" jdbcType="VARCHAR" />
+    <result column="classpath" property="classpath" jdbcType="VARCHAR" />
+    <result column="contenttype" property="contenttype" jdbcType="CHAR" />
+    <result column="lockername" property="lockername" jdbcType="VARCHAR" />
+    <result column="lockerdeptname" property="lockerdeptname" jdbcType="VARCHAR" />
+    <result column="filesize" property="filesize" jdbcType="FLOAT" />
+    <result column="CTYPE" property="ctype" jdbcType="CHAR" />
+    <result column="SUMMARY" property="summary" jdbcType="VARCHAR" />
+    <result column="apporder" property="apporder" jdbcType="DECIMAL" />
+ 
+ 	<!-- 반려 / 반출사유 -->
+    <result column="reasons" property="reasons" jdbcType="VARCHAR" />
+    <result column="wfinf" property="wfinf" jdbcType="VARCHAR" />
+        
+    <!-- 공유 정보 -->
+    <association property="zappSharedObject" 
+				 column="SHAREOBJ_shareobjid" 
+				 javaType="com.zenithst.core.content.vo.ZappSharedObjectExtend" 
+				 resultMap="com.zenithst.core.content.mapper.ZappSharedObjectMapper.JoinResultMapExtendOnly"/> 
+				 
+  </resultMap>
+
+  <sql id="Bundle_Base_Column_List_In">
+     BUNDLE.BUNDLEID		AS CONTENTID
+   , BUNDLE.BNO				AS CONTENTNO
+   , BUNDLE.TITLE			AS TITLE
+   , BUNDLE.CREATORID		AS CREATORID
+   , BUNDLE.CREATORNAME		AS CREATORNAME
+   , BUNDLE.HOLDERID		AS HOLDERID
+   , BUNDLE.CREATETIME		AS CREATETIME
+   , BUNDLE.UPDATETIME		AS UPDATETIME
+   , BUNDLE.RETENTIONID		AS RETENTIONID
+   , BUNDLE.EXPIRETIME		AS EXPIRETIME
+   , BUNDLE.STATE			AS STATE
+   , '01'::VARCHAR			AS CONTENTTYPE
+   , '' 					AS SUMMARYS
+   , BUNDLE.BTYPE			AS CTYPE
+  </sql>
+  <sql id="File_Base_Column_List_In">
+  	  ZA_MFILE.MFILEID 	  		AS CONTENTID
+	, ZAPP_MFILE.FNO	  		AS CONTENTNO
+	, ZA_MFILE.FILENAME			AS TITLE
+  	, ZA_MFILE.CREATOR    		AS CREATORID
+  	, ZAPP_MFILE.CREATORNAME	AS CREATORNAME
+  	, ZAPP_MFILE.HOLDERID		AS HOLDERID
+  	, ZA_MFILE.CREATETIME 		AS CREATETIME
+  	, ZA_MFILE.UPDATETIME 		AS UPDATETIME
+  	, ZAPP_MFILE.RETENTIONID	AS RETENTIONID
+  	, ZAPP_MFILE.EXPIRETIME		AS EXPIRETIME
+  	, ZA_MFILE.STATE 	  		AS STATE  
+  	, '02'::VARCHAR				AS CONTENTTYPE
+  	, ZAPP_MFILE.SUMMARY		AS SUMMARYS
+  	, ''						AS CTYPE
+  </sql>
+  <sql id="Base_Column_List_In">
+      CONTENTID
+   ,  CONTENTNO
+   ,  TITLE
+   ,  CREATORID
+   ,  CREATORNAME
+   ,  HOLDERID
+   ,  CREATETIME
+   ,  UPDATETIME
+   ,  RETENTIONID
+   ,  EXPIRETIME
+   ,  STATE
+   ,  CONTENTTYPE
+   ,  SUMMARYS
+   ,  CTYPE
+  </sql>  
+  <sql id="Base_Column_List_Out">
+  	  gen_random_uuid() as UID
+  	, CONTENTID
+	, CONTENTNO
+	, (case CONTENTTYPE
+  	    when '01' then TITLE 
+  	    when '02' then get_max_version_filename_4_0(CONTENTID)
+  	   else ''
+  	   end) AS TITLE
+  	, CREATORID
+  	, (case CONTENTTYPE
+  	    when '01' then CREATORNAME 
+  	    when '02' then get_name_by_deptuserid(CREATORID)
+  	   else ''
+  	   end) AS CREATORNAME
+  	, (select d.name 
+  	     from zapp_dept d, zapp_deptuser du
+  	    where d.deptid = du.deptid
+  	      and du.deptuserid = CREATORID) as CREATORDEPTNAME
+  	, HOLDERID
+  	, get_name_by_deptuserid(HOLDERID) AS HOLDERNAME
+   	, (select d.name 
+  	     from zapp_dept d, zapp_deptuser du
+  	    where d.deptid = du.deptid
+  	      and du.deptuserid = HOLDERID) as HOLDERDEPTNAME 	
+  	, (case 
+		when length(CREATETIME) > 19 then substring(CREATETIME, 1, 19)
+	    else CREATETIME
+	   end) AS CREATETIME
+  	, UPDATETIME
+  	, RETENTIONID
+  	, EXPIRETIME
+  	, STATE  
+  	, CONTENTTYPE
+  	, (case CONTENTTYPE
+  		when '01' then ''
+  		when '02' then get_maxversion(CONTENTID)
+  		end) as VERSION
+  	, islocked(CONTENTID, CONTENTTYPE, #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}) AS ISLOCKED
+  	<choose>
+		<when test="auth.objAccesspath eq 'W'.toString()">
+  		, isshared(CONTENTID, CONTENTTYPE) AS ISSHARED
+  		, islinked(CONTENTID) AS ISLINKED		
+    	, get_name_by_classid(CONTENTID, CONTENTTYPE) as classname	
+    	, get_classpath_upward_direct(CONTENTID, CONTENTTYPE, #{auth.objSkipCpath, jdbcType=CHAR}) as classpath		
+       </when>	
+		<otherwise>
+		, '' AS ISSHARED
+		, '' AS ISLINKED
+		, '' as classname
+		, '' as classpath
+		</otherwise>	
+  	</choose>   	
+  	, get_lockername(CONTENTID, CONTENTTYPE) as lockername
+  	, get_lockerdeptname(CONTENTID, CONTENTTYPE) as lockerdeptname
+  	, (case CONTENTTYPE
+  		when '01' then 0.0
+  		when '02' then get_filezise(CONTENTID)
+  		end) as filesize
+  	, (case CONTENTTYPE
+  		when '01' then (select summary from zapp_additorybundle where bundleid = CONTENTID)
+  		when '02' then SUMMARYS
+  		end) as summary
+    , get_apporder(CONTENTID, CONTENTTYPE, STATE) as apporder
+    , CTYPE
+  	<choose>
+  		<!-- 승인 완료 -->
+		<when test="auth.objHandleType eq '12'.toString()">
+	    , COALESCE(get_wfinfo(CONTENTID, CONTENTTYPE, #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, 'A'), '') as wfinf
+		</when>
+  		<!-- 반려 -->
+		<when test="auth.objHandleType eq '13'.toString()">
+    	, COALESCE(get_wfinfo(CONTENTID, CONTENTTYPE, #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, 'R'), '') as wfinf  		
+		</when>	
+  		<!-- 대기 -->
+		<when test="auth.objHandleType eq '11'.toString()">
+    	, COALESCE(get_wfinfo(CONTENTID, CONTENTTYPE, #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, 'W'), '') as wfinf  		
+		</when>	
+		<otherwise>
+		, '' as wfinf
+		</otherwise>	
+  	</choose>
+  	, get_comment(CONTENTID, CONTENTTYPE, #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, STATE) as reasons
+  </sql>
+	
+  <!-- 단건 조회 -->
+  <select id="selectContent" resultMap="JoinResultMap" parameterType="map" >
+  	select <include refid="Base_Column_List_Out" />
+  	     , (select d.name 
+  	          from zapp_dept d, zapp_deptuser du
+  	        where d.deptid = du.deptid
+  	          and du.deptuserid = CREATORID) as creatordeptname
+  	     , (select d.name 
+  	          from zapp_dept d, zapp_deptuser du
+  	        where d.deptid = du.deptid
+  	          and du.deptuserid = HOLDERID) as holderdeptname
+  	  from (
+		  	<choose>
+		  		<when test="content.objType eq '01'.toString()">	<!-- Bundle -->
+		  			select
+				      <include refid="Bundle_Base_Column_List_In" />
+				      from zapp_bundle BUNDLE
+				     where BUNDLE.bundleid = #{content.contentid,jdbcType=CHAR}
+		  		</when>
+		  		<when test="content.objType eq '02'.toString()">	<!-- File -->
+		  			select 
+		    		  <include refid="File_Base_Column_List_In" />
+		    	      from zarch_mfile ZA_MFILE
+		       			 , zapp_mfile ZAPP_MFILE
+		       	     where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+		       	       and ZA_MFILE.MFILEID = #{content.contentid,jdbcType=CHAR}
+		  		</when>
+		  		<otherwise></otherwise>
+		  	</choose>
+		  	) ILST
+  </select>
+
+  <!-- 분류 (노드, 문서유형, 분류, ...) -->
+  <select id="selectPhysicalList" resultMap="JoinResultMap" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+    	</if>
+    </if>
+  
+    select <include refid="Base_Column_List_Out" />
+
+		  <if test="share != null" >
+		    	, <include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Join_Column_List_OUT" />
+		  </if> 
+			        
+      from (
+      		
+      		select  <include refid="Base_Column_List_In" />
+      		
+      		   <if test="share != null" >
+		    	  , <include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Join_Column_List_IN_" />
+		      </if> 
+		  
+      		  from (
+      
+      		<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+      		
+			    select
+			    <include refid="Bundle_Base_Column_List_In" />
+			    <if test="share != null" >
+			    	, <include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Join_Column_List_IN" />
+			    </if> 
+			    from zapp_bundle BUNDLE
+			    
+				<choose>
+			        <when test="class != null" >
+			         , zapp_class CLS
+			         , zapp_classobject CLSOBJ 
+			        </when>
+			        <when test="link != null" >
+			         , zapp_linkedobject LINKOBJ 
+			        </when>
+			        <when test="share != null" >
+			         , zapp_sharedobject SHAREOBJ 
+			        </when>
+			        <when test="lock != null" >
+			         , zapp_lockedobject LOCKOBJ 
+			        </when>
+			        <when test="mark != null" >
+			         , zapp_markedobject MARKOBJ 
+			         , zapp_class CLS
+			         , zapp_classobject CLSOBJ 
+			        </when>
+			        <otherwise></otherwise>
+				</choose>
+			        
+			    <if test="additorybundle != null" >
+			       , zapp_additorybundle ADDBUNDLE
+			    </if>
+			        	
+			    where 1 = 1
+			    
+			    <choose>
+					<when test="class != null" >
+			           and CLSOBJ.cobjid = BUNDLE.BUNDLEID
+			           and CLSOBJ.cobjtype = '01'		<!-- Bundle -->
+		               and CLSOBJ.classid = CLS.classid
+			           and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+			    	</when>
+			    	<when test="link != null" >
+			           and LINKOBJ.targetid = BUNDLE.BUNDLEID
+			          <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Link" />
+			          <!-- </if> -->
+			    	</when>
+			    	<when test="share != null" >
+			           and SHAREOBJ.sobjid = BUNDLE.BUNDLEID
+			           and SHAREOBJ.sobjtype = '01'		<!-- Bundle -->
+			           <choose>
+			           		<when test="share.objHasconds eq 'Y'.toString()">
+			           			<include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Dynamic_Where_Clause_Manual" />
+			           		</when>
+			           		<otherwise>
+			           			and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Share" />
+			           		</otherwise>
+			           </choose>
+			    	</when>
+			    	<when test="lock != null" >
+			           and LOCKOBJ.lobjid = BUNDLE.BUNDLEID
+			           and LOCKOBJ.lobjtype = '01'
+			          <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Lock" />
+			          <!-- </if> -->
+			    	</when>
+			    <!--	<when test="keyword != null">
+			    	   and exists (select kobjid 
+			    	   				from zapp_keywordobject KWO
+			    	   				   , zapp_keywords KW
+			    	   				where KWO.kwordid = KW.kwordid
+			    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+			    	   				  and KWO.kobjtype = '01'
+			    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+			    	   			   )
+			    	</when> -->
+			    	<when test="mark != null" >
+			    	   	and MARKOBJ.mobjid = BUNDLE.BUNDLEID
+			    	   	and MARKOBJ.mobjtype = '01'
+			    	   	and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+			    	   	and CLSOBJ.cobjid = BUNDLE.BUNDLEID
+			            and CLSOBJ.cobjtype = '01'		<!-- Bundle -->
+		                and CLSOBJ.classid = CLS.classid
+		                and CLSOBJ.classtype in ('N1', 'N2', 'N3', 'N4')
+		                and CLS.isactive = 'Y'
+			    	</when>
+			        <otherwise></otherwise>
+				</choose>
+	
+			    <!-- Bundle -->
+			    <if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+			    
+			    <!-- Additory Bundle -->
+			    <if test="additorybundle != null" >
+			      and BUNDLE.BUNDLEID = ADDBUNDLE.BUNDLEID
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			    </if>			    
+	
+				<!-- File 
+		    	<if test="mfile != null" >
+		          and exists (select 1
+		                        from zarch_mfile ZA_MFILE
+		       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+		       				     <include refid="mfileWhere"/>
+		          			 )  
+		        </if>
+		        -->
+		        
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>		        
+			        		    
+			    <!-- ACL -->
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" /> 
+	    			</if>
+	    		</if>
+	    		
+	    	</if>
+    		
+    		<if test="queryObj.setval eq 'A'.toString()">	<!-- All -->	
+		    	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+		    
+			    select 
+			    <include refid="File_Base_Column_List_In" />
+			    
+			    <if test="share != null" >
+			    	, <include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Join_Column_List_IN" />
+			    </if> 
+			    
+			    from zarch_mfile ZA_MFILE
+			       , zapp_mfile ZAPP_MFILE
+			       
+				<choose>
+					<when test="class != null" >
+					 , zapp_class CLS
+			         , zapp_classobject CLSOBJ 
+			        </when>
+			        <when test="link != null" >
+			         , zapp_linkedobject LINKOBJ 
+			        </when>
+			        <when test="share != null" >
+			         , zapp_sharedobject SHAREOBJ 
+			        </when>
+			        <when test="lock != null" >
+			         , zapp_lockedobject LOCKOBJ 
+			        </when>
+			        <when test="mark != null" >
+			         , zapp_markedobject MARKOBJ 
+			         , zapp_class CLS
+			         , zapp_classobject CLSOBJ 
+			        </when>
+			        <otherwise></otherwise>		        
+				</choose>
+				
+			    where ZA_MFILE.mfileid = ZAPP_MFILE.mfileid
+			    
+			    <choose>
+					<when test="class != null" >
+			           and CLSOBJ.cobjid = ZA_MFILE.mfileid
+			           and CLSOBJ.cobjtype = '02'		<!-- File -->
+		               and CLSOBJ.classid = CLS.classid
+			           and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+			    	</when>
+			    	<when test="link != null" >
+			           and LINKOBJ.targetid = ZAPP_MFILE.mfileid
+			           <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Link" />
+			           <!-- </if> -->
+			    	</when>
+			    	<when test="share != null" >
+			           and SHAREOBJ.sobjid = ZAPP_MFILE.mfileid
+			           and SHAREOBJ.sobjtype = '02'		<!-- File -->
+			           <choose>
+			           		<when test="share.objHasconds eq 'Y'.toString()">
+			           			<include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Dynamic_Where_Clause_Manual" />
+			           		</when>
+			           		<otherwise>
+			           			and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Share" />
+			           		</otherwise>
+			           </choose>
+			    	</when>
+			    	<when test="lock != null" >
+			           and LOCKOBJ.lobjid = ZAPP_MFILE.mfileid
+			           and LOCKOBJ.lobjtype = '02'
+			           <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Lock" />
+			           <!-- </if> -->
+			    	</when>
+			    <!--	<when test="keyword != null">
+			    	   and exists (select kobjid 
+			    	   				from zapp_keywordobject KWO
+			    	   				   , zapp_keywords KW
+			    	   				where KWO.kwordid = KW.kwordid
+			    	   				  and KWO.kobjid = ZAPP_MFILE.mfileid
+			    	   				  and KWO.kobjtype = '02'
+			    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+			    	   			   )
+			    	</when> -->
+			    	<when test="mark != null" >
+			    	   	and MARKOBJ.mobjid = ZA_MFILE.mfileid
+			    	   	and MARKOBJ.mobjtype = '02'
+			    	   	and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+			            and CLSOBJ.cobjid = ZA_MFILE.mfileid
+			            and CLSOBJ.cobjtype = '02'		<!-- File -->
+		                and CLSOBJ.classid = CLS.classid
+		                and CLSOBJ.classtype in ('N1', 'N2', 'N3', 'N4')
+		                and CLS.isactive = 'Y'
+			    	</when>
+			    	<otherwise></otherwise>
+				</choose>
+			    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/>
+			    </if>
+			    
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZAPP_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>			    
+			    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" /> 
+	    			</if>
+	    		</if>		   
+	    		
+	    	 </if>	<!-- End of <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">  --> 
+		    
+		    ) LIST
+
+	     	<!-- Sorting -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+	     	
+	     	<!-- Paging -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	     	
+	     	) LST
+  </select>
+  
+  <select id="selectPhysicalCount" parameterType="map" resultType="java.lang.Integer" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" />
+    	</if>
+    </if>
+    
+    select sum(cnt) as allcnt
+      from (
+      		 <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+      		 
+				select count(*) as cnt
+				    from zapp_bundle BUNDLE
+				    
+					<choose>
+						<when test="class != null" >
+						 , zapp_class CLS
+				         , zapp_classobject CLSOBJ 
+				        </when>
+				        <when test="link != null" >
+				         , zapp_linkedobject LINKOBJ 
+				        </when>
+				        <when test="share != null" >
+				         , zapp_sharedobject SHAREOBJ 
+				        </when>
+				        <when test="lock != null" >
+				         , zapp_lockedobject LOCKOBJ 
+				        </when>
+				        <when test="mark != null" >
+				         , zapp_markedobject MARKOBJ 
+						 , zapp_class CLS
+				         , zapp_classobject CLSOBJ 				  
+				        </when>
+				        <otherwise></otherwise>
+					</choose>
+			        
+				    <if test="additorybundle != null" >
+				       , zapp_additorybundle ADDBUNDLE
+				    </if>
+			    		
+				    where 1 = 1
+				    
+				    <choose>
+						<when test="class != null" >
+				           and CLSOBJ.cobjid = BUNDLE.BUNDLEID
+				           and CLSOBJ.cobjtype = '01'		<!-- Bundle -->
+		                   and CLSOBJ.classid = CLS.classid
+			               and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+				    	</when>
+				    	<when test="link != null" >
+				           and LINKOBJ.targetid = BUNDLE.BUNDLEID
+				          <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+				             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Link" />
+				          <!-- </if> -->
+				    	</when>
+				    	<when test="share != null" >
+				           and SHAREOBJ.sobjid = BUNDLE.BUNDLEID
+				           and SHAREOBJ.sobjtype = '01'		<!-- Bundle -->
+				           <choose>
+				           		<when test="share.objHasconds eq 'Y'.toString()">
+				           			<include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Dynamic_Where_Clause_Manual" />
+				           		</when>
+				           		<otherwise>
+				           			and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Share" />
+				           		</otherwise>
+				           </choose>
+				    	</when>
+				    	<when test="lock != null" >
+				           and LOCKOBJ.lobjid = BUNDLE.BUNDLEID
+				           and LOCKOBJ.lobjtype = '01'
+				          <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+				             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Lock" />
+				          <!-- </if> -->
+				    	</when>
+				  <!-- 	<when test="keyword != null">
+				    	   and exists (select kobjid 
+				    	   				from zapp_keywordobject KWO
+				    	   				   , zapp_keywords KW
+				    	   				where KWO.kwordid = KW.kwordid
+				    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+				    	   				  and KWO.kobjtype = '01'
+				    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+				    	   			   )
+				    	</when>  -->
+				    	<when test="mark != null" >
+				    	   	and MARKOBJ.mobjid = BUNDLE.BUNDLEID
+				    	   	and MARKOBJ.mobjtype = '01'
+				    	   	and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+				            and CLSOBJ.cobjid = BUNDLE.BUNDLEID
+				            and CLSOBJ.cobjtype = '01'		<!-- Bundle -->
+		                    and CLSOBJ.classid = CLS.classid	
+		                    and CLSOBJ.classtype in ('N1', 'N2', 'N3', 'N4')	
+		                    and CLS.isactive = 'Y'		    	 
+			    		</when>
+				        <otherwise></otherwise>
+					</choose>
+		
+				    <!-- Bundle -->
+				    <if test="bundle != null" >
+				      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+				    </if>
+			    
+				    <!-- Additory Bundle -->
+				    <if test="additorybundle != null" >
+				      and BUNDLE.BUNDLEID = ADDBUNDLE.BUNDLEID
+				      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+				    </if>	
+		        
+			    	<if test="keyword != null">
+			    	   and exists (select kobjid 
+			    	   				from zapp_keywordobject KWO
+			    	   				   , zapp_keywords KW
+			    	   				where KWO.kwordid = KW.kwordid
+			    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+			    	   				  and KWO.kobjtype = '01'
+			    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+			    	   			   )
+			    	</if>	
+		    				    		
+					<!-- File 
+			    	<if test="mfile != null" >
+			          and exists (select 1
+			                        from zarch_mfile ZA_MFILE
+			       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+		          			       <include refid="mfileWhere"/>
+			          			 )  
+			        </if>
+			        -->
+				        		    
+				    <!-- ACL -->
+				    <if test="applyAcl != null">
+		    			<if test="applyAcl.setval eq 'Y'.toString()">
+		    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" />
+		    			</if>
+		    		</if>
+		    		
+		    	</if> <!-- End of All 또는 Bundle Only -->
+    			
+			    <if test="queryObj.setval eq 'A'.toString()">	<!-- All -->	
+			    	union all
+			    </if>
+		    
+		    	<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+		    	
+			    select count(*) as cnt
+			    from zarch_mfile ZA_MFILE
+			       , zapp_mfile ZAPP_MFILE
+			       
+				<choose>
+					<when test="class != null" >
+					 , zapp_class CLS
+			         , zapp_classobject CLSOBJ 
+			        </when>
+			        <when test="link != null" >
+			         , zapp_linkedobject LINKOBJ 
+			        </when>
+			        <when test="share != null" >
+			         , zapp_sharedobject SHAREOBJ 
+			        </when>
+			        <when test="lock != null" >
+			         , zapp_lockedobject LOCKOBJ 
+			        </when>
+				    <when test="mark != null" >
+				     , zapp_markedobject MARKOBJ 
+					 , zapp_class CLS
+			         , zapp_classobject CLSOBJ 				   
+				    </when>
+			        <otherwise></otherwise>
+				</choose>
+				
+			    where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+			    
+			    <choose>
+					<when test="class != null" >
+			           and CLSOBJ.cobjid = ZA_MFILE.mfileid
+			           and CLSOBJ.cobjtype = '02'		<!-- File -->
+		               and CLSOBJ.classid = CLS.classid
+			           and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />
+			    	</when>
+			    	<when test="link != null" >
+			           and LINKOBJ.targetid = ZAPP_MFILE.mfileid
+			           <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Link" />
+			           <!-- </if> -->
+			    	</when>
+			    	<when test="share != null" >
+			           and SHAREOBJ.sobjid = ZAPP_MFILE.mfileid
+			           and SHAREOBJ.sobjtype = '02'		<!-- File -->
+			           <choose>
+			           		<when test="share.objHasconds eq 'Y'.toString()">
+			           			<include refid="com.zenithst.core.content.mapper.ZappSharedObjectMapper.Dynamic_Where_Clause_Manual" />
+			           		</when>
+			           		<otherwise>
+			           			and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Share" />
+			           		</otherwise>
+			           </choose>
+			    	</when>
+			    	<when test="lock != null" >
+			           and LOCKOBJ.lobjid = ZAPP_MFILE.mfileid
+			           and LOCKOBJ.lobjtype = '02'
+			          <!-- <if test="class.objHasconds eq 'Y'.toString()"> -->
+			             and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Lock" />
+			           <!-- </if> -->
+			    	</when>
+			    <!-- <when test="keyword != null">
+			    	   and exists (select kobjid 
+			    	   				from zapp_keywordobject KWO
+			    	   				   , zapp_keywords KW
+			    	   				where KWO.kwordid = KW.kwordid
+			    	   				  and KWO.kobjid = ZAPP_MFILE.mfileid
+			    	   				  and KWO.kobjtype = '02'
+			    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+			    	   			   )
+			    	</when> -->	
+			    	<when test="mark != null" >
+			    	   	and MARKOBJ.mobjid = ZA_MFILE.mfileid
+			    	   	and MARKOBJ.mobjtype = '02'
+			    	   	and MARKOBJ.markerid = #{auth.sessDeptUser.userid, jdbcType=CHAR}
+			            and CLSOBJ.cobjid = ZA_MFILE.mfileid
+			            and CLSOBJ.cobjtype = '02'		<!-- File -->
+		                and CLSOBJ.classid = CLS.classid	
+		                and CLSOBJ.classtype in ('N1', 'N2', 'N3', 'N4')
+		                and CLS.isactive = 'Y'		    	   	
+		    		</when>
+			    	<otherwise></otherwise>
+				</choose>
+			    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/>
+			    </if>
+			    
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZAPP_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>				    
+			    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" />
+	    			</if>
+	    		</if>      
+	    	</if> <!-- End of  All 또는 File Only -->
+      
+      ) LIST
+
+  </select>
+  
+  <!-- 비논리 (등록, 소유 ...) -->
+  <select id="selectNonPhysicalList_" resultMap="JoinResultMap" parameterType="map" >
+  
+   -- 쿼리 옵션 : [${queryObj.setval}]
+   
+   <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">
+   	-- 전체 또는 번들
+   </if>
+   <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">
+   	-- 전체 또는 파일
+   </if>
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+    		,
+    	</if>
+    </if>
+    <if test="applyAcl == null">
+    	with recursive 
+    </if>
+    
+    ecmdata as (
+    	select <include refid="Base_Column_List_In" />
+    	  from (
+	    	<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+	    		select <include refid="Bundle_Base_Column_List_In" />
+	    	  	  from zapp_bundle BUNDLE
+	    	  	  <if test="additorybundle != null" >
+				   	 , zapp_additorybundle ADDBUNDLE
+				  </if>
+				     , zapp_classobject CLSOBJ
+				     , zapp_class CLS
+				 where 1 = 1
+				  <if test="additorybundle != null" >
+				   	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+				  </if>
+				  
+				<!-- 분류 노드 -->
+				and CLS.classid = CLSOBJ.classid
+				and CLSOBJ.cobjid = BUNDLE.bundleid
+				and CLSOBJ.cobjtype = '01'
+				and CLS.types in ('N1','N2','N3','N4')
+			    and CLS.isactive = 'Y'
+			   	
+				<if test="auth != null"	>	  
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and BUNDLE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and BUNDLE.creatorid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and BUNDLE.updatetime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and BUNDLE.expiretime between get_now() and get_banow(7)
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				           and BUNDLE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				    	</when>		
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ADDBUNDLE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+						<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							 from zapp_workflowobject WFO
+	           							where WFO.contentid = BUNDLE.bundleid
+	           							  and WFO.contenttype = '01'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>					    			    	
+					</choose>
+				</if>
+				
+				<if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+			    
+			    <!-- Additory Bundle -->
+			    <if test="additorybundle != null" >
+			      <choose>
+			      	<when test="auth.objHandleType eq '11'.toString()">
+			      		and ADDBUNDLE.bundleid = BUNDLE.bundleid
+			      	</when>
+			      	<otherwise>
+	   			        and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			      	</otherwise>	
+			      </choose>
+			    </if>	
+			    	
+				<!-- File 
+		    	<if test="mfile != null" >
+		          and exists (select 1
+		                        from zarch_mfile ZA_MFILE
+		       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+	          			       <include refid="mfileWhere"/>
+		          			 )  
+		        </if>
+		        -->
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>			  
+	    	</if>
+	    	
+	   		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+		   	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">
+		    
+			    select <include refid="File_Base_Column_List_In" />
+			      from zarch_mfile ZA_MFILE
+			         , zapp_mfile ZAPP_MFILE
+			         , zapp_classobject CLSOBJ
+					 , zapp_class CLS
+			     where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+					  
+				 <!-- 분류 노드 -->
+				   and CLS.classid = CLSOBJ.classid
+				   and CLSOBJ.cobjid = ZA_MFILE.MFILEID
+				   and CLSOBJ.cobjtype = '02'
+				   and CLS.types in ('N1','N2','N3','N4')
+				   and CLS.isactive = 'Y'
+				   						    
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and ZA_MFILE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and ZA_MFILE.creator = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and ZA_MFILE.updatetime between get_banow(-7) and get_now()
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and ZAPP_MFILE.expiretime between get_now() and get_banow(7)
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				           and ZAPP_MFILE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				    	</when>	
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ZAPP_MFILE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							from zapp_workflowobject WFO
+	           							where WFO.contentid = ZAPP_MFILE.mfileid
+	           							  and WFO.contenttype = '02'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>		
+					</choose>
+				</if>
+						    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/> 
+			    </if>
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+		    	
+		    </if>
+		    
+	    ) RLST
+	    
+	    <!-- Sorting -->
+	    <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+
+    )
+
+	<if test="applyAcl != null">
+		<if test="applyAcl.setval eq 'Y'.toString()">    
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl" />
+    		, PGData as (select ecmdata.*
+    					   from acldata, ecmdata 
+   						  where acldata.contentid = ecmdata.contentid
+						<!-- Paging -->
+						<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+						) 
+		</if>
+		<if test="applyAcl.setval eq 'N'.toString()">    
+    		, PGData as (select ecmdata.*
+    					   from ecmdata 
+						<!-- Paging -->
+						<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+    					   ) 
+		</if>
+	</if>
+	<if test="applyAcl == null">
+		, PGData as (select ecmdata.*
+    				   from ecmdata 
+						<!-- Paging -->
+						<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+    				   ) 
+	</if>
+	
+	select 
+	    <include refid="Base_Column_List_Out" />
+	  from PGData    		
+
+   </select>  
+
+  
+  <!-- 비논리 (등록, 소유 ...) -->
+  <select id="selectNonPhysicalCount_" resultType="java.lang.Integer" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" /> 
+    		,
+    	</if>
+    </if>
+    <if test="applyAcl == null">
+    	with recursive 
+    </if>
+    
+    ecmdata as (
+    	select *
+    	  from (
+	    	<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+	    		select BUNDLE.bundleid as contentid
+	    		     , '01' 		   as contenttype
+	    		     , BUNDLE.holderid as holderid
+	    	  	  from zapp_bundle BUNDLE
+	    	  	  <if test="additorybundle != null" >
+				   	 , zapp_additorybundle ADDBUNDLE
+				  </if>
+		             , zapp_classobject CLSOBJ
+				     , zapp_class CLS				  
+				 where 1 = 1
+				  <if test="additorybundle != null" >
+				   	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+				  </if>
+				  
+				<!-- 분류 노드 -->
+				and CLS.classid = CLSOBJ.classid
+				and CLSOBJ.cobjid = BUNDLE.bundleid
+				and CLSOBJ.cobjtype = '01'
+				and CLS.types in ('N1','N2','N3','N4')
+			    and CLS.isactive = 'Y'
+			   					
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and BUNDLE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and BUNDLE.creatorid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and BUNDLE.updatetime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and BUNDLE.expiretime between get_now() and get_banow(7)
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				           and BUNDLE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				    	</when>
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ADDBUNDLE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							 from zapp_workflowobject WFO
+	           							where WFO.contentid = BUNDLE.bundleid
+	           							  and WFO.contenttype = '01'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>				    	
+					</choose>
+				</if>
+				
+				<if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+			    
+			    <!-- Additory Bundle -->
+			    <if test="additorybundle != null" >
+			      <choose>
+			      	<when test="auth.objHandleType eq '11'.toString()">
+			      		and ADDBUNDLE.bundleid = BUNDLE.bundleid
+			      	</when>
+			      	<otherwise>
+	   			        and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			      	</otherwise>	
+			      </choose>
+			    </if>	
+			    	
+				<!-- File 
+		    	<if test="mfile != null" >
+		          and exists (select 1
+		                        from zarch_mfile ZA_MFILE
+		       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+	          			       <include refid="mfileWhere"/>
+		          			 )  
+		        </if>
+		        -->
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>			  
+	    	</if>
+	    	
+	   		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+		   	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">
+			    select ZA_MFILE.mfileid    as contentid
+	    		     , '02' 			   as contenttype
+		    		 , ZAPP_MFILE.holderid as holderid
+			      from zarch_mfile ZA_MFILE
+			         , zapp_mfile ZAPP_MFILE
+			         , zapp_classobject CLSOBJ
+					 , zapp_class CLS		         
+			     where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+					  
+				 <!-- 분류 노드 -->
+				   and CLS.classid = CLSOBJ.classid
+				   and CLSOBJ.cobjid = ZA_MFILE.MFILEID
+				   and CLSOBJ.cobjtype = '02'
+				   and CLS.types in ('N1','N2','N3','N4')
+				   and CLS.isactive = 'Y'
+				  		    
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and ZA_MFILE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and ZA_MFILE.creator = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and ZA_MFILE.updatetime between get_banow(-7) and get_now()
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and ZAPP_MFILE.expiretime between get_now() and get_banow(7)
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				           and ZAPP_MFILE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				    	</when>	
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ZAPP_MFILE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							from zapp_workflowobject WFO
+	           							where WFO.contentid = ZAPP_MFILE.mfileid
+	           							  and WFO.contenttype = '02'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>	
+					</choose>
+				</if>
+						    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/> 
+			    </if>
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+	    	</if>
+	    ) RLST
+
+    )
+
+	<if test="applyAcl != null">
+		<if test="applyAcl.setval eq 'Y'.toString()">    
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl" />
+    		, PGData as (select ecmdata.*
+    					   from acldata, ecmdata 
+   						  where acldata.contentid = ecmdata.contentid ) 
+		</if>
+		<if test="applyAcl.setval eq 'N'.toString()">    
+    		, PGData as (select ecmdata.*
+    					   from ecmdata ) 
+		</if>
+	</if>
+	<if test="applyAcl == null">
+		, PGData as (select ecmdata.*
+    				   from ecmdata ) 
+	</if>
+	
+	select count(contentid)
+	  from PGData    		
+
+   </select>  
+
+  <!-- 비논리 (등록, 소유 ...) -->
+  <select id="selectNonPhysicalList" resultMap="JoinResultMap" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" />
+    	</if>
+    </if>
+      
+    select <include refid="Base_Column_List_Out" />
+      from (
+	      select  <include refid="Base_Column_List_In" />
+	      	from (
+      
+      		<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+			    select
+			    <include refid="Bundle_Base_Column_List_In" />
+			    from zapp_bundle BUNDLE
+			    <if test="additorybundle != null" >
+			    	, zapp_additorybundle ADDBUNDLE
+			    </if>
+			    where 1 = 1
+			    <if test="additorybundle != null" >
+			    	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+			    </if>
+	
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and BUNDLE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and BUNDLE.creatorid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and BUNDLE.updatetime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and BUNDLE.expiretime between get_now() and get_banow(7)
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				           and BUNDLE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				    	</when>				    	
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ADDBUNDLE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							 from zapp_workflowobject WFO
+	           							where WFO.contentid = BUNDLE.bundleid
+	           							  and WFO.contenttype = '01'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>
+					</choose>
+				</if>
+			    
+			    <if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+			    
+			    <!-- Additory Bundle -->
+			    <if test="additorybundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			    </if>	
+			    	
+				<!-- File 
+		    	<if test="mfile != null" >
+		          and exists (select 1
+		                        from zarch_mfile ZA_MFILE
+		       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+	          			       <include refid="mfileWhere"/>
+		          			 )  
+		        </if>
+		        -->
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+			    				    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" />
+	    			</if>
+	    		</if> 
+	    	</if>
+    		
+    		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+		    	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+		    
+			    select 
+			    <include refid="File_Base_Column_List_In" />
+			    from zarch_mfile ZA_MFILE
+			       , zapp_mfile ZAPP_MFILE
+			    where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+			    
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and ZA_MFILE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and ZA_MFILE.creator = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and ZA_MFILE.updatetime between get_banow(-7) and get_now()
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and ZAPP_MFILE.expiretime between get_now() and get_banow(7)
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				           and ZAPP_MFILE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				    	</when>		
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ZAPP_MFILE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							from zapp_workflowobject WFO
+	           							where WFO.contentid = ZAPP_MFILE.mfileid
+	           							  and WFO.contenttype = '02'
+	           							  and WFO.wferid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>
+					</choose>
+				</if>
+						    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/> 
+			    </if>
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+		    				    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" />
+	    			</if>
+	    		</if> 			    
+			    
+			   </if> <!-- End of All 또는 File Only -->
+		    
+		    ) LIST
+		    
+		    <!-- Sorting -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+	     	
+	     	<!-- Paging -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	     	
+	     ) LST
+	     	
+  </select>
+  
+  <select id="selectNonPhysicalCount" parameterType="map" resultType="java.lang.Integer" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" />
+    	</if>
+    </if>  
+  
+	select sum(cnt)
+      from (
+      		<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+			    select count(*) as cnt
+			    from zapp_bundle BUNDLE
+			    <if test="additorybundle != null" >
+			    	, zapp_additorybundle ADDBUNDLE
+			    </if>
+			    where 1 = 1
+			    <if test="additorybundle != null" >
+			    	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+			    </if>
+	
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and BUNDLE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and BUNDLE.creatorid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and BUNDLE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and BUNDLE.updatetime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and BUNDLE.expiretime between get_now() and get_banow(7)
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				           and BUNDLE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and BUNDLE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and BUNDLE.state in ('01', 'A1')
+				    	</when>		
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ADDBUNDLE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = BUNDLE.bundleid
+				                          and CW.contenttype = '01'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							from zapp_workflowobject WFO
+	           							   , zapp_workflower WFER
+	           							where WFO.workflowerid = WFER.workflowerid
+	           							  and WFO.contentid = BUNDLE.bundleid
+	           							  and WFO.contenttype = '01'
+	           							  and WFER.userid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>
+					</choose>
+				</if>
+			    
+			    <if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+			    
+			    <!-- Additory Bundle -->
+			    <if test="additorybundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			    </if>	
+			    	
+				<!-- File 
+		    	<if test="mfile != null" >
+		          and exists (select 1
+		                        from zarch_mfile ZA_MFILE
+		       				   where ZA_MFILE.LINKID = BUNDLE.BUNDLEID
+	          			       <include refid="mfileWhere"/> 
+		          			 )  
+		        </if>
+		        -->
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+		    			        			    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" />
+	    			</if>
+	    		</if> 
+    		</if>
+    		
+    		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+		    	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+		    
+			    select count(*) as cnt
+			    from zarch_mfile ZA_MFILE
+			       , zapp_mfile ZAPP_MFILE
+			    where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+			    
+				<if test="auth != null"	>	    
+				    <choose>
+				    	<!-- 최근 등록 -->
+						<when test="auth.objHandleType eq '01'.toString()">
+				           and ZA_MFILE.createtime between get_banow(-7) and get_now() 
+				    	</when>
+				    	<!-- 본인 등록 -->
+						<when test="auth.objHandleType eq '02'.toString()">
+				           and ZA_MFILE.creator = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 본인 소유 -->
+				    	<when test="auth.objHandleType eq '03'.toString()">
+				           and ZAPP_MFILE.holderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 최근 변경 -->
+						<when test="auth.objHandleType eq '04'.toString()">
+				           and ZA_MFILE.updatetime between get_banow(-7) and get_now()
+				    	</when>
+				    	<!-- 만료 도래 -->
+						<when test="auth.objHandleType eq '05'.toString()">
+				           and ZAPP_MFILE.expiretime between get_now() and get_banow(7)
+				    	</when>
+				    	<!-- 만료 -->
+						<when test="auth.objHandleType eq '06'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통) -->
+						<when test="auth.objHandleType eq '07'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				           and ZAPP_MFILE.discarderid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+				    	</when>
+				    	<!-- 만료 (관리자용) -->
+						<when test="auth.objHandleType eq '09'.toString()">
+				           and ZAPP_MFILE.expiretime <![CDATA[<]]> get_now() 
+				    	</when>
+				    	<!-- 삭제 (휴지통 - 관리자용) -->
+						<when test="auth.objHandleType eq '10'.toString()">
+				           and ZA_MFILE.state in ('01', 'A1')
+				    	</when>	
+				    	<!-- 승인 대기 -->
+						<when test="auth.objHandleType eq '11'.toString()">
+				           and ZAPP_MFILE.drafter like concat(#{auth.sessDeptUser.deptuserid, jdbcType=CHAR}, '%')
+				    	</when>
+				    	<!-- 승인 완료 -->
+				    	<when test="auth.objHandleType eq '12'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('A3', 'B3', 'F3', 'C3', 'D3'))
+				    	</when>
+				    	<!-- 반려 (본인) -->
+				    	<when test="auth.objHandleType eq '13'.toString()">
+				           and exists (select 1
+				                         from zapp_contentworkflow CW
+				                        where CW.contentid = ZAPP_MFILE.mfileid
+				                          and CW.contenttype = '02'
+				                          and CW.drafterid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR}
+				                          and CW.confirmed = 'N'
+				                          and CW.status in ('C0', 'D1', 'D2'))
+				    	</when>
+				    	<!-- 승인 대기 (승인자) -->
+						<when test="auth.objHandleType eq '14'.toString()">
+				           and exists (select 1
+	           							from zapp_workflowobject WFO
+	           							   , zapp_workflower WFER
+	           							where WFO.workflowerid = WFER.workflowerid
+	           							  and WFO.contentid = ZA_MFILE.mfileid
+	           							  and WFO.contenttype = '02'
+	           							  and WFER.userid = #{auth.sessDeptUser.deptuserid, jdbcType=CHAR} 
+	           							)
+				    	</when>
+					</choose>
+				</if>
+						    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/> 
+			    </if>
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+		    				    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" />
+	    			</if>
+	    		</if> 			    
+			    
+			  </if> <!-- End of All 또는 File Only  -->
+		    
+		 ) LIST
+		    
+  </select>
+  
+
+  <!-- FTR  -->
+  <select id="selectFTRList" resultMap="JoinResultMap" parameterType="map" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" />
+    	</if>
+    </if>
+      
+    select <include refid="Base_Column_List_Out" />
+      from (
+	      select  <include refid="Base_Column_List_In" />
+	      	from (
+      
+      		<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+			    select
+			    <include refid="Bundle_Base_Column_List_In" />
+			    from zapp_bundle BUNDLE
+			    <if test="ftr.setval eq 'Y'.toString()">
+			       , zapp_ftr FTR
+			    </if>
+			    <if test="additorybundle != null" >
+			    	, zapp_additorybundle ADDBUNDLE
+			    </if>
+
+			    where 1 = 1
+
+			    <if test="ftr.setval eq 'Y'.toString()">
+			      and BUNDLE.bundleid = FTR.contentid
+			      and FTR.contenttype = '01'
+				</if>
+				
+				<if test="class != null" >
+				  and exists (select 1
+				               from zapp_classobject CLSOBJ
+				              where CLSOBJ.cobjid = BUNDLE.BUNDLEID
+		    	   				and CLSOBJ.cobjtype = '01'
+			      			    and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />)
+				</if>
+
+			    <if test="additorybundle != null" >
+			    	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+			    </if>			       
+							    			    
+			    <if test="bundle != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+			    </if>
+
+			    <if test="additorybundle != null" >
+			        and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+			    </if>
+		        
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+		    	   				  and KWO.kobjtype = '01'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>				    
+			    				    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" />
+	    			</if>
+	    		</if> 
+	    	</if>
+    		
+    		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+		    	union all
+		    </if>
+		    
+		    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+			    select 
+			    <include refid="File_Base_Column_List_In" />
+			    from zarch_mfile ZA_MFILE
+			       , zapp_mfile ZAPP_MFILE
+			    <if test="ftr.setval eq 'Y'.toString()">
+			       , zapp_ftr FTR
+			    </if>
+			    
+			    where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+
+			    <if test="ftr.setval eq 'Y'.toString()">
+				  and ZA_MFILE.mfileid = FTR.contentid
+			      and FTR.contenttype = '02'	
+			    </if>   
+				
+				<if test="class != null" >
+				  and exists (select 1
+				               from zapp_classobject CLSOBJ
+				              where CLSOBJ.cobjid = ZA_MFILE.mfileid
+		    	   				and CLSOBJ.cobjtype = '02'
+			      			    and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />)
+				</if>
+							    
+			    <if test="file != null" >
+			      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			    </if>
+			    			    
+			    <if test="mfile != null" >
+			      <include refid="mfileWhere"/> 
+			    </if>
+		        
+		        <!-- Kwyword -->
+		    	<if test="keyword != null">
+		    	   and exists (select kobjid 
+		    	   				from zapp_keywordobject KWO
+		    	   				   , zapp_keywords KW
+		    	   				where KWO.kwordid = KW.kwordid
+		    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+		    	   				  and KWO.kobjtype = '02'
+		    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+		    	   			   )
+		    	</if>
+		    			    				    
+			    <if test="applyAcl != null">
+	    			<if test="applyAcl.setval eq 'Y'.toString()">
+	    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" />
+	    			</if>
+	    		</if> 			    
+			    
+			   </if> <!-- End of All 또는 File Only -->
+		    
+		    ) LIST
+		    
+		    <!-- Sorting -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_order" />
+	     	
+	     	<!-- Paging -->
+	     	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.limit_pg" />
+	     	
+	     ) LST
+	     	
+  </select>
+    
+  <select id="selectFTRCount" parameterType="map" resultType="java.lang.Integer" >
+  
+    <!-- ACL -->
+    <if test="applyAcl != null">
+    	<if test="applyAcl.setval eq 'Y'.toString()">
+    		<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.aclobjheader" />
+    	</if>
+    </if>
+     
+      select sum(cnt)
+      	from (
+     
+    	<if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'B'.toString()">		<!-- All 또는 Bundle Only -->
+		    select count(*) as cnt
+		    from zapp_bundle BUNDLE
+		    <if test="ftr.setval eq 'Y'.toString()">
+		       , zapp_ftr FTR
+		    </if>
+		    <if test="additorybundle != null" >
+		    	, zapp_additorybundle ADDBUNDLE
+		    </if>
+		    
+		    where 1 = 1
+
+		    <if test="ftr.setval eq 'Y'.toString()">
+		      and BUNDLE.bundleid = FTR.contentid
+		      and FTR.contenttype = '01'
+			</if>
+
+			<if test="class != null" >
+			  and exists (select 1
+			               from zapp_classobject CLSOBJ
+			              where CLSOBJ.cobjid = BUNDLE.BUNDLEID
+	    	   				and CLSOBJ.cobjtype = '01'
+		      			    and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />)
+			</if>
+				
+		    <if test="additorybundle != null" >
+		    	and BUNDLE.bundleid = ADDBUNDLE.bundleid
+		    </if>
+		    
+		    <if test="bundle != null" >
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Bundle" />
+		    </if>
+			    
+		    <if test="additorybundle != null" >
+		        and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_AdditoryBundle" />
+		    </if>
+			    		        
+	    	<if test="keyword != null">
+	    	   and exists (select kobjid 
+	    	   				from zapp_keywordobject KWO
+	    	   				   , zapp_keywords KW
+	    	   				where KWO.kwordid = KW.kwordid
+	    	   				  and KWO.kobjid = BUNDLE.BUNDLEID
+	    	   				  and KWO.kobjtype = '01'
+	    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+	    	   			   )
+	    	</if>	
+		    			    				    
+		    <if test="applyAcl != null">
+	   			<if test="applyAcl.setval eq 'Y'.toString()">
+	   				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_bundle" />
+	   			</if>
+	   		</if> 
+    	</if>
+   		
+   		<if test="queryObj.setval eq 'A'.toString()">		<!-- All -->
+	    	union all
+	    </if>
+	    
+	    <if test="queryObj.setval eq 'A'.toString() or queryObj.setval eq 'F'.toString()">		<!-- All 또는 File Only -->
+			select count(*) as cnt
+		    from zarch_mfile ZA_MFILE
+		       , zapp_mfile ZAPP_MFILE
+		       
+		    <if test="ftr.setval eq 'Y'.toString()">
+		       , zapp_ftr FTR
+		    </if>
+		    
+		    where ZA_MFILE.MFILEID = ZAPP_MFILE.MFILEID
+
+		    <if test="ftr.setval eq 'Y'.toString()">
+			  and ZA_MFILE.mfileid = FTR.contentid
+		      and FTR.contenttype = '02'	
+		    </if>  
+
+			<if test="class != null" >
+			  and exists (select 1
+			               from zapp_classobject CLSOBJ
+			              where CLSOBJ.cobjid = ZA_MFILE.mfileid
+	    	   				and CLSOBJ.cobjtype = '02'
+		      			    and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Class" />)
+			</if>
+						
+			<if test="file != null" >
+			   and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_File" />
+			</if>
+			    		    
+		    <if test="mfile != null" >
+		      <include refid="mfileWhere"/> 
+		    </if>
+		        
+	    	<if test="keyword != null">
+	    	   and exists (select kobjid 
+	    	   				from zapp_keywordobject KWO
+	    	   				   , zapp_keywords KW
+	    	   				where KWO.kwordid = KW.kwordid
+	    	   				  and KWO.kobjid = ZA_MFILE.mfileid
+	    	   				  and KWO.kobjtype = '02'
+	    	   			  	  and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause_Keyword" />
+	    	   			   )
+	    	</if>	
+		    		    				    
+		    <if test="applyAcl != null">
+    			<if test="applyAcl.setval eq 'Y'.toString()">
+    				<include refid="com.zenithst.core.acl.mapper.ZappAclMapper.existAcl_file" />
+    			</if>
+    		</if> 			    
+		    
+		</if> <!-- End of All 또는 File Only -->
+	    
+	    ) LIST
+   
+  </select>
+  
+  <!-- Create Table -->
+  <update id="createTmpFTRTbl" parameterType="map">
+  		CREATE TEMPORARY TABLE 
+  		IF NOT EXISTS zapp_ftr (contentid char(64) NOT NULL
+  							  , contenttype varchar(2) NOT NULL)
+  </update>  
+  <!-- Drop Table -->
+  <update id="dropTmpFTRTbl" parameterType="map">
+  		DROP TABLE IF EXISTS zapp_ftr
+  </update> 
+  <!-- Insert Data -->
+  <insert id="insertFTR" parameterType="map">
+  		insert into zapp_ftr (contentid, contenttype) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(#{batch.contentid,jdbcType=CHAR}
+  			   , #{batch.contenttype,jdbcType=VARCHAR})
+  			</foreach>
+  </insert> 
+        
+  <sql id="mfileWhere">
+	  <if test="mfile.mfileid != null">
+		and ZA_MFILE.mfileid = #{mfile.mfileid, jdbcType=CHAR} 
+	  </if>  
+	  <if test="mfile.linkid != null">
+		and ZA_MFILE.linkid = #{mfile.linkid, jdbcType=VARCHAR} 
+	  </if> 
+	  <if test="mfile.filename != null">
+		and lower(ZA_MFILE.filename) like  '%' || lower(#{mfile.filename, jdbcType=VARCHAR}) || '%'
+	  </if> 	
+	  <if test="mfile.state != null">
+	    and POSITION(state in #{mfile.state, jdbcType=VARCHAR}) > 0
+	  </if>
+	  <if test="mfile.createtime != null">
+	    and ZA_MFILE.createtime between split_part(#{mfile.createtime, jdbcType=VARCHAR}, '：', 1) and split_part(#{mfile.createtime, jdbcType=VARCHAR}, '：', 2)
+	  </if>	  
+  </sql>
+  
+</mapper>

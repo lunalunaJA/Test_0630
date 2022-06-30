@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappLinkedObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappLinkedObject" >
+    <id column="linkedobjid" property="linkedobjid" jdbcType="CHAR" />
+    <result column="sourceid" property="sourceid" jdbcType="VARCHAR" />
+    <result column="targetid" property="targetid" jdbcType="VARCHAR" />
+    <result column="linkerid" property="linkerid" jdbcType="VARCHAR" />
+    <result column="linktime" property="linktime" jdbcType="VARCHAR" />
+    <result column="linktype" property="linktype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.content.vo.ZappLinkedObjectExtend" extends="BaseResultMap" >
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappLinkedObject" >
+    <id column="LINKOBJ_linkedobjid" property="linkedobjid" jdbcType="CHAR" />
+    <result column="LINKOBJ_sourceid" property="sourceid" jdbcType="VARCHAR" />
+    <result column="LINKOBJ_targetid" property="targetid" jdbcType="VARCHAR" />
+    <result column="LINKOBJ_linkerid" property="linkerid" jdbcType="VARCHAR" />
+    <result column="LINKOBJ_linktime" property="linktime" jdbcType="VARCHAR" />
+    <result column="LINKOBJ_linktype" property="linktype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.content.vo.ZappLinkedObjectExtend" extends="JoinResultMap" >
+  
+	<association property="zappBundle" 
+				 column="BUNDLE_bundleid" 
+				 javaType="com.zenithst.core.content.vo.ZappBundle" 
+				 resultMap="com.zenithst.core.content.mapper.ZappBundleMapper.JoinResultMap"/>
+				 
+	<association property="zappFile" 
+				 column="ZA_MFILE_mfileid" 
+				 javaType="com.zenithst.core.content.vo.ZappFile" 
+				 resultMap="com.zenithst.core.content.mapper.ZappFileMapper.JoinResultMap_All"/>			 
+				   
+  </resultMap>
+  <sql id="Base_Column_List" >
+     linkedobjid
+   , sourceid
+   , targetid
+   , linkerid
+   , linktime
+   , linktype
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     LINKOBJ.linkedobjid		AS LINKOBJ_linkedobjid
+   , LINKOBJ.sourceid			AS LINKOBJ_sourceid
+   , LINKOBJ.targetid			AS LINKOBJ_targetid
+   , LINKOBJ.linkerid			AS LINKOBJ_linkerid
+   , LINKOBJ.linktime			AS LINKOBJ_linktime
+   , LINKOBJ.linktype			AS LINKOBJ_linktype
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     LINKOBJ_linkedobjid
+   , LINKOBJ_sourceid
+   , LINKOBJ_targetid
+   , LINKOBJ_linkerid
+   , LINKOBJ_linktime
+   , LINKOBJ_linktype
+  </sql>
+  <sql id="All_Value_List" >
+     #{linkedobjid,jdbcType=CHAR}
+   , #{sourceid,jdbcType=VARCHAR}
+   , #{targetid,jdbcType=VARCHAR}
+   , #{linkerid,jdbcType=VARCHAR}
+   , #{linktime,jdbcType=VARCHAR}
+   , #{linktype,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.linkedobjid,jdbcType=CHAR}
+   , #{batch.sourceid,jdbcType=VARCHAR}
+   , #{batch.targetid,jdbcType=VARCHAR}
+   , #{batch.linkerid,jdbcType=VARCHAR}
+   , #{batch.linktime,jdbcType=VARCHAR}
+   , #{batch.linktype,jdbcType=VARCHAR}
+  </sql>
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_linkedobject LINKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	<include refid="Join_Column_List_OUT" />
+      , <include refid="com.zenithst.core.content.mapper.ZappBundleMapper.Join_Column_List_OUT" />
+      , <include refid="com.zenithst.core.content.mapper.ZappFileMapper.Join_Column_List_OUT" />
+     from (
+		    select
+		    	<include refid="Join_Column_List_IN" />
+		      , <include refid="com.zenithst.core.content.mapper.ZappBundleMapper.Join_Column_List_IN" />
+		      , <include refid="com.zenithst.core.content.mapper.ZappFileMapper.Join_Column_List_IN_Blank" />	
+		     from zapp_linkedobject LINKOBJ
+		        , zapp_bundle BUNDLE
+		     where LINKOBJ.targetid = BUNDLE.bundleid
+		       and LINKOBJ.linktype = '01'  	-- -> Bundle
+		    <if test="_parameter != null" >
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		    union all
+		    select
+		    	<include refid="Join_Column_List_IN" />
+		      , <include refid="com.zenithst.core.content.mapper.ZappBundleMapper.Join_Column_List_IN_Blank" />
+		      , <include refid="com.zenithst.core.content.mapper.ZappFileMapper.Join_Column_List_IN" />
+		      , <include refid="com.zenithst.core.content.mapper.ZappFileMapper.Join_Column_List_IN_Archive" />
+		     from zapp_linkedobject LINKOBJ
+		        , zapp_mfile FILEEXD
+		        , zarch_mfile ZA_MFILE
+		     where LINKOBJ.targetid = FILEEXD.mfileid
+		       and FILEEXD.mfileid = ZA_MFILE.mfileid
+		       and LINKOBJ.linktype = '02'  	-- -> File
+		    <if test="_parameter != null" >
+		      and <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_NoWhere_Clause" />
+		    </if>
+		  ) ILST
+
+      order by LINKOBJ_linktime desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_linkedobject
+    where linkedobjid = #{linkedobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_linkedobject
+    where linkedobjid = #{linkedobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from zapp_linkedobject LINKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappLinkedObject" >
+    insert into zapp_linkedobject  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappLinkedObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_linkedobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_linkedobject LINKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_linkedobject LINKOBJ
+    <set >
+      <if test="record.linkedobjid != null" >
+        linkedobjid = #{record.linkedobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.sourceid != null" >
+        sourceid = #{record.sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetid != null" >
+        targetid = #{record.targetid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linkerid != null" >
+        linkerid = #{record.linkerid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linktime != null" >
+        linktime = #{record.linktime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linktype != null" >
+        linktype = #{record.linktype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappLinkedObject" >
+    update zapp_linkedobject
+    <set >
+      <if test="sourceid != null" >
+        sourceid = #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="targetid != null" >
+        targetid = #{targetid,jdbcType=VARCHAR},
+      </if>
+      <if test="linkerid != null" >
+        linkerid = #{linkerid,jdbcType=VARCHAR},
+      </if>
+      <if test="linktime != null" >
+        linktime = #{linktime,jdbcType=VARCHAR},
+      </if>
+      <if test="linktype != null" >
+        linktype = #{linktype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where linkedobjid = #{linkedobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_linkedobject LINKOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

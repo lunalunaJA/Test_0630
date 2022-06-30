@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappTmpObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappTmpObject" >
+    <id column="tmpobjid" property="tmpobjid" jdbcType="CHAR" />
+    <result column="tobjid" property="tobjid" jdbcType="VARCHAR" />
+    <result column="tobjtype" property="tobjtype" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="holderid" property="holderid" jdbcType="VARCHAR" />
+    <result column="retentionid" property="retentionid" jdbcType="VARCHAR" />
+    <result column="expiretime" property="expiretime" jdbcType="VARCHAR" />
+    <result column="tmptime" property="tmptime" jdbcType="VARCHAR" />
+    <result column="handlerid" property="handlerid" jdbcType="VARCHAR" />
+    <result column="acls" property="acls" jdbcType="VARCHAR" />
+    <result column="classes" property="classes" jdbcType="VARCHAR" />
+    <result column="files" property="files" jdbcType="VARCHAR" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="states" property="states" jdbcType="VARCHAR" />
+    <result column="taskid" property="taskid" jdbcType="VARCHAR" />
+    <result column="addinfo" property="addinfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappTmpObject" >
+    <id column="TMPOBJ_tmpobjid" property="tmpobjid" jdbcType="CHAR" />
+    <result column="TMPOBJ_tobjid" property="tobjid" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_tobjtype" property="tobjtype" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_title" property="title" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_holderid" property="holderid" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_retentionid" property="retentionid" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_expiretime" property="expiretime" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_tmptime" property="tmptime" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_handlerid" property="handlerid" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_acls" property="acls" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_classes" property="classes" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_files" property="files" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_states" property="states" jdbcType="VARCHAR" />  
+    <result column="TMPOBJ_taskid" property="taskid" jdbcType="VARCHAR" />
+    <result column="TMPOBJ_addinfo" property="addinfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+      tmpobjid
+    , tobjid
+    , tobjtype
+    , title
+    , holderid
+    , retentionid
+    , expiretime
+    , tmptime
+    , handlerid
+    , acls
+    , classes
+    , files
+    , keywords
+    , states
+    , taskid
+    , addinfo
+  </sql>
+  <sql id="Join_Column_List_IN" >
+      TMPOBJ.tmpobjid		AS TMPOBJ_tmpobjid
+    , TMPOBJ.tobjid			AS TMPOBJ_tobjid
+    , TMPOBJ.tobjtype		AS TMPOBJ_tobjtype
+    , TMPOBJ.title			AS TMPOBJ_title
+    , TMPOBJ.holderid		AS TMPOBJ_holderid
+    , TMPOBJ.retentionid	AS TMPOBJ_retentionid
+    , TMPOBJ.expiretime		AS TMPOBJ_expiretime
+    , TMPOBJ.tmptime		AS TMPOBJ_tmptime
+    , TMPOBJ.handlerid		AS TMPOBJ_handlerid
+    , TMPOBJ.acls			AS TMPOBJ_acls
+    , TMPOBJ.classes		AS TMPOBJ_classes
+    , TMPOBJ.files			AS TMPOBJ_files
+    , TMPOBJ.keywords		AS TMPOBJ_keywords
+    , TMPOBJ.states			AS TMPOBJ_states
+    , TMPOBJ.taskid 		AS TMPOBJ_taskid
+    , TMPOBJ.addinfo 		AS TMPOBJ_addinfo
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+      TMPOBJ_tmpobjid
+    , TMPOBJ_tobjid
+    , TMPOBJ_tobjtype
+    , TMPOBJ_title
+    , TMPOBJ_holderid
+    , TMPOBJ_retentionid
+    , TMPOBJ_expiretime
+    , TMPOBJ_tmptime
+    , TMPOBJ_handlerid
+    , TMPOBJ_acls
+    , TMPOBJ_classes
+    , TMPOBJ_files
+    , TMPOBJ_keywords
+    , TMPOBJ_states
+    , TMPOBJ_taskid
+    , TMPOBJ_addinfo
+  </sql>  
+  <sql id="All_Value_List" >
+      #{tmpobjid,jdbcType=CHAR}
+    , #{tobjid,jdbcType=VARCHAR}
+    , #{tobjtype,jdbcType=VARCHAR}
+    , #{title,jdbcType=VARCHAR}
+    , #{holderid,jdbcType=VARCHAR}
+    , #{retentionid,jdbcType=VARCHAR}
+    , #{expiretime,jdbcType=VARCHAR}
+    , #{tmptime,jdbcType=VARCHAR}
+    , #{handlerid,jdbcType=VARCHAR}
+    , #{acls,jdbcType=VARCHAR}
+    , #{classes,jdbcType=VARCHAR}
+    , #{files,jdbcType=VARCHAR}
+    , #{keywords,jdbcType=VARCHAR}
+    , #{states,jdbcType=VARCHAR}
+    , #{taskid,jdbcType=VARCHAR}
+    , #{addinfo,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+      #{batch.tmpobjid,jdbcType=CHAR}
+    , #{batch.tobjid,jdbcType=VARCHAR}
+    , #{batch.tobjtype,jdbcType=VARCHAR}
+    , #{batch.title,jdbcType=VARCHAR}
+    , #{batch.holderid,jdbcType=VARCHAR}
+    , #{batch.retentionid,jdbcType=VARCHAR}
+    , #{batch.expiretime,jdbcType=VARCHAR}
+    , #{batch.tmptime,jdbcType=VARCHAR}
+    , #{batch.handlerid,jdbcType=VARCHAR}
+    , #{batch.acls,jdbcType=VARCHAR}
+    , #{batch.classes,jdbcType=VARCHAR}
+    , #{batch.files,jdbcType=VARCHAR}
+    , #{batch.keywords,jdbcType=VARCHAR}
+    , #{batch.states,jdbcType=VARCHAR}
+    , #{batch.taskid,jdbcType=VARCHAR}
+    , #{batch.addinfo,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from zapp_tmpobject TMPOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from zapp_tmpobject
+    where tmpobjid = #{tmpobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_tmpobject
+    where tmpobjid = #{tmpobjid,jdbcType=CHAR}
+  </delete>  
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete TMPOBJ from zapp_tmpobject TMPOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappTmpObject" >
+    insert into zapp_tmpobject (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappTmpObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_tmpobject (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_tmpobject TMPOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_tmpobject TMPOBJ
+    <set >
+      <if test="vo.tmpobjid != null" >
+        tmpobjid = #{vo.tmpobjid,jdbcType=CHAR},
+      </if>
+      <if test="vo.tobjid != null" >
+        tobjid = #{vo.tobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.tobjtype != null" >
+        tobjtype = #{vo.tobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.title != null" >
+        title = #{vo.title,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.holderid != null" >
+        holderid = #{vo.holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.retentionid != null" >
+        retentionid = #{vo.retentionid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.expiretime != null" >
+        expiretime = #{vo.expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.tmptime != null" >
+        tmptime = #{vo.tmptime,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.handlerid != null" >
+        handlerid = #{vo.handlerid,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.acls != null" >
+        acls = #{vo.acls,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.classes != null" >
+        classes = #{vo.classes,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.files != null" >
+        files = #{vo.files,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.keywords != null" >
+        keywords = #{vo.keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.states != null" >
+        states = #{vo.states,jdbcType=VARCHAR},
+      </if>
+      <if test="vo.taskid != null" >
+        taskid = #{vo.taskid,jdbcType=VARCHAR},
+      </if>   
+       <if test="vo.addinfo != null" >
+        addinfo = #{vo.addinfo,jdbcType=VARCHAR},
+      </if>     
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappBundle" >
+    update zapp_tmpobject
+    <set >
+      <if test="tobjid != null" >
+        tobjid = #{tobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="tobjtype != null" >
+        tobjtype = #{tobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="holderid != null" >
+        holderid = #{holderid,jdbcType=VARCHAR},
+      </if>
+      <if test="retentionid != null" >
+        retentionid = #{retentionid,jdbcType=VARCHAR},
+      </if>
+      <if test="expiretime != null" >
+        expiretime = #{expiretime,jdbcType=VARCHAR},
+      </if>
+      <if test="tmptime != null" >
+        tmptime = #{tmptime,jdbcType=VARCHAR},
+      </if>
+      <if test="handlerid != null" >
+        handlerid = #{handlerid,jdbcType=VARCHAR},
+      </if>
+      <if test="acls != null" >
+        acls = #{acls,jdbcType=VARCHAR},
+      </if>
+      <if test="classes != null" >
+        classes = #{classes,jdbcType=VARCHAR},
+      </if>
+      <if test="files != null" >
+        files = #{files,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null" >
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="states != null" >
+        states = #{states,jdbcType=VARCHAR},
+      </if>
+      <if test="taskid != null" >
+        taskid = #{taskid,jdbcType=VARCHAR},
+      </if>
+      <if test="addinfo != null" >
+        addinfo = #{addinfo,jdbcType=VARCHAR},
+      </if> 
+    </set>
+    where tmpobjid = #{tmpobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from zapp_tmpobject TMPOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

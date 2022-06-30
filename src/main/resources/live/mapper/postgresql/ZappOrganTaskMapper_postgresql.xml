@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zenithst.core.organ.mapper.ZappOrganTaskMapper">
+  <resultMap id="BaseResultMap" type="com.zenithst.core.organ.vo.ZappOrganTask">
+    <id column="organtaskid" jdbcType="CHAR" property="organtaskid" />
+    <result column="companyid" jdbcType="CHAR" property="companyid" />
+    <result column="deptid" jdbcType="CHAR" property="deptid" />
+    <result column="taskid" jdbcType="CHAR" property="taskid" />
+    <result column="tobjtype" jdbcType="CHAR" property="tobjtype" />
+  </resultMap>
+  <resultMap id="BaseResultMapExtend" type="com.zenithst.core.organ.vo.ZappOrganTaskExtend" extends="BaseResultMap" >
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.organ.vo.ZappOrganTask">
+    <id column="ORGANTASK_ORGANTASKID" jdbcType="CHAR" property="organtaskid" />
+    <result column="ORGANTASK_COMPANYID" jdbcType="CHAR" property="companyid" />
+    <result column="ORGANTASK_DEPTID" jdbcType="CHAR" property="deptid" />
+    <result column="ORGANTASK_TASKID" jdbcType="CHAR" property="taskid" />
+    <result column="ORGANTASK_OBJTYPE" jdbcType="CHAR" property="tobjtype" />
+  </resultMap>
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.organ.vo.ZappOrganTaskExtend" extends="JoinResultMap" >
+    <!-- [ASSOCIATION:has-one:resultMap] 기관  -->
+	<association property="zappCompany" 
+				 column="COMPANY_COMPANYID" 
+				 javaType="com.zenithst.core.organ.vo.ZappCompany" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappCompanyMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 부서  -->
+	<association property="zappDept" 
+				 column="DEPT_DEPTID" 
+				 javaType="com.zenithst.core.organ.vo.ZappDept" 
+				 resultMap="com.zenithst.core.organ.mapper.ZappDeptMapper.JoinResultMap"/>
+    <!-- [ASSOCIATION:has-one:resultMap] 업무  -->
+	<association property="zappTask" 
+				 column="ZA_TASK_taskid" 
+				 javaType="com.zenithst.archive.vo.ZArchTask" 
+				 resultMap="com.zenithst.archive.mapper.ZArchTaskMapper.LinkResultMap"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+     organtaskid
+   , companyid
+   , deptid
+   , taskid
+   , tobjtype
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     ORGANTASK.organtaskid		AS ORGANTASK_ORGANTASKID
+   , ORGANTASK.companyid		AS ORGANTASK_COMPANYID
+   , ORGANTASK.deptid			AS ORGANTASK_DEPTID
+   , ORGANTASK.taskid			AS ORGANTASK_TASKID
+   , ORGANTASK.tobjtype			AS ORGANTASK_OBJTYPE
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     ORGANTASK_ORGANTASKID
+   , ORGANTASK_COMPANYID
+   , ORGANTASK_DEPTID
+   , ORGANTASK_TASKID
+   , ORGANTASK_OBJTYPE
+  </sql>
+  <sql id="All_Value_List" >
+     #{organtaskid,jdbcType=CHAR}
+   , #{companyid,jdbcType=CHAR}
+   , #{deptid,jdbcType=CHAR}
+   , #{taskid,jdbcType=CHAR}
+   , #{tobjtype,jdbcType=CHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.organtaskid,jdbcType=CHAR}
+   , #{batch.companyid,jdbcType=CHAR}
+   , #{batch.deptid,jdbcType=CHAR}
+   , #{batch.taskid,jdbcType=CHAR}
+   , #{batch.tobjtype,jdbcType=CHAR}
+  </sql> 
+  <select id="selectByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zapp_organtask ORGANTASK
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null">
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultMap="JoinResultMapExtend">
+    select <include refid="Join_Column_List_IN" />
+         , <include refid="com.zenithst.core.organ.mapper.ZappCompanyMapper.Join_Column_List_IN" />
+    	 , <include refid="com.zenithst.archive.mapper.ZArchTaskMapper.Link_Column_List" />
+     from zapp_organtask ORGANTASK
+      inner join ZAPP_COMPANY COMPANY on COMPANY.companyid = ORGANTASK.companyid
+      inner join ZARCH_TASK as ZA_TASK on ZA_TASK.taskid = ORGANTASK.taskid
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+     order by ZA_TASK.name, ZA_TASK.code
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from zapp_organtask 
+    where organtaskid = #{organtaskid,jdbcType=CHAR}
+  </select>
+  <select id="selectExtendByPrimaryKey" parameterType="java.lang.String" resultMap="JoinResultMapExtend">
+    select 
+    	  <include refid="Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappUserMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.organ.mapper.ZappDeptMapper.Join_Column_List_IN" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Position" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Duty" />
+    	, <include refid="com.zenithst.core.system.mapper.ZappCodeMapper.Join_Column_List_IN_Security" />
+    from zapp_organtask ORGANTASK
+     inner join ZAPP_USER USERS on USERS.deptid = ORGANTASK.deptid
+     inner join ZAPP_DEPT DEPT on DEPT.companyid = ORGANTASK.companyid
+     left join ZAPP_CODE as POS on ORGANTASK.tobjtype = POS.CODEID
+     left join ZAPP_CODE as DUTY on ORGANTASK.DUTYID = DUTY.CODEID
+     left join ZAPP_CODE as SECURE on ORGANTASK.SECLEVELID = SECURE.CODEID
+    where ORGANTASK.organtaskid = #{organtaskid,jdbcType=CHAR}
+  </select>  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zapp_organtask
+    where organtaskid = #{organtaskid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic">
+    delete from zapp_organtask ORGANTASK
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.organ.vo.ZappOrganTask">
+    insert into zapp_organtask  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.organ.vo.ZappOrganTask">
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_organtask (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert>
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer">
+    select count(*) from zapp_organtask ORGANTASK
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map">
+    update zapp_organtask ORGANTASK
+    <set>
+      <if test="record.organtaskid != null">
+        organtaskid = #{record.organtaskid,jdbcType=CHAR},
+      </if>
+      <if test="record.companyid != null">
+        companyid = #{record.companyid,jdbcType=CHAR},
+      </if>
+      <if test="record.deptid != null">
+        deptid = #{record.deptid,jdbcType=CHAR},
+      </if>
+      <if test="record.usertype != null">
+        usertype = #{record.usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskid != null">
+        taskid = #{record.taskid,jdbcType=CHAR},
+      </if>
+      <if test="record.tobjtype != null">
+        tobjtype = #{record.tobjtype,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.organ.vo.ZappOrganTask">
+    update zapp_organtask
+    <set>
+      <if test="companyid != null">
+        companyid = #{companyid,jdbcType=CHAR},
+      </if>
+      <if test="deptid != null">
+        deptid = #{deptid,jdbcType=CHAR},
+      </if>
+      <if test="usertype != null">
+        usertype = #{usertype,jdbcType=VARCHAR},
+      </if>
+      <if test="taskid != null">
+        taskid = #{taskid,jdbcType=CHAR},
+      </if>
+      <if test="tobjtype != null">
+        tobjtype = #{tobjtype,jdbcType=CHAR},
+      </if>
+    </set>
+    where organtaskid = #{organtaskid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from dual 
+     where exists (select 1
+    		         from zapp_organtask ORGANTASK
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select>
+</mapper>

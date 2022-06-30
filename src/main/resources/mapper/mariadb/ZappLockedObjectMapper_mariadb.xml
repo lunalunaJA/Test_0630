@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappLockedObjectMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappLockedObject" >
+    <id column="lockobjid" property="lockobjid" jdbcType="CHAR" />
+    <result column="lobjid" property="lobjid" jdbcType="CHAR" />
+    <result column="lobjtype" property="lobjtype" jdbcType="CHAR" />
+    <result column="lockerid" property="lockerid" jdbcType="CHAR" />
+    <result column="locktime" property="locktime" jdbcType="VARCHAR" />
+    <result column="releasetime" property="releasetime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zenithst.core.content.vo.ZappLockedObject" extends="BaseResultMap" >
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappLockedObject" >
+    <id column="LOCKOBJ_lockobjid" property="lockobjid" jdbcType="CHAR" />
+    <result column="LOCKOBJ_lobjid" property="lobjid" jdbcType="CHAR" />
+    <result column="LOCKOBJ_lobjtype" property="lobjtype" jdbcType="CHAR" />
+    <result column="LOCKOBJ_lockerid" property="lockerid" jdbcType="CHAR" />
+    <result column="LOCKOBJ_locktime" property="locktime" jdbcType="VARCHAR" />
+    <result column="LOCKOBJ_releasetime" property="releasetime" jdbcType="VARCHAR" />
+    <result column="LOCKOBJ_reason" property="reason" jdbcType="VARCHAR" />
+  </resultMap> 
+  <resultMap id="JoinResultMapExtend" type="com.zenithst.core.content.vo.ZappLockedObjectExtend" extends="JoinResultMap" >
+  	<result column="LOCKOBJ_lockername" property="lockername" jdbcType="VARCHAR" />
+  </resultMap> 
+  <sql id="Base_Column_List" >
+      lockobjid
+    , lobjid
+    , lobjtype
+    , lockerid
+    , locktime
+    , releasetime
+  </sql>
+  <sql id="Blob_Column_List" >
+    reason
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     LOCKOBJ.lockobjid		AS LOCKOBJ_lockobjid
+   , LOCKOBJ.lobjid			AS LOCKOBJ_lobjid
+   , LOCKOBJ.lobjtype		AS LOCKOBJ_lobjtype
+   , LOCKOBJ.lockerid		AS LOCKOBJ_lockerid
+   , LOCKOBJ.locktime		AS LOCKOBJ_locktime
+   , LOCKOBJ.releasetime	AS LOCKOBJ_releasetime
+   , LOCKOBJ.reason			AS LOCKOBJ_reason
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     LOCKOBJ_lockobjid
+   , LOCKOBJ_lobjid
+   , LOCKOBJ_lobjtype
+   , LOCKOBJ_lockerid
+   , LOCKOBJ_locktime
+   , LOCKOBJ_releasetime
+   , LOCKOBJ_reason
+  </sql>  
+  <sql id="All_Value_List" >
+     #{lockobjid,jdbcType=CHAR}
+   , #{lobjid,jdbcType=CHAR}
+   , #{lobjtype,jdbcType=CHAR}
+   , #{lockerid,jdbcType=CHAR}
+   , #{locktime,jdbcType=VARCHAR}
+   , #{releasetime,jdbcType=VARCHAR}
+   , #{reason,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.lockobjid,jdbcType=CHAR}
+   , #{batch.lobjid,jdbcType=CHAR}
+   , #{batch.lobjtype,jdbcType=CHAR}
+   , #{batch.lockerid,jdbcType=CHAR}
+   , #{batch.locktime,jdbcType=VARCHAR}
+   , #{batch.releasetime,jdbcType=VARCHAR}
+   , #{batch.reason,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="ResultMapWithBLOBs" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zapp_lockedobject LOCKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectExtendByDynamic" resultMap="JoinResultMapExtend" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    	<include refid="Join_Column_List_OUT" />
+      , get_name_by_deptuserid(LOCKOBJ_lockerid) AS LOCKOBJ_lockername
+     from (
+		    select
+		    	<include refid="Join_Column_List_IN" />
+		     from zapp_lockedobject LOCKOBJ
+		    <if test="_parameter != null" >
+		      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+		    </if>
+		  ) ILST
+
+      order by LOCKOBJ_locktime desc
+  </select>  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zapp_lockedobject
+    where lockobjid = #{lockobjid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from zapp_lockedobject
+    where lockobjid = #{lockobjid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete LOCKOBJ from zapp_lockedobject LOCKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappLockedObject" >
+    insert into zapp_lockedobject  (<include refid="Base_Column_List" />, <include refid="Blob_Column_List"/>)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappLockedObject" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into zapp_lockedobject (<include refid="Base_Column_List" />, <include refid="Blob_Column_List"/>) values 
+  			<foreach collection="list" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from zapp_lockedobject LOCKOBJ
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update zapp_lockedobject LOCKOBJ
+    <set >
+      <if test="record.lockobjid != null" >
+        lockobjid = #{record.lockobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.lobjid != null" >
+        lobjid = #{record.lobjid,jdbcType=CHAR},
+      </if>
+      <if test="record.lobjtype != null" >
+        lobjtype = #{record.lobjtype,jdbcType=CHAR},
+      </if>
+      <if test="record.lockerid != null" >
+        lockerid = #{record.lockerid,jdbcType=CHAR},
+      </if>
+      <if test="record.locktime != null" >
+        locktime = #{record.locktime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releasetime != null" >
+        releasetime = #{record.releasetime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reason != null" >
+        reason = #{record.reason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappLockedObject" >
+    update zapp_lockedobject
+    <set >
+      <if test="lobjid != null" >
+        lobjid = #{lobjid,jdbcType=CHAR},
+      </if>
+      <if test="lobjtype != null" >
+        lobjtype = #{record.lobjtype,jdbcType=CHAR},
+      </if>  
+      <if test="lockerid != null" >
+        lockerid = #{lockerid,jdbcType=CHAR},
+      </if>
+      <if test="locktime != null" >
+        locktime = #{locktime,jdbcType=VARCHAR},
+      </if>
+      <if test="releasetime != null" >
+        releasetime = #{releasetime,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where lockobjid = #{lockobjid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from dual 
+     where exists (select 1
+    		         from zapp_lockedobject LOCKOBJ
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>

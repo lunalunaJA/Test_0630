@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zenithst.core.content.mapper.ZappCommentMapper" >
+  <resultMap id="BaseResultMap" type="com.zenithst.core.content.vo.ZappComment" >
+    <id column="commentid" property="commentid" jdbcType="CHAR" />
+    <result column="cobjid" property="cobjid" jdbcType="VARCHAR" />
+    <result column="cobjtype" property="cobjtype" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="commenttime" property="commenttime" jdbcType="VARCHAR" />
+    <result column="commenterid" property="commenterid" jdbcType="VARCHAR" />
+    <result column="commenter" property="commenter" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="JoinResultMap" type="com.zenithst.core.content.vo.ZappComment" >
+    <id column="CMNT_commentid" property="commentid" jdbcType="CHAR" />
+    <result column="CMNT_cobjid" property="cobjid" jdbcType="VARCHAR" />
+    <result column="CMNT_cobjtype" property="cobjtype" jdbcType="VARCHAR" />
+    <result column="CMNT_comments" property="comments" jdbcType="VARCHAR" />
+    <result column="CMNT_commenttime" property="commenttime" jdbcType="VARCHAR" />
+    <result column="CMNT_commenterid" property="commenterid" jdbcType="VARCHAR" />
+    <result column="CMNT_commenter" property="commenter" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     commentid
+   , cobjid
+   , cobjtype
+   , comments
+   , commenttime
+   , commenterid
+   , commenter
+  </sql>
+  <sql id="Join_Column_List_IN" >
+     CMNT.commentid			AS CMNT_commentid
+   , CMNT.cobjid			AS CMNT_cobjid
+   , CMNT.cobjtype			AS CMNT_cobjtype
+   , CMNT.comments			AS CMNT_comments
+   , CMNT.commenttime		AS CMNT_commenttime
+   , CMNT.commenterid		AS CMNT_commenterid
+   , CMNT.commenter			AS CMNT_commenter
+  </sql>
+  <sql id="Join_Column_List_IN_Blank" >
+     get_random_string(20)		AS CMNT_commentid
+   , ''							AS CMNT_cobjid
+   , ''							AS CMNT_cobjtype
+   , ''							AS CMNT_comments
+   , ''							AS CMNT_commenttime
+   , '' 						AS CMNT_commenterid 
+   , ''							AS CMNT_commenter
+  </sql>
+  <sql id="Join_Column_List_OUT" >
+     CMNT_commentid
+   , CMNT_cobjid
+   , CMNT_cobjtype
+   , CMNT_comments
+   , CMNT_commenttime
+   , CMNT_commenterid
+   , CMNT_commenter
+  </sql>  
+  <sql id="All_Value_List" >
+     #{commentid,jdbcType=CHAR}
+   , #{cobjid,jdbcType=VARCHAR}
+   , #{cobjtype,jdbcType=VARCHAR}
+   , #{comments,jdbcType=VARCHAR}
+   , #{commenttime,jdbcType=VARCHAR}
+   , #{commenterid,jdbcType=VARCHAR}
+   , #{commenter,jdbcType=VARCHAR}
+  </sql>
+  <sql id="Batch_All_Value_List" >
+     #{batch.commentid,jdbcType=CHAR}
+   , #{batch.cobjid,jdbcType=VARCHAR}
+   , #{batch.cobjtype,jdbcType=VARCHAR}
+   , #{batch.comments,jdbcType=VARCHAR}
+   , #{batch.commenttime,jdbcType=VARCHAR}
+   , #{batch.commenterid,jdbcType=VARCHAR}
+   , #{batch.commenter,jdbcType=VARCHAR}
+  </sql> 
+  <select id="selectByDynamic" resultMap="BaseResultMap" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from ZAPP_COMMENT CMNT
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+    <if test="dynamic.orderByClause != null" >
+      order by ${dynamic.orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ZAPP_COMMENT
+    where commentid = #{commentid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ZAPP_COMMENT
+    where commentid = #{commentid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    delete from ZAPP_COMMENT CMNT
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zenithst.core.content.vo.ZappComment" >
+    insert into ZAPP_COMMENT  (<include refid="Base_Column_List" />)
+    values (<include refid="All_Value_List" />)
+  </insert>
+  <insert id="insertu" parameterType="com.zenithst.core.content.vo.ZappComment" >
+  </insert>
+  <insert id="insertb" parameterType="map">
+  		insert into ZAPP_COMMENT (<include refid="Base_Column_List" />) values 
+  			<foreach collection="batch" item="batch" separator=" , " >
+  				(<include refid="Batch_All_Value_List" />)
+  			</foreach>
+  </insert> 
+  <select id="countByDynamic" parameterType="com.zenithst.core.common.bind.ZappDynamic" resultType="java.lang.Integer" >
+    select count(*) from ZAPP_COMMENT CMNT
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByDynamic" parameterType="map" >
+    update ZAPP_COMMENT CMNT
+    <set >
+      <if test="record.commentid != null" >
+        commentid = #{record.commentid,jdbcType=CHAR},
+      </if>
+      <if test="record.cobjid != null" >
+        cobjid = #{record.cobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cobjtype != null" >
+        cobjtype = #{record.cobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.comments != null" >
+        comments = #{record.comments,jdbcType=VARCHAR},
+      </if>
+      <if test="record.commenttime != null" >
+        commenttime = #{record.commenttime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.commenterid != null" >
+        commenterid = #{record.commenterid,jdbcType=VARCHAR},
+      </if>      
+      <if test="record.commenter != null" >
+        commenter = #{record.commenter,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Update_By_Dynamic_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zenithst.core.content.vo.ZappComment" >
+    update ZAPP_COMMENT
+    <set >
+      <if test="cobjid != null" >
+        cobjid = #{cobjid,jdbcType=VARCHAR},
+      </if>
+      <if test="cobjtype != null" >
+        cobjtype = #{cobjtype,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="commenttime != null" >
+        commenttime = #{commenttime,jdbcType=VARCHAR},
+      </if>
+      <if test="commenterid != null" >
+        commenterid = #{commenterid,jdbcType=VARCHAR},
+      </if>      
+      <if test="commenter != null" >
+        commenter = #{commenter,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where commentid = #{commentid,jdbcType=CHAR}
+  </update>
+  <select id="exists" resultType="java.lang.String" parameterType="com.zenithst.core.common.bind.ZappDynamic" >
+    select 'Y' AS YN
+      from DUAL 
+     where exists (select 1
+    		         from ZAPP_COMMENT CMNT
+				     <if test="_parameter != null" >
+					 	<include refid="com.zenithst.core.common.mapper.ZappCommonMapper.Dynamic_Where_Clause" />
+				     </if>
+				  )
+  </select> 
+</mapper>
