@@ -7,19 +7,19 @@
 		[파일] 
 	-->
 	<!-- 업로드 경로 -->
-	<entry key="UPLOAD_PATH">C:\\Archive_Repo\\</entry>
+	<entry key="UPLOAD_PATH">C:\\Archive_Repo\\dev\\</entry>
 	<!-- 임시 경로 -->
-	<entry key="TEMP_PATH">C:\\Archive_Temp\\</entry>	
+	<entry key="TEMP_PATH">C:\\Archive_Temp\\dev\\</entry>	
 	<!-- 다운로드 경로 -->
-	<entry key="DOWNLOAD_PATH">C:\\Archive_Repo\\</entry>
+	<entry key="DOWNLOAD_PATH">C:\\Archive_Repo\\dev\\</entry>
 	<!-- Cabinet Setting-->
-	<entry key="ROOT_PATH">C:\\Archive_Repo\\</entry>
+	<entry key="ROOT_PATH">C:\\Archive_Repo\\dev\\</entry>
 	<entry key="MAX_CAPACITY">1048576000</entry>
 	<!-- 임시 파일 삭제 여부 -->
 	<entry key="DEL_TEMP_FILE_YN">Y</entry>	
 		
-	<entry key="UPLOAD_TEMP_PATH">C:/ECM4.0/temp/</entry>
-	<entry key="DOWN_TEMP_PATH">C:/ECM4.0/temp/</entry>	
+	<entry key="UPLOAD_TEMP_PATH">C:/ECM4.0/temp/dev/</entry>
+	<entry key="DOWN_TEMP_PATH">C:/ECM4.0/temp/dev/</entry>	
 		
 	<!-- 
 		[Unique 파일 키에 Task 포함 여부] task별 ufile 관리
@@ -81,8 +81,8 @@
 	<entry key="LIC_PATH">c:/ZenithST/lic/</entry>
 	
 	<!-- [FTR] -->
-	 <entry key="FTR_STORE_PATH">C:/Archive_Repo/ftr/store</entry>
-	 <entry key="FTR_PARSE_PATH">C:/Archive_Repo/ftr/parse</entry>
+	 <entry key="FTR_STORE_PATH">C:/Archive_Repo/ftr/store/dev/</entry>
+	 <entry key="FTR_PARSE_PATH">C:/Archive_Repo/ftr/parse/dev/</entry>
 	 <entry key="FTR_IDX_FILETYPE"></entry>
 
 </properties>
