@@ -735,9 +735,9 @@
 	
 	<build>
 		<resources>
-			<resource>
+			<!-- <resource>
 				<directory>src/main/resources</directory>
-			</resource>
+			</resource> -->
 			<resource>
 				<directory>src/main/resources/${env}</directory>
 			</resource>
